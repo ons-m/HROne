@@ -1,4 +1,4 @@
-package Utils;
+package com.recruitx.hrone.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
-public final class Error {
+public final class CError {
 
     private static final String LOG_DIR =
             System.getProperty("user.dir") + File.separator + "logs";
@@ -15,7 +15,7 @@ public final class Error {
     private static final String LOG_FILE =
             LOG_DIR + File.separator + "Echsar.log";
 
-    private Error() {
+    private CError() {
         // Prevent instantiation
     }
 
