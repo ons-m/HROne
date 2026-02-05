@@ -15,28 +15,69 @@ public final class CError {
     private static final String LOG_FILE =
             LOG_DIR + File.separator + "Echsar.log";
 
+    private static final String SQL_LOG_FILE =
+            LOG_DIR + File.separator + "Echsar_Sql.log";
+
     private CError() {
         // Prevent instantiation
     }
 
     /* ===============================
-       Public logging API
+       Public logging API (General)
        =============================== */
 
-    public static void log(LogType errorType,String message) {
+    public static void log(LogType errorType, String message) {
         write(errorType, message, null);
     }
 
-    public static void log(LogType errorType,String message, Exception ex) {
+    public static void log(LogType errorType, String message, Exception ex) {
         write(errorType, message, ex);
     }
 
-    public static void log(LogType errorType,Exception ex) {
+    public static void log(LogType errorType, Exception ex) {
         write(errorType, ex.getMessage(), ex);
     }
 
     /* ===============================
-       Internal write logic
+       Public logging API (SQL)
+       =============================== */
+
+    public static synchronized void Log_Sql(
+            String sql,
+            long executionTimeMs,
+            Exception ex) {
+
+        try {
+            createLogDirIfNeeded();
+
+            long numOrdre = COrdre.GetNumOrdreNow();
+
+            try (PrintWriter out = new PrintWriter(
+                    new BufferedWriter(
+                            new FileWriter(SQL_LOG_FILE, true)))) {
+
+                String header =
+                        "[SQL] " +
+                                Global.DATETIME_FORMAT.format(LocalDateTime.now()) +
+                                " (numOrdre=" + numOrdre + ")" +
+                                " execTime=" + executionTimeMs +
+                                " sql=" + sanitize(sql) +
+                                " exception=" + (ex == null ? "none" : ex.toString());
+
+                out.println(header);
+
+                if (ex != null) {
+                    ex.printStackTrace(out);
+                }
+            }
+
+        } catch (IOException ignored) {
+            // Never let SQL logging crash the app
+        }
+    }
+
+    /* ===============================
+       Internal write logic (General)
        =============================== */
 
     private static synchronized void write(
@@ -47,25 +88,24 @@ public final class CError {
         try {
             createLogDirIfNeeded();
 
+            long numOrdre = COrdre.GetNumOrdreNow();
+
             try (PrintWriter out = new PrintWriter(
                     new BufferedWriter(
                             new FileWriter(LOG_FILE, true)))) {
-                String level = switch (errorType) {
-                    case ERROR -> "ERROR";
-                    case INFO -> "INFO";
-                    case DEBUG -> "DEBUG";
-                };
 
-                out.println("[" + level + "] "
-                        + Global.DATETIME_FORMAT.format(LocalDateTime.now()));
-                out.println("Message: " + message);
+                String header =
+                        "[" + errorType + "] " +
+                                Global.DATETIME_FORMAT.format(LocalDateTime.now()) +
+                                " (numOrdre=" + numOrdre + ")" +
+                                " message=" + sanitize(message) +
+                                " exception=" + (ex == null ? "none" : ex.toString());
+
+                out.println(header);
 
                 if (ex != null) {
-                    out.println("Exception:");
                     ex.printStackTrace(out);
                 }
-
-                out.println("--------------------------------------------------");
             }
 
         } catch (IOException ignored) {
@@ -78,5 +118,15 @@ public final class CError {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+    }
+
+    private static String sanitize(String value) {
+        if (value == null) {
+            return "null";
+        }
+        return value
+                .replace("\r", " ")
+                .replace("\n", " ")
+                .trim();
     }
 }

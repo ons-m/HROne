@@ -31,17 +31,32 @@ public final class DBConnection {
             if(DatabaseServer == null || DatabaseServer.isEmpty()
             || MysqlPort == null || MysqlPort.isEmpty()
             || DatabaseName == null || DatabaseName.isEmpty()) {
-                throw new SQLException("Database configuration parameters are missing.");
+
+                SQLException ex =
+                        new SQLException("Database configuration parameters are missing.");
+
+                CError.log(LogType.ERROR, "Failed to create DB connection", ex);
+                throw ex;
             }
 
-            //Build the connection URL
-            String URL = "jdbc:mysql://" + DatabaseServer + ":" + MysqlPort + "/" + DatabaseName
-                    + "?useSSL=false"
-                    + "&allowPublicKeyRetrieval=true"
-                    + "&serverTimezone=UTC";
+            try{
+                //Build the connection URL
+                String URL = "jdbc:mysql://" + DatabaseServer + ":" + MysqlPort + "/" + DatabaseName
+                        + "?useSSL=false"
+                        + "&allowPublicKeyRetrieval=true"
+                        + "&serverTimezone=UTC";
 
-            //Connect to the database
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                //Connect to the database
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+                CError.log(
+                        LogType.INFO,
+                        "Database connection established to " + DatabaseServer + ":" + MysqlPort
+                );
+            }catch (SQLException ex){
+                CError.log(LogType.ERROR, "Failed to connect to database", ex);
+                throw ex;
+            }
         }
 
         // Return the singleton connection
@@ -52,8 +67,9 @@ public final class DBConnection {
         if (connection != null) {
             try {
                 connection.close();
+                CError.log(LogType.INFO, "Database connection closed");
             } catch (SQLException e) {
-                e.printStackTrace(); // Log error during close
+                CError.log(LogType.ERROR, "Error while closing database connection", e);
             }
         }
     }
