@@ -1,0 +1,453 @@
+/* =========================================================
+   CREATE DATABASE SCRIPT – FULL & FINAL
+   ========================================================= */
+
+
+/* =========================================================
+   CORE : ORDRE (TIME)
+   ========================================================= */
+
+CREATE TABLE Ordre (
+    Num_Ordre INT NOT NULL,
+    AAAA INT NOT NULL,
+    MM   INT NOT NULL,
+    JJ   INT NOT NULL,
+    HH   INT NOT NULL,
+    MN   INT NOT NULL,
+    SS   INT NOT NULL,
+    CONSTRAINT PK_Ordre PRIMARY KEY (Num_Ordre)
+) ENGINE=InnoDB;
+
+
+/* =========================================================
+   ENUM TABLES (GLOBAL)
+   ========================================================= */
+
+CREATE TABLE Type_Action (
+    Code_Type_Action INT NOT NULL AUTO_INCREMENT,
+    Description_Action VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Action PRIMARY KEY (Code_Type_Action)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Reaction (
+    Code_Type_Reaction INT NOT NULL AUTO_INCREMENT,
+    Description_Reaction VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Reaction PRIMARY KEY (Code_Type_Reaction)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Langue (
+    Code_Type_Langue INT NOT NULL AUTO_INCREMENT,
+    Description_Langue VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Langue PRIMARY KEY (Code_Type_Langue)
+) ENGINE=InnoDB;
+
+
+/* =========================================================
+   MODULE : OFFRE EMPLOI – ENUMS
+   ========================================================= */
+
+CREATE TABLE Type_Contrat (
+    Code_Type_Contrat INT NOT NULL AUTO_INCREMENT,
+    Description_Contrat VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Contrat PRIMARY KEY (Code_Type_Contrat)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Competence (
+    Code_Type_Competence INT NOT NULL AUTO_INCREMENT,
+    Description_Competence VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Competence PRIMARY KEY (Code_Type_Competence)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Niveau_Etude (
+    Code_Type_Niveau_Etude INT NOT NULL AUTO_INCREMENT,
+    Description_Type_Etude VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Niveau_Etude PRIMARY KEY (Code_Type_Niveau_Etude)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Background_Etude (
+    Code_Type_Background_Etude INT NOT NULL AUTO_INCREMENT,
+    Description_Type_Background_Etude VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Background_Etude PRIMARY KEY (Code_Type_Background_Etude)
+) ENGINE=InnoDB;
+
+CREATE TABLE Type_Status_Condidature (
+    Code_Type_Status_Condidature INT NOT NULL AUTO_INCREMENT,
+    Description_Status_Condidature VARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Type_Status_Condidature PRIMARY KEY (Code_Type_Status_Condidature)
+) ENGINE=InnoDB;
+
+
+/* =========================================================
+   CORE BUSINESS
+   ========================================================= */
+
+CREATE TABLE Entreprise (
+    ID_Entreprise INT NOT NULL AUTO_INCREMENT,
+    Nom_Entreprise VARCHAR(255) NOT NULL,
+    Reference VARCHAR(100),
+    CONSTRAINT PK_Entreprise PRIMARY KEY (ID_Entreprise)
+) ENGINE=InnoDB;
+
+CREATE TABLE Profil (
+    ID_Profil INT NOT NULL AUTO_INCREMENT,
+    Nom_Profil VARCHAR(100) NOT NULL,
+    CONSTRAINT PK_Profil PRIMARY KEY (ID_Profil)
+) ENGINE=InnoDB;
+
+CREATE TABLE User (
+    ID_User INT NOT NULL AUTO_INCREMENT,
+    ID_Entreprise INT NOT NULL,
+    ID_Profil INT NOT NULL,
+    Nom_Utilisateur VARCHAR(100) NOT NULL,
+    Mot_Passe VARCHAR(255) NOT NULL,
+    Email VARCHAR(255),
+    Adresse VARCHAR(255),
+    Num_Tel VARCHAR(30),
+    CIN VARCHAR(20),
+    Num_Ordre_Sign_In INT NOT NULL,
+    Date_Naissance DATE,
+    Gender CHAR(1),
+    CONSTRAINT PK_User PRIMARY KEY (ID_User),
+    CONSTRAINT FK_User_Entreprise FOREIGN KEY (ID_Entreprise) REFERENCES Entreprise (ID_Entreprise),
+    CONSTRAINT FK_User_Profil FOREIGN KEY (ID_Profil) REFERENCES Profil (ID_Profil),
+    CONSTRAINT FK_User_Ordre FOREIGN KEY (Num_Ordre_Sign_In) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Employee (
+    ID_Employe INT NOT NULL AUTO_INCREMENT,
+    ID_User INT NOT NULL,
+    Solde_Conge INT NOT NULL,
+    Nbr_Heure_De_Travail INT NOT NULL,
+    Mac_Machine VARCHAR(50),
+
+    CONSTRAINT PK_Employee PRIMARY KEY (ID_Employe),
+    CONSTRAINT FK_Employee_User FOREIGN KEY (ID_User) REFERENCES User (ID_User)
+) ENGINE=InnoDB;
+
+CREATE TABLE Outils_De_Travail (
+    ID_Outil INT NOT NULL AUTO_INCREMENT,
+    Identifiant_Universelle VARCHAR(255) NOT NULL,
+    Hash_App VARCHAR(255) NOT NULL,
+
+    CONSTRAINT PK_Outils_De_Travail PRIMARY KEY (ID_Outil)
+) ENGINE=InnoDB;
+
+CREATE TABLE Performance (
+    ID_Outil INT NOT NULL,
+    ID_Employe INT NOT NULL,
+    ID_Session INT NOT NULL,
+    Seconde_Active INT NOT NULL,
+
+    CONSTRAINT PK_Performance PRIMARY KEY (ID_Outil, ID_Employe, ID_Session),
+    CONSTRAINT FK_Performance_Outil FOREIGN KEY (ID_Outil) REFERENCES Outils_De_Travail (ID_Outil),
+    CONSTRAINT FK_Performance_Employee FOREIGN KEY (ID_Employe) REFERENCES Employee (ID_Employe)
+) ENGINE=InnoDB;
+
+CREATE TABLE Demande_Conge (
+    ID_Demende INT NOT NULL AUTO_INCREMENT,
+    ID_Employe INT NOT NULL,
+    Nbr_Jour_Demande INT NOT NULL,
+    Num_Ordre_Debut_Conge INT NOT NULL,
+    Num_Ordre_Fin_Conge INT NOT NULL,
+    Status INT NOT NULL,
+
+    CONSTRAINT PK_Demande_Conge PRIMARY KEY (ID_Demende),
+    CONSTRAINT FK_DemandeConge_Employee FOREIGN KEY (ID_Employe) REFERENCES Employee (ID_Employe),
+    CONSTRAINT FK_DemandeConge_Ordre_Debut FOREIGN KEY (Num_Ordre_Debut_Conge) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_DemandeConge_Ordre_Fin FOREIGN KEY (Num_Ordre_Fin_Conge) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+/* =========================================================
+   MODULE : OFFRE EMPLOI
+   ========================================================= */
+
+CREATE TABLE Condidat (
+    ID_Condidat INT NOT NULL AUTO_INCREMENT,
+    ID_User INT NOT NULL,
+    CV TEXT,
+    CONSTRAINT PK_Condidat PRIMARY KEY (ID_Condidat),
+    CONSTRAINT FK_Condidat_User FOREIGN KEY (ID_User) REFERENCES User (ID_User)
+) ENGINE=InnoDB;
+
+CREATE TABLE Offre (
+    ID_Offre INT NOT NULL AUTO_INCREMENT,
+    Titre VARCHAR(255) NOT NULL,
+    Description TEXT,
+    ID_Entreprise INT NOT NULL,
+    Work_Type VARCHAR(100),
+    Code_Type_Contrat INT NOT NULL,
+    Nbr_Annee_Experience INT,
+    Code_Type_Niveau_Etude INT NOT NULL,
+    Min_Salaire INT,
+    Max_Salaire INT,
+    Num_Ordre_Creation INT NOT NULL,
+    Num_Ordre_Expiration INT NOT NULL,
+    CONSTRAINT PK_Offre PRIMARY KEY (ID_Offre),
+    CONSTRAINT FK_Offre_Entreprise FOREIGN KEY (ID_Entreprise) REFERENCES Entreprise (ID_Entreprise),
+    CONSTRAINT FK_Offre_Contrat FOREIGN KEY (Code_Type_Contrat) REFERENCES Type_Contrat (Code_Type_Contrat),
+    CONSTRAINT FK_Offre_Niveau FOREIGN KEY (Code_Type_Niveau_Etude) REFERENCES Type_Niveau_Etude (Code_Type_Niveau_Etude),
+    CONSTRAINT FK_Offre_Ordre_Creation FOREIGN KEY (Num_Ordre_Creation) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_Offre_Ordre_Expiration FOREIGN KEY (Num_Ordre_Expiration) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Detail_Offre_Competence (
+    ID_Offre INT NOT NULL,
+    Code_Type_Competence INT NOT NULL,
+    CONSTRAINT PK_Detail_Offre_Competence PRIMARY KEY (ID_Offre, Code_Type_Competence),
+    CONSTRAINT FK_DOC_Offre FOREIGN KEY (ID_Offre) REFERENCES Offre (ID_Offre),
+    CONSTRAINT FK_DOC_Competence FOREIGN KEY (Code_Type_Competence) REFERENCES Type_Competence (Code_Type_Competence)
+) ENGINE=InnoDB;
+
+CREATE TABLE Detail_Offre_Langue (
+    ID_Offre INT NOT NULL,
+    Code_Type_Langue INT NOT NULL,
+    CONSTRAINT PK_Detail_Offre_Langue PRIMARY KEY (ID_Offre, Code_Type_Langue),
+    CONSTRAINT FK_DOL_Offre FOREIGN KEY (ID_Offre) REFERENCES Offre (ID_Offre),
+    CONSTRAINT FK_DOL_Langue FOREIGN KEY (Code_Type_Langue) REFERENCES Type_Langue (Code_Type_Langue)
+) ENGINE=InnoDB;
+
+CREATE TABLE Detail_Offre_Background (
+    ID_Offre INT NOT NULL,
+    Code_Type_Background_Etude INT NOT NULL,
+    CONSTRAINT PK_Detail_Offre_Background PRIMARY KEY (ID_Offre, Code_Type_Background_Etude),
+    CONSTRAINT FK_DOB_Offre FOREIGN KEY (ID_Offre) REFERENCES Offre (ID_Offre),
+    CONSTRAINT FK_DOB_Background FOREIGN KEY (Code_Type_Background_Etude)
+        REFERENCES Type_Background_Etude (Code_Type_Background_Etude)
+) ENGINE=InnoDB;
+
+CREATE TABLE Condidature (
+    ID_Condidature INT NOT NULL AUTO_INCREMENT,
+    ID_Condidat INT NOT NULL,
+    Lettre_Motivation TEXT,
+    Portfolio TEXT,
+    Lettre_Recomendation TEXT,
+    Code_Type_Status INT NOT NULL,
+    CONSTRAINT PK_Condidature PRIMARY KEY (ID_Condidature),
+    CONSTRAINT FK_Condidature_Condidat FOREIGN KEY (ID_Condidat) REFERENCES Condidat (ID_Condidat),
+    CONSTRAINT FK_Condidature_Status FOREIGN KEY (Code_Type_Status)
+        REFERENCES Type_Status_Condidature (Code_Type_Status_Condidature)
+) ENGINE=InnoDB;
+
+CREATE TABLE Entretien (
+    ID_Condidat INT NOT NULL,
+    ID_RH INT NOT NULL,
+    Num_Ordre_Entretien INT NOT NULL,
+    Localisation VARCHAR(255),
+    Status_Entretien INT,
+    Evaluation TEXT,
+    CONSTRAINT PK_Entretien PRIMARY KEY (ID_Condidat, ID_RH, Num_Ordre_Entretien),
+    CONSTRAINT FK_Entretien_Condidat FOREIGN KEY (ID_Condidat) REFERENCES Condidat (ID_Condidat),
+    CONSTRAINT FK_Entretien_RH FOREIGN KEY (ID_RH) REFERENCES User (ID_User),
+    CONSTRAINT FK_Entretien_Ordre FOREIGN KEY (Num_Ordre_Entretien) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+
+/* =========================================================
+   MODULE : FORMATION
+   ========================================================= */
+
+CREATE TABLE Formation (
+    ID_Formation INT NOT NULL AUTO_INCREMENT,
+    Titre VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Num_Ordre_Creation INT NOT NULL,
+    ID_Entreprise INT NOT NULL,
+    Image VARCHAR(255),
+    CONSTRAINT PK_Formation PRIMARY KEY (ID_Formation),
+    CONSTRAINT FK_Formation_Ordre FOREIGN KEY (Num_Ordre_Creation) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_Formation_Entreprise FOREIGN KEY (ID_Entreprise) REFERENCES Entreprise (ID_Entreprise)
+) ENGINE=InnoDB;
+
+CREATE TABLE Cours (
+    ID_Cours INT NOT NULL AUTO_INCREMENT,
+    Code_Type_Background_Etude INT NOT NULL,
+    Contenu TEXT NOT NULL,
+    CONSTRAINT PK_Cours PRIMARY KEY (ID_Cours),
+    CONSTRAINT FK_Cours_Background FOREIGN KEY (Code_Type_Background_Etude)
+        REFERENCES Type_Background_Etude (Code_Type_Background_Etude)
+) ENGINE=InnoDB;
+
+CREATE TABLE Detail_Formation (
+    ID_Formation INT NOT NULL,
+    ID_Cours INT NOT NULL,
+    CONSTRAINT PK_Detail_Formation PRIMARY KEY (ID_Formation, ID_Cours),
+    CONSTRAINT FK_DF_Formation FOREIGN KEY (ID_Formation) REFERENCES Formation (ID_Formation),
+    CONSTRAINT FK_DF_Cours FOREIGN KEY (ID_Cours) REFERENCES Cours (ID_Cours)
+) ENGINE=InnoDB;
+
+CREATE TABLE Certification (
+    ID_Certif INT NOT NULL AUTO_INCREMENT,
+    ID_Formation INT NOT NULL,
+    Description_Certif VARCHAR(255),
+    CONSTRAINT PK_Certification PRIMARY KEY (ID_Certif),
+    CONSTRAINT FK_Certification_Formation FOREIGN KEY (ID_Formation) REFERENCES Formation (ID_Formation)
+) ENGINE=InnoDB;
+
+CREATE TABLE Participation_Formation (
+    ID_Formation INT NOT NULL,
+    ID_Participant INT NOT NULL,
+    Num_Ordre_Participation INT NOT NULL,
+    CONSTRAINT PK_Participation_Formation PRIMARY KEY (ID_Formation, ID_Participant),
+    CONSTRAINT FK_PF_Formation FOREIGN KEY (ID_Formation) REFERENCES Formation (ID_Formation),
+    CONSTRAINT FK_PF_User FOREIGN KEY (ID_Participant) REFERENCES User (ID_User)
+) ENGINE=InnoDB;
+
+
+/* =========================================================
+   MODULE : EVENEMENT
+   ========================================================= */
+
+CREATE TABLE Evenement (
+    ID_Evenement INT NOT NULL AUTO_INCREMENT,
+    Titre VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Num_Ordre_Creation INT NOT NULL,
+    Num_Ordre_Debut_Evenement INT NOT NULL,
+    Num_Ordre_Fin_Evenement INT NOT NULL,
+    Localisation VARCHAR(255),
+    Image VARCHAR(255),
+    CONSTRAINT PK_Evenement PRIMARY KEY (ID_Evenement),
+    CONSTRAINT FK_Evenement_Ordre_Creation FOREIGN KEY (Num_Ordre_Creation) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_Evenement_Ordre_Debut FOREIGN KEY (Num_Ordre_Debut_Evenement) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_Evenement_Ordre_Fin FOREIGN KEY (Num_Ordre_Fin_Evenement) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Activite (
+    ID_Activite INT NOT NULL AUTO_INCREMENT,
+    Titre VARCHAR(255) NOT NULL,
+    Description TEXT,
+    CONSTRAINT PK_Activite PRIMARY KEY (ID_Activite)
+) ENGINE=InnoDB;
+
+CREATE TABLE Detail_Evenement (
+    ID_Evenement INT NOT NULL,
+    ID_Activite INT NOT NULL,
+    Num_Ordre_Debut_Activite INT NOT NULL,
+    Num_Ordre_Fin_Activite INT NOT NULL,
+    CONSTRAINT PK_Detail_Evenement PRIMARY KEY
+        (ID_Evenement, ID_Activite, Num_Ordre_Debut_Activite, Num_Ordre_Fin_Activite),
+    CONSTRAINT FK_DE_Evenement FOREIGN KEY (ID_Evenement) REFERENCES Evenement (ID_Evenement),
+    CONSTRAINT FK_DE_Activite FOREIGN KEY (ID_Activite) REFERENCES Activite (ID_Activite),
+    CONSTRAINT FK_DE_Ordre_Debut FOREIGN KEY (Num_Ordre_Debut_Activite) REFERENCES Ordre (Num_Ordre),
+    CONSTRAINT FK_DE_Ordre_Fin FOREIGN KEY (Num_Ordre_Fin_Activite) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Participation_Evenement (
+    ID_Evenement INT NOT NULL,
+    ID_Activite INT NOT NULL,
+    ID_Participant INT NOT NULL,
+    Num_Ordre_Participation INT NOT NULL,
+    CONSTRAINT PK_Participation_Evenement PRIMARY KEY (ID_Evenement, ID_Activite, ID_Participant),
+    CONSTRAINT FK_PE_Evenement FOREIGN KEY (ID_Evenement) REFERENCES Evenement (ID_Evenement),
+    CONSTRAINT FK_PE_Activite FOREIGN KEY (ID_Activite) REFERENCES Activite (ID_Activite),
+    CONSTRAINT FK_PE_User FOREIGN KEY (ID_Participant) REFERENCES User (ID_User),
+    CONSTRAINT FK_PE_Ordre FOREIGN KEY (Num_Ordre_Participation) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------
+-- COMMUNICATION
+-- ---------------------------------------------------------
+
+CREATE TABLE Email (
+    ID_Email INT NOT NULL,
+    ID_Receiver INT NOT NULL,
+    ID_Sender INT NOT NULL,
+    Objet VARCHAR(255),
+    Contenue TEXT,
+    Num_Ordre_Envoi INT NOT NULL,
+    Status_Mail INT NOT NULL,
+
+    CONSTRAINT PK_Email PRIMARY KEY (ID_Email, ID_Receiver, ID_Sender),
+    CONSTRAINT FK_Email_Receiver FOREIGN KEY (ID_Receiver) REFERENCES User (ID_User),
+    CONSTRAINT FK_Email_Sender FOREIGN KEY (ID_Sender) REFERENCES User (ID_User),
+    CONSTRAINT FK_Email_Ordre FOREIGN KEY (Num_Ordre_Envoi) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+
+-- ---------------------------------------------------------
+-- SOCIAL
+-- ---------------------------------------------------------
+
+CREATE TABLE Post (
+    ID_Post INT NOT NULL AUTO_INCREMENT,
+    ID_User INT NOT NULL,
+    Titre VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Image VARCHAR(255),
+    Num_Ordre_Post INT NOT NULL,
+
+    CONSTRAINT PK_Post PRIMARY KEY (ID_Post),
+    CONSTRAINT FK_Post_User FOREIGN KEY (ID_User) REFERENCES User (ID_User),
+    CONSTRAINT FK_Post_Ordre FOREIGN KEY (Num_Ordre_Post) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Commentaire (
+    ID_Commentaire INT NOT NULL AUTO_INCREMENT,
+    ID_User INT NOT NULL,
+    ID_Post INT NOT NULL,
+    Est_Reponse TINYINT(1) NOT NULL,
+    ID_Parent INT,
+    Num_Ordre_Commentaire INT NOT NULL,
+
+    CONSTRAINT PK_Commentaire PRIMARY KEY (ID_Commentaire),
+    CONSTRAINT FK_Commentaire_User FOREIGN KEY (ID_User) REFERENCES User (ID_User),
+    CONSTRAINT FK_Commentaire_Post FOREIGN KEY (ID_Post) REFERENCES Post (ID_Post),
+    CONSTRAINT FK_Commentaire_Parent FOREIGN KEY (ID_Parent) REFERENCES Commentaire (ID_Commentaire),
+    CONSTRAINT FK_Commentaire_Ordre FOREIGN KEY (Num_Ordre_Commentaire) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+CREATE TABLE Reaction (
+    ID_Commentaire INT NOT NULL,
+    Code_Type_Reaction INT NOT NULL,
+    ID_User INT NOT NULL,
+    Num_Ordre_Reaction INT NOT NULL,
+
+    CONSTRAINT PK_Reaction PRIMARY KEY (ID_Commentaire, Code_Type_Reaction, ID_User),
+    CONSTRAINT FK_Reaction_Commentaire FOREIGN KEY (ID_Commentaire) REFERENCES Commentaire (ID_Commentaire),
+    CONSTRAINT FK_Reaction_Type FOREIGN KEY (Code_Type_Reaction) REFERENCES Type_Reaction (Code_Type_Reaction),
+    CONSTRAINT FK_Reaction_User FOREIGN KEY (ID_User) REFERENCES User (ID_User),
+    CONSTRAINT FK_Reaction_Ordre FOREIGN KEY (Num_Ordre_Reaction) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;
+
+
+-- ---------------------------------------------------------
+-- CHAT / MESSAGE (FIXED)
+-- ---------------------------------------------------------
+
+CREATE TABLE Chat (
+    ID_Chat INT NOT NULL AUTO_INCREMENT,
+    ID_User1 INT NOT NULL,
+    ID_User2 INT NOT NULL,
+
+    CONSTRAINT PK_Chat PRIMARY KEY (ID_Chat),
+    CONSTRAINT FK_Chat_User1 FOREIGN KEY (ID_User1) REFERENCES User (ID_User),
+    CONSTRAINT FK_Chat_User2 FOREIGN KEY (ID_User2) REFERENCES User (ID_User)
+) ENGINE=InnoDB;
+
+CREATE TABLE Message (
+    ID_Message INT NOT NULL AUTO_INCREMENT,
+    ID_Chat INT NOT NULL,
+    ID_Sender INT NOT NULL,
+    Contenue TEXT NOT NULL,
+    Status INT NOT NULL,
+
+    CONSTRAINT PK_Message PRIMARY KEY (ID_Message),
+    CONSTRAINT FK_Message_Chat FOREIGN KEY (ID_Chat) REFERENCES Chat (ID_Chat),
+    CONSTRAINT FK_Message_User FOREIGN KEY (ID_Sender) REFERENCES User (ID_User)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------
+-- ACTION USER
+-- ---------------------------------------------------------
+
+CREATE TABLE Action_User (
+    ID_User INT NOT NULL,
+    Code_Type_Action INT NOT NULL,
+    Num_Ordre INT NOT NULL,
+    Commentaire VARCHAR(255),
+
+    CONSTRAINT PK_Action_User PRIMARY KEY (ID_User, Code_Type_Action),
+    CONSTRAINT FK_ActionUser_User FOREIGN KEY (ID_User) REFERENCES User (ID_User),
+    CONSTRAINT FK_ActionUser_Type FOREIGN KEY (Code_Type_Action) REFERENCES Type_Action (Code_Type_Action),
+    CONSTRAINT FK_ActionUser_Ordre FOREIGN KEY (Num_Ordre) REFERENCES Ordre (Num_Ordre)
+) ENGINE=InnoDB;

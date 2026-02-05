@@ -1,0 +1,50 @@
+DELIMITER $$
+
+CREATE OR REPLACE PROCEDURE Ensure_NumOrdre_Exists (
+    IN p_NumOrdre INT
+)
+BEGIN
+    DECLARE v_exists INT;
+    DECLARE v_datetime DATETIME;
+    DECLARE v_pivot DATETIME DEFAULT '2020-01-01 00:00:00';
+
+    -- Do nothing if NULL or negative
+    IF p_NumOrdre IS NOT NULL AND p_NumOrdre > 0 THEN
+        
+        -- Check if NumOrdre already exists
+        SELECT 1
+        INTO v_exists
+        FROM Ordre
+        WHERE Num_Ordre = p_NumOrdre
+        LIMIT 1;
+
+        -- If it does not exist, insert it
+        IF v_exists IS NULL THEN
+
+            -- Convert NumOrdre → DATETIME
+            SET v_datetime = DATE_ADD(v_pivot, INTERVAL p_NumOrdre SECOND);
+
+            INSERT IGNORE INTO Ordre (
+                Num_Ordre,
+                JJ,
+                MM,
+                AAAA,
+                HH,
+                MN,
+                SS
+            ) VALUES (
+                p_NumOrdre,
+                DAY(v_datetime),
+                MONTH(v_datetime),
+                YEAR(v_datetime),
+                HOUR(v_datetime),
+                MINUTE(v_datetime),
+                SECOND(v_datetime)
+            );
+
+        END IF;
+    END IF;
+    
+END$$
+
+DELIMITER;
