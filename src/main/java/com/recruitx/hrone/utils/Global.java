@@ -39,10 +39,6 @@ public final class Global {
     public static void ensureConfigExists() {
         Path target = getAppDirectory().resolve("config.ini");
 
-        if (Files.exists(target)) {
-            return;
-        }
-
         try (InputStream in =
                      Global.class.getClassLoader().getResourceAsStream("config.ini")) {
 
