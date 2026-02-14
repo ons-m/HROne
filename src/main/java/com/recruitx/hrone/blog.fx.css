@@ -1,0 +1,331 @@
+.root {
+  -fx-font-family: "Segoe UI";
+  -fx-text-fill: #0f172a;
+}
+
+.scroll-pane {
+  -fx-background-color: #f4f6fb;
+}
+
+.scroll-pane > .viewport {
+  -fx-background-color: #f4f6fb;
+}
+
+.forum-app {
+  -fx-background-color: #f4f6fb;
+  -fx-padding: 24 32 40 32;
+  -fx-spacing: 24;
+}
+
+.forum-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 16;
+}
+
+.brand {
+  -fx-alignment: center-left;
+  -fx-spacing: 12;
+}
+
+.brand-logo {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+}
+
+.brand-name {
+  -fx-font-size: 18;
+  -fx-font-weight: 600;
+}
+
+.brand-sub {
+  -fx-font-size: 12;
+  -fx-text-fill: #64748b;
+}
+
+.header-actions {
+  -fx-spacing: 10;
+}
+
+.btn {
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-font-weight: 600;
+  -fx-padding: 8 14;
+  -fx-cursor: hand;
+}
+
+.btn-primary {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: #ffffff;
+}
+
+.btn-primary:hover {
+  -fx-background-color: #1d4ed8;
+}
+
+.btn-ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: #e2e8f0;
+  -fx-text-fill: #0f172a;
+}
+
+.btn-ghost:hover {
+  -fx-background-color: #f1f5f9;
+}
+
+.forum-hero {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 20;
+  -fx-background-radius: 20;
+  -fx-padding: 24;
+  -fx-spacing: 18;
+}
+
+.hero-title {
+  -fx-font-size: 22;
+  -fx-font-weight: 700;
+}
+
+.hero-sub {
+  -fx-text-fill: #64748b;
+}
+
+.hero-search {
+  -fx-spacing: 10;
+  -fx-alignment: center-left;
+}
+
+.forum-content {
+  -fx-spacing: 24;
+}
+
+.feed {
+  -fx-spacing: 16;
+}
+
+.feed-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 12;
+}
+
+.section-title {
+  -fx-font-size: 16;
+  -fx-font-weight: 600;
+}
+
+.tabs {
+  -fx-spacing: 8;
+}
+
+.tab {
+  -fx-border-color: #e2e8f0;
+  -fx-background-color: #ffffff;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-padding: 6 12;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+}
+
+.tab-active {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: #ffffff;
+  -fx-border-color: #2563eb;
+}
+
+.post-card {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 18;
+  -fx-background-radius: 18;
+  -fx-padding: 18;
+  -fx-spacing: 16;
+}
+
+.vote {
+  -fx-alignment: top-center;
+  -fx-spacing: 6;
+}
+
+.vote-btn {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-min-width: 36;
+  -fx-min-height: 36;
+  -fx-font-weight: 700;
+  -fx-cursor: hand;
+}
+
+.vote-score {
+  -fx-font-weight: 600;
+}
+
+.post-body {
+  -fx-spacing: 10;
+}
+
+.post-meta {
+  -fx-spacing: 8;
+}
+
+.post-meta .label {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12;
+}
+
+.tag {
+  -fx-font-size: 12;
+  -fx-padding: 4 10;
+  -fx-background-radius: 999;
+  -fx-background-color: #e0e7ff;
+  -fx-text-fill: #1d4ed8;
+  -fx-font-weight: 600;
+}
+
+.tag-green {
+  -fx-background-color: #dcfce7;
+  -fx-text-fill: #15803d;
+}
+
+.tag-amber {
+  -fx-background-color: #fef3c7;
+  -fx-text-fill: #b45309;
+}
+
+.post-title {
+  -fx-font-size: 15;
+  -fx-font-weight: 600;
+}
+
+.post-text {
+  -fx-text-fill: #334155;
+  -fx-font-size: 13;
+}
+
+.post-footer {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.post-actions {
+  -fx-spacing: 8;
+}
+
+.chip {
+  -fx-border-color: #e2e8f0;
+  -fx-background-color: #ffffff;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-padding: 6 12;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+}
+
+.comments {
+  -fx-spacing: 10;
+}
+
+.comment {
+  -fx-border-color: transparent transparent transparent #e0e7ff;
+  -fx-border-width: 0 0 0 3;
+  -fx-padding: 0 0 0 10;
+  -fx-spacing: 6;
+}
+
+.comment-author {
+  -fx-font-weight: 600;
+  -fx-font-size: 13;
+}
+
+.comment-text {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 13;
+}
+
+.comment-actions {
+  -fx-spacing: 12;
+}
+
+.link-btn {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: #2563eb;
+  -fx-font-weight: 600;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+.comment-form {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.side-panel {
+  -fx-spacing: 16;
+}
+
+.panel-card {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 20;
+  -fx-background-radius: 20;
+  -fx-padding: 18;
+  -fx-spacing: 12;
+}
+
+.post-form-card {
+  -fx-spacing: 12;
+}
+
+.post-form {
+  -fx-spacing: 12;
+}
+
+.field {
+  -fx-spacing: 8;
+}
+
+.form-actions {
+  -fx-alignment: center-right;
+  -fx-spacing: 10;
+}
+
+.muted {
+  -fx-text-fill: #64748b;
+}
+
+.tag-list {
+  -fx-spacing: 8;
+}
+
+.pill {
+  -fx-background-color: #f8fafc;
+  -fx-border-color: #e2e8f0;
+  -fx-background-radius: 999;
+  -fx-border-radius: 999;
+  -fx-padding: 6 10;
+  -fx-font-size: 12;
+  -fx-font-weight: 600;
+}
+
+.tips {
+  -fx-spacing: 6;
+}
+
+.tips .label {
+  -fx-text-fill: #64748b;
+}
+
+.text-field,
+.text-area {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-padding: 8 12;
+}
