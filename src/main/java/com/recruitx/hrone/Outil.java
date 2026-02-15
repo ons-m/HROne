@@ -1,5 +1,10 @@
 package com.recruitx.hrone;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Outil {
     private int ID_Outil;
     private String Nom_Outil;
@@ -38,14 +43,13 @@ public class Outil {
         return  Identifiant_Universelle;
     }
 
+    public void setID_Outil(int ID_Outil) {this.ID_Outil = ID_Outil;}
     public void setNom_Outil(String nom_Outil) {
         this.Nom_Outil = nom_Outil;
     }
     public void setHash_App(String hash_App) {
         this.Hash_App = hash_App;
     }
-    public void setIdentifiant_Universelle(String identifiant_Universelle) {
-        this.Identifiant_Universelle = identifiant_Universelle;
-    }
+    public void setIdentifiant_Universelle(String identifiant_Universelle) {this.Identifiant_Universelle = identifiant_Universelle;}
 
 }

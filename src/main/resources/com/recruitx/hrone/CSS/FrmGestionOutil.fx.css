@@ -1,3 +1,15 @@
+.modal-overlay {
+    -fx-background-color: rgba(0,0,0,0.4);
+}
+
+.modal-card {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-spacing: 15;
+    -fx-max-width: 400;
+    -fx-background-radius: 10;
+}
+
 .app {
   -fx-background-color: #f5f7fb;
 }
