@@ -10,7 +10,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import java.io.File;
 public class FormationControlle1 {
 
     @FXML
@@ -194,28 +202,235 @@ public class FormationControlle1 {
     }
 
     private void showFormationDetails(Formation formation) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Détails de la formation");
-        alert.setHeaderText(formation.getTitre());
+        // Créer une dialog personnalisée
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Détails de la formation");
 
-        // Description complète (avec modules si présents)
-        String fullDescription = formation.getDescription();
-        if (fullDescription != null) {
-            fullDescription = fullDescription.replace("[MODULES]", "\n\nMODULES:\n");
+        // Conteneur principal
+        VBox mainContent = new VBox(20);
+        mainContent.setPadding(new Insets(20));
+        mainContent.setStyle("-fx-background-color: white;");
+
+        // === EN-TÊTE AVEC IMAGE ===
+        HBox header = new HBox(20);
+        header.setStyle("-fx-alignment: center-left;");
+
+        // Image de la formation
+        VBox imageContainer = new VBox();
+        imageContainer.setStyle("-fx-alignment: center;");
+        if (formation.getImage() != null && !formation.getImage().isEmpty()) {
+            try {
+                ImageView imageView = new ImageView();
+                Image image = loadImage(formation.getImage());
+
+                if (image != null) {
+                    imageView.setImage(image);
+                    imageView.setFitWidth(200);
+                    imageView.setFitHeight(150);
+                    imageView.setPreserveRatio(true);
+                    imageView.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);");
+                    imageContainer.getChildren().add(imageView);
+                } else {
+                    Label noImage = new Label("📷 Image non disponible");
+                    noImage.setStyle("-fx-font-size: 14px; -fx-text-fill: #999;");
+                    imageContainer.getChildren().add(noImage);
+                }
+            } catch (Exception e) {
+                Label noImage = new Label("📷 Erreur de chargement");
+                noImage.setStyle("-fx-font-size: 14px; -fx-text-fill: #999;");
+                imageContainer.getChildren().add(noImage);
+                System.err.println("Erreur lors du chargement de l'image: " + e.getMessage());
+            }
+        } else {
+            Label noImage = new Label("📷 Aucune image");
+            noImage.setStyle("-fx-font-size: 14px; -fx-text-fill: #999;");
+            imageContainer.getChildren().add(noImage);
         }
 
-        String content = String.format(
-                "%s\n\nOrdre de création: %d\nID Entreprise: %d\nImage: %s",
-                fullDescription,
-                formation.getNumOrdreCreation(),
-                formation.getIdEntreprise(),
-                formation.getImage() != null ? formation.getImage() : "Non disponible"
+        // Informations générales
+        VBox headerInfo = new VBox(10);
+        headerInfo.setStyle("-fx-alignment: center-left;");
+        HBox.setHgrow(headerInfo, javafx.scene.layout.Priority.ALWAYS);
+
+        Label title = new Label(formation.getTitre());
+        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        title.setWrapText(true);
+
+        HBox badges = new HBox(10);
+        Label badgeOrdre = new Label("Ordre: " + formation.getNumOrdreCreation());
+        badgeOrdre.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+
+        Label badgeEntreprise = new Label("ID Entreprise: " + formation.getIdEntreprise());
+        badgeEntreprise.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+
+        badges.getChildren().addAll(badgeOrdre, badgeEntreprise);
+
+        headerInfo.getChildren().addAll(title, badges);
+        header.getChildren().addAll(imageContainer, headerInfo);
+
+        // === SÉPARATEUR ===
+        javafx.scene.control.Separator separator1 = new javafx.scene.control.Separator();
+
+        // === DESCRIPTION ===
+        VBox descriptionSection = new VBox(10);
+
+        Label descTitle = new Label("📋 Description");
+        descTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        String descriptionOnly = getDescriptionOnly(formation.getDescription());
+        String formattedDescription = formatTextWithLineBreaks(descriptionOnly, WORDS_PER_LINE);
+
+        Label descContent = new Label(formattedDescription);
+        descContent.setWrapText(true);
+        descContent.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e; -fx-line-spacing: 3px;");
+        descContent.setMaxWidth(650);
+
+        descriptionSection.getChildren().addAll(descTitle, descContent);
+
+        // === SÉPARATEUR ===
+        javafx.scene.control.Separator separator2 = new javafx.scene.control.Separator();
+
+        // === MODULES ===
+        VBox modulesSection = new VBox(15);
+
+        Label modulesTitle = new Label("📚 Programme - Modules");
+        modulesTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        // Extraire les modules depuis la description
+        String modulesText = extractModulesFromDescription(formation.getDescription());
+
+        if (modulesText != null && !modulesText.isEmpty()) {
+            String[] modules = modulesText.split("\n");
+
+            VBox modulesList = new VBox(8);
+
+            for (String module : modules) {
+                module = module.trim();
+                if (!module.isEmpty()) {
+                    HBox moduleItem = new HBox(10);
+                    moduleItem.setStyle("-fx-alignment: center-left; -fx-padding: 10; -fx-background-color: #f8f9fa; -fx-background-radius: 5;");
+
+                    Label bullet = new Label("▸");
+                    bullet.setStyle("-fx-font-size: 16px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
+
+                    Label moduleLabel = new Label(module);
+                    moduleLabel.setWrapText(true);
+                    moduleLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #2c3e50;");
+                    moduleLabel.setMaxWidth(600);
+                    HBox.setHgrow(moduleLabel, javafx.scene.layout.Priority.ALWAYS);
+
+                    moduleItem.getChildren().addAll(bullet, moduleLabel);
+                    modulesList.getChildren().add(moduleItem);
+                }
+            }
+
+            modulesSection.getChildren().addAll(modulesTitle, modulesList);
+        } else {
+            Label noModules = new Label("Aucun module disponible");
+            noModules.setStyle("-fx-font-size: 13px; -fx-text-fill: #95a5a6; -fx-font-style: italic;");
+            modulesSection.getChildren().addAll(modulesTitle, noModules);
+        }
+
+        // === AJOUTER TOUS LES ÉLÉMENTS ===
+        mainContent.getChildren().addAll(
+                header,
+                separator1,
+                descriptionSection,
+                separator2,
+                modulesSection
         );
 
-        alert.setContentText(content);
-        alert.showAndWait();
+        // Mettre dans un ScrollPane
+        ScrollPane scrollPane = new ScrollPane(mainContent);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefViewportWidth(700);
+        scrollPane.setPrefViewportHeight(600);
+        scrollPane.setStyle("-fx-background-color: white; -fx-border-color: transparent;");
+
+        dialog.getDialogPane().setContent(scrollPane);
+
+        // Boutons
+        ButtonType closeButton = new ButtonType("Fermer", ButtonBar.ButtonData.OK_DONE);
+        ButtonType participerButton = new ButtonType("Participer", ButtonBar.ButtonData.APPLY);
+        dialog.getDialogPane().getButtonTypes().addAll(participerButton, closeButton);
+
+        // Style des boutons
+        Button participerBtn = (Button) dialog.getDialogPane().lookupButton(participerButton);
+        participerBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
+
+        Button closeBtn = (Button) dialog.getDialogPane().lookupButton(closeButton);
+        closeBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 20;");
+
+        // Action sur le bouton Participer
+        participerBtn.setOnAction(e -> {
+            dialog.close();
+            formationSelect.setValue(formation);
+            showAlert(Alert.AlertType.INFORMATION,
+                    "Formation sélectionnée",
+                    "Veuillez remplir le formulaire de participation ci-dessous.");
+        });
+
+        dialog.showAndWait();
     }
 
+    /**
+     * Charge une image depuis un chemin local ou une URL web
+     * @param imagePath Chemin local ou URL (http/https)
+     * @return Image chargée ou null si échec
+     */
+    private Image loadImage(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Vérifier si c'est une URL web
+            if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+                // Charger depuis internet
+                System.out.println("Chargement de l'image depuis l'URL: " + imagePath);
+                return new Image(imagePath, true); // true = chargement en arrière-plan
+            }
+            // Sinon, c'est un chemin local
+            else {
+                File imageFile = new File(imagePath);
+                if (imageFile.exists()) {
+                    // Charger depuis le fichier local
+                    System.out.println("Chargement de l'image locale: " + imagePath);
+                    return new Image(imageFile.toURI().toString());
+                } else {
+                    // Essayer de charger depuis les ressources
+                    System.out.println("Tentative de chargement depuis les ressources: " + imagePath);
+                    String resourcePath = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
+                    var stream = getClass().getResourceAsStream(resourcePath);
+                    if (stream != null) {
+                        return new Image(stream);
+                    } else {
+                        System.err.println("Image non trouvée: " + imagePath);
+                        return null;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'image '" + imagePath + "': " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Extrait les modules depuis la description (après [MODULES])
+     */
+    private String extractModulesFromDescription(String fullDescription) {
+        if (fullDescription == null || fullDescription.isEmpty()) {
+            return "";
+        }
+
+        int markerIndex = fullDescription.indexOf(MODULES_MARKER);
+        if (markerIndex != -1 && markerIndex + MODULES_MARKER.length() < fullDescription.length()) {
+            return fullDescription.substring(markerIndex + MODULES_MARKER.length()).trim();
+        }
+
+        return "";
+    }
     @FXML
     private void handleParticiper() {
         String nom = nomField.getText();
