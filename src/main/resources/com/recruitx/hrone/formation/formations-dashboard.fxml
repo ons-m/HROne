@@ -76,17 +76,20 @@
 
                         <VBox styleClass="formation-form">
                             <VBox styleClass="field">
-                                <Label text="Titre" />
+                                <Label fx:id="titleLabel" text="Titre" />
                                 <TextField fx:id="titleField" promptText="Ex: Bootcamp Gestion RH Digitale" />
                             </VBox>
                             <VBox styleClass="field">
-                                <Label text="Description" />
+                                <Label fx:id="descriptionLabel" text="Description" />
                                 <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Presentez l'objectif et les benefices de la formation." />
                             </VBox>
                             <VBox styleClass="field">
-                                <Label text="Image ou visuel" />
-                                <TextField fx:id="imageUrlField" promptText="https://exemple.com/visuel.png" />
-                                <Label styleClass="help" text="Utilisez un lien public vers l'image de presentation." />
+                                <Label fx:id="imageUrlLabel"  text="Image ou visuel" />
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <TextField fx:id="imageUrlField" promptText="https://exemple.com/visuel.png ou fichier local" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="browseImageButton" styleClass="btn btn-secondary" text="Parcourir..." />
+                                </HBox>
+                                <Label styleClass="help" text="Entrez une URL ou cliquez sur Parcourir pour sélectionner un fichier local (png, jpg, jpeg, gif)." />
                             </VBox>
                             <VBox styleClass="field full">
                                 <Label text="Cours / modules" />

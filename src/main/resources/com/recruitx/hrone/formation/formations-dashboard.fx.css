@@ -263,3 +263,62 @@
   -fx-text-fill: #94a3b8;
   -fx-font-size: 11;
 }
+/* Style supplémentaire pour le bouton Parcourir */
+
+.btn-secondary {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-border-width: 0;
+    -fx-min-width: 110px;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #5a6268;
+}
+
+.btn-secondary:pressed {
+    -fx-background-color: #545b62;
+}
+
+/* Style pour le champ avec bouton */
+.field HBox {
+    -fx-spacing: 8;
+}
+
+.field HBox .text-field {
+    -fx-min-height: 36px;
+}
+
+/* Style pour le texte d'aide */
+.help {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6c757d;
+    -fx-padding: 4 0 0 0;
+}
+
+/* Amélioration du statut de formulaire */
+.form-status {
+    -fx-font-size: 13px;
+    -fx-padding: 8 0;
+    -fx-font-weight: 500;
+}
+
+.status-error {
+    -fx-text-fill: #d32f2f;
+}
+
+.status-success {
+    -fx-text-fill: #388e3c;
+}
+
+/* Style pour rendre les labels des champs obligatoires plus visibles */
+.field > .label {
+    -fx-font-weight: 500;
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 4 0;
+}

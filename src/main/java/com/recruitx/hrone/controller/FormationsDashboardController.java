@@ -15,6 +15,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,17 +29,22 @@ public class FormationsDashboardController {
 
     // DAO
     private FormationDAO formationDAO;
-    private int idOrdreConst = 5;
     // Form fields
     @FXML private TextField titleField;
     @FXML private TextArea descriptionField;
     @FXML private TextField imageUrlField;
+    @FXML private Button browseImageButton;
     @FXML private TextField courseInputField;
     @FXML private Button addCourseButton;
     @FXML private VBox coursesListContainer;
     @FXML private Label formStatusLabel;
     @FXML private Button resetButton;
     @FXML private Button publishButton;
+
+    // Labels for required fields
+    @FXML private Label titleLabel;
+    @FXML private Label descriptionLabel;
+    @FXML private Label imageUrlLabel;
 
     // Preview elements
     @FXML private ImageView previewImageView;
@@ -58,9 +67,43 @@ public class FormationsDashboardController {
         formationDAO = new FormationDAO();
 
         setupEventHandlers();
-        setupBindings();
+        setupRequiredFieldLabels();
         initializeDefaultValues();
         loadPublishedFormations();
+    }
+
+    private void setupRequiredFieldLabels() {
+        // Add red asterisk to required field labels
+        if (titleLabel != null) {
+            addRequiredIndicator(titleLabel);
+        }
+        if (descriptionLabel != null) {
+            addRequiredIndicator(descriptionLabel);
+        }
+        if (imageUrlLabel != null) {
+            addRequiredIndicator(imageUrlLabel);
+        }
+    }
+
+    private void addRequiredIndicator(Label label) {
+        String originalText = label.getText();
+        // Remove existing asterisk if present
+        originalText = originalText.replaceAll("\\s*\\*$", "");
+
+        Text normalText = new Text(originalText + " ");
+        Text asterisk = new Text("*");
+        asterisk.setFill(Color.RED);
+        asterisk.setStyle("-fx-font-weight: bold;");
+
+        TextFlow textFlow = new TextFlow(normalText, asterisk);
+
+        // Replace label with TextFlow (if you want to keep using Label, see alternative below)
+        label.setText(originalText + " *");
+        label.setStyle("-fx-text-fill: black;");
+
+        // Alternative: Use graphic property
+        label.setGraphic(textFlow);
+        label.setText("");
     }
 
     private void setupEventHandlers() {
@@ -69,17 +112,15 @@ public class FormationsDashboardController {
         resetButton.setOnAction(e -> resetForm());
         publishButton.setOnAction(e -> publishFormation());
 
+        // Browse button for local image selection
+        if (browseImageButton != null) {
+            browseImageButton.setOnAction(e -> browseForImage());
+        }
+
         // Live preview updates
         titleField.textProperty().addListener((obs, oldVal, newVal) -> updatePreview());
         descriptionField.textProperty().addListener((obs, oldVal, newVal) -> updatePreview());
         imageUrlField.textProperty().addListener((obs, oldVal, newVal) -> updatePreviewImage());
-    }
-
-    private void setupBindings() {
-        publishButton.disableProperty().bind(
-                titleField.textProperty().isEmpty()
-                        .or(descriptionField.textProperty().isEmpty())
-        );
     }
 
     private void initializeDefaultValues() {
@@ -201,8 +242,35 @@ public class FormationsDashboardController {
         String description = descriptionField.getText().trim();
         String imageUrl = imageUrlField.getText().trim();
 
-        if (title.isEmpty() || description.isEmpty()) {
-            showStatus("Veuillez remplir tous les champs obligatoires.", true);
+        // Validate each field individually with specific messages
+        if (title.isEmpty()) {
+            showStatus("Le titre de la formation est obligatoire.", true);
+            return;
+        }
+
+        if (title.length() < 10) {
+            showStatus("Le titre doit contenir au moins 10 caractères.", true);
+            return;
+        }
+
+        if (description.isEmpty()) {
+            showStatus("La description de la formation est obligatoire.", true);
+            return;
+        }
+
+        if (description.length() < 20) {
+            showStatus("La description doit contenir au moins 20 caractères.", true);
+            return;
+        }
+
+        if (imageUrl.isEmpty()) {
+            showStatus("L'URL de l'image est obligatoire.", true);
+            return;
+        }
+
+        // Accept both local files (file:/) and URLs (http/https)
+        if (!isLocalFile(imageUrl) && !isValidUrl(imageUrl)) {
+            showStatus("L'image n'est pas valide. Utilisez une URL (http/https) ou sélectionnez un fichier local.", true);
             return;
         }
 
@@ -466,11 +534,73 @@ public class FormationsDashboardController {
         }
     }
 
+    // Validate URL format
+    private boolean isValidUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return false;
+        }
+
+        // Check if URL starts with http:// or https://
+        String lowerUrl = url.toLowerCase();
+        if (!lowerUrl.startsWith("http://") && !lowerUrl.startsWith("https://")) {
+            return false;
+        }
+
+        // Basic validation: check if there's something after the protocol
+        if (url.length() <= 8) { // "https://" is 8 characters
+            return false;
+        }
+
+        // Optional: More comprehensive URL validation using regex
+        try {
+            String urlPattern = "^(https?://)([\\w\\-]+\\.)+[\\w\\-]+(/[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=]*)?$";
+            return url.matches(urlPattern);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Browse for local image file
+    private void browseForImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionner une image");
+
+        // Set extension filters
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter(
+                "Images (*.png, *.jpg, *.jpeg, *.gif)",
+                "*.png", "*.jpg", "*.jpeg", "*.gif", "*.PNG", "*.JPG", "*.JPEG", "*.GIF"
+        );
+        fileChooser.getExtensionFilters().add(imageFilter);
+
+        // Show open file dialog
+        Stage stage = (Stage) imageUrlField.getScene().getWindow();
+        java.io.File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            // Convert file path to file:// URL format
+            String filePath = selectedFile.toURI().toString();
+            imageUrlField.setText(filePath);
+
+            // Update preview with local file
+            updatePreviewImage();
+            showStatus("Image locale sélectionnée: " + selectedFile.getName(), false);
+        }
+    }
+
+    // Check if the path is a local file or URL
+    private boolean isLocalFile(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return false;
+        }
+        return path.toLowerCase().startsWith("file:/");
+    }
+
     // Method to set enterprise ID from login session
     public void setEntrepriseId(int entrepriseId) {
         this.currentEntrepriseId = entrepriseId;
         loadPublishedFormations();
     }
+
     @FXML
     void navigateToCandidatures(ActionEvent event) {
         try {
