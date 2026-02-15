@@ -1,0 +1,190 @@
+.app {
+  -fx-background-color: #f5f7fb;
+}
+
+.sidebar {
+  -fx-background-color: #0f172a;
+  -fx-padding: 24 18;
+  -fx-spacing: 18;
+  -fx-min-width: 240;
+  -fx-pref-width: 240;
+}
+
+.brand {
+  -fx-spacing: 10;
+  -fx-alignment: center-left;
+}
+
+.brand-logo {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: white;
+  -fx-alignment: center;
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-background-radius: 12;
+}
+
+.brand-name {
+  -fx-text-fill: white;
+  -fx-font-weight: 700;
+  -fx-font-size: 15;
+}
+
+.brand-sub {
+  -fx-text-fill: #94a3b8;
+  -fx-font-size: 11;
+}
+
+.nav {
+  -fx-spacing: 8;
+}
+
+.nav-section {
+  -fx-text-fill: #94a3b8;
+  -fx-font-size: 11;
+  -fx-padding: 8 0 0 0;
+}
+
+.nav-link {
+  -fx-background-color: transparent;
+  -fx-text-fill: #cbd5f5;
+  -fx-padding: 8 10;
+  -fx-background-radius: 10;
+  -fx-alignment: center-left;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  -fx-background-color: rgba(255,255,255,0.08);
+  -fx-text-fill: white;
+}
+
+.main-scroll {
+  -fx-fit-to-width: true;
+  -fx-background: transparent;
+}
+
+.main {
+  -fx-padding: 24 28 40 28;
+  -fx-spacing: 20;
+}
+
+.topbar {
+  -fx-alignment: center-right;
+  -fx-spacing: 12;
+}
+
+.user-name {
+  -fx-font-weight: 700;
+}
+
+.user-role {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 11;
+}
+
+.avatar {
+  -fx-background-color: #e2e8f0;
+  -fx-text-fill: #0f172a;
+  -fx-alignment: center;
+  -fx-min-width: 36;
+  -fx-min-height: 36;
+  -fx-background-radius: 12;
+}
+
+.page-title-text {
+  -fx-font-size: 20;
+  -fx-font-weight: 700;
+}
+
+.muted {
+  -fx-text-fill: #64748b;
+}
+
+.card {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+  -fx-padding: 16 18;
+  -fx-spacing: 14;
+}
+
+.card-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.section-title {
+  -fx-font-weight: 700;
+  -fx-font-size: 15;
+}
+
+.pill {
+  -fx-background-color: #eef2ff;
+  -fx-text-fill: #3730a3;
+  -fx-padding: 4 10;
+  -fx-background-radius: 999;
+  -fx-font-size: 11;
+  -fx-font-weight: 600;
+}
+
+.muted-pill {
+  -fx-background-color: #f1f5f9;
+  -fx-text-fill: #64748b;
+}
+
+.field {
+  -fx-spacing: 6;
+}
+
+.form-vertical {
+  -fx-spacing: 12;
+}
+
+.form-actions {
+  -fx-spacing: 10;
+  -fx-alignment: center-right;
+}
+
+.btn {
+  -fx-background-radius: 10;
+  -fx-padding: 8 14;
+  -fx-font-weight: 600;
+}
+
+.btn-primary {
+  -fx-background-color: #3b82f6;
+  -fx-text-fill: white;
+}
+
+.btn-ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-text-fill: #0f172a;
+}
+
+.data-table {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected .text {
+  -fx-background-color: #eef2ff;
+  -fx-text-fill: #0f172a;
+}
+
+.table-column {
+  -fx-alignment: center-left;
+}
+
+.menu-button.icon-btn {
+  -fx-background-color: transparent;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 8;
+  -fx-padding: 2 6;
+}

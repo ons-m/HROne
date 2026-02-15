@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox styleClass="app" stylesheets="@../CSS/FrmGestionEmployee.fx.css" fx:controller="com.recruitx.hrone.FrmGestionEmployeeController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
+  <VBox styleClass="sidebar">
+    <HBox styleClass="brand">
+      <Label text="HR" styleClass="brand-logo" />
+      <VBox>
+        <Label text="HR One" styleClass="brand-name" />
+        <Label text="Espace RH" styleClass="brand-sub" />
+      </VBox>
+    </HBox>
+
+    <VBox styleClass="nav">
+      <Label text="Recrutement" styleClass="nav-section" />
+      <Button text="Gestion d'offre d'emploi" styleClass="nav-link" />
+      <Button text="Candidatures" styleClass="nav-link" />
+      <Button text="Entretiens" styleClass="nav-link" />
+      <Button text="Statistiques" styleClass="nav-link" />
+
+      <Label text="Gestion administrative" styleClass="nav-section" />
+      <Button text="Gerer mes employees" styleClass="nav-link nav-link-active" />
+      <Button text="Gerer les outils" styleClass="nav-link" />
+    </VBox>
+  </VBox>
+
+  <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
+    <content>
+      <VBox styleClass="main">
+        <HBox styleClass="topbar">
+          <VBox styleClass="user-info">
+            <Label text="Agent RH" styleClass="user-name" />
+            <Label text="Gestion administrative" styleClass="user-role" />
+          </VBox>
+          <Label text="AR" styleClass="avatar" />
+        </HBox>
+
+        <VBox styleClass="page-title">
+          <Label text="Gerer mes employees" styleClass="page-title-text" />
+          <Label text="Filtrez rapidement les employes par date d'ajout, outil de travail et nom." styleClass="muted" />
+        </VBox>
+
+        <VBox styleClass="card">
+          <HBox styleClass="card-header">
+            <VBox>
+              <Label text="Filtres" styleClass="section-title" />
+              <Label text="Affinez la liste des employes en quelques criteres." styleClass="muted" />
+            </VBox>
+            <Label text="Filtres actifs: 0" styleClass="pill" />
+          </HBox>
+
+          <HBox styleClass="filter-row">
+            <VBox styleClass="field">
+              <Label text="Intervalle de date d'ajout de l'employe" />
+              <HBox spacing="8">
+                <TextField promptText="Debut" />
+                <Label text="-" styleClass="muted" />
+                <TextField promptText="Fin" />
+              </HBox>
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Outils de travail" />
+              <ComboBox promptText="Tous les outils" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Recherche par nom" />
+              <TextField promptText="Nom de l'employe" />
+            </VBox>
+            <HBox styleClass="form-actions">
+              <Button text="Reinitialiser" styleClass="btn btn-ghost" />
+              <Button text="Appliquer" styleClass="btn btn-primary" />
+            </HBox>
+          </HBox>
+        </VBox>
+
+        <VBox styleClass="card">
+          <HBox styleClass="card-header">
+            <VBox>
+              <Label text="Employes" styleClass="section-title" />
+              <Label text="Suivi des employes, conges et heures de travail." styleClass="muted" />
+            </VBox>
+            <Label text="12 employes" styleClass="pill muted-pill" />
+          </HBox>
+
+          <TableView fx:id="employeesTable" styleClass="data-table" prefHeight="320">
+            <columns>
+              <TableColumn fx:id="selectColumn" text="" prefWidth="40" />
+              <TableColumn fx:id="nameColumn" text="Nom et prenom" prefWidth="170" />
+              <TableColumn fx:id="phoneColumn" text="Num tel" prefWidth="120" />
+              <TableColumn fx:id="emailColumn" text="Email" prefWidth="180" />
+              <TableColumn fx:id="cinColumn" text="CIN" prefWidth="110" />
+              <TableColumn fx:id="birthColumn" text="Date de naissance" prefWidth="130" />
+              <TableColumn fx:id="soldColumn" text="Sold conge" prefWidth="100" />
+              <TableColumn fx:id="remainingColumn" text="Sold de conge restant" prefWidth="150" />
+              <TableColumn fx:id="hoursColumn" text="Nbr d'heure de travail" prefWidth="150" />
+              <TableColumn fx:id="actionsColumn" text="" prefWidth="80" />
+            </columns>
+          </TableView>
+        </VBox>
+
+        <VBox styleClass="card">
+          <HBox styleClass="card-header">
+            <VBox>
+              <Label text="Ajouter un employe" styleClass="section-title" />
+              <Label text="Enregistrez un nouvel employe dans la base." styleClass="muted" />
+            </VBox>
+          </HBox>
+          <VBox styleClass="form-vertical">
+            <VBox styleClass="field">
+              <Label text="Nom et prenom" />
+              <TextField promptText="Ex: Amal Zohra" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Num tel" />
+              <TextField promptText="06 00 00 00 00" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Genre" />
+              <ComboBox promptText="Selectionnez" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Email" />
+              <TextField promptText="email@exemple.com" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="CIN" />
+              <TextField promptText="Ex: AB123456" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Date de naissance" />
+              <TextField promptText="JJ/MM/AAAA" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Sold conge" />
+              <TextField promptText="Ex: 24" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Sold de conge restant" />
+              <TextField promptText="Ex: 18" />
+            </VBox>
+            <VBox styleClass="field">
+              <Label text="Nbr d'heure de travail" />
+              <TextField promptText="Ex: 160" />
+            </VBox>
+            <HBox styleClass="form-actions">
+              <Button text="Reinitialiser" styleClass="btn btn-ghost" />
+              <Button text="Ajouter l'employe" styleClass="btn btn-primary" />
+            </HBox>
+          </VBox>
+        </VBox>
+      </VBox>
+    </content>
+  </ScrollPane>
+</HBox>
