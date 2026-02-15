@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" pannable="true" stylesheets="@formations-dashboard.fx.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.controller.FormationsDashboardController">
+    <content>
+        <HBox styleClass="dashboard">
+            <VBox styleClass="sidebar">
+                <HBox styleClass="brand">
+                    <ImageView fitHeight="52" fitWidth="52" preserveRatio="true" styleClass="brand-logo">
+                        <image>
+                            <Image url="@logo.png" />
+                        </image>
+                    </ImageView>
+                    <VBox>
+                        <Label styleClass="brand-name" text="HR One" />
+                        <Label styleClass="brand-sub" text="Espace RH" />
+                    </VBox>
+                </HBox>
+
+                <VBox styleClass="nav">
+                    <VBox styleClass="nav-group">
+                        <HBox styleClass="nav-link nav-link-group">
+                            <Label text="Recrutement" />
+                            <Label styleClass="chevron" text="▾" />
+                        </HBox>
+                        <VBox styleClass="nav-submenu">
+                            <Button styleClass="nav-sublink" text="Gestion d'offre d'emploi" />
+                            <Button onAction="#navigateToCandidatures" styleClass="nav-sublink" text="Candidatures" />
+                            <Button styleClass="nav-sublink" text="Entretiens" />
+                            <Button styleClass="nav-sublink" text="Statistiques" />
+                        </VBox>
+                    </VBox>
+                    <VBox styleClass="nav-group">
+                        <HBox styleClass="nav-link nav-link-group">
+                            <Label text="Gestion administrative" />
+                            <Label styleClass="chevron" text="▾" />
+                        </HBox>
+                        <VBox styleClass="nav-submenu">
+                            <Button styleClass="nav-sublink" text="Gerer mes employees" />
+                            <Button styleClass="nav-sublink" text="Gerer les outils" />
+                        </VBox>
+                    </VBox>
+                    <Button styleClass="nav-link" text="Evenements" />
+                    <Button styleClass="nav-link active" text="Formations" />
+                    <Button styleClass="nav-link" text="Utilisateurs" />
+                    <Button styleClass="nav-link" text="Parametres" />
+                </VBox>
+            </VBox>
+
+            <VBox styleClass="main" HBox.hgrow="ALWAYS">
+                <HBox styleClass="topbar">
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox styleClass="user">
+                        <VBox styleClass="user-info">
+                            <Label styleClass="user-name" text="Agent RH" />
+                            <Label styleClass="user-role" text="Formations" />
+                        </VBox>
+                        <Label styleClass="avatar" text="AR" />
+                    </HBox>
+                </HBox>
+
+                <VBox styleClass="grid formation-builder">
+                    <VBox styleClass="card">
+                        <Label styleClass="section-title" text="Creer une formation" />
+                        <Label styleClass="muted" text="Definissez la fiche formation, ajoutez une image et les modules qui la composent." />
+
+                        <VBox styleClass="formation-form">
+                            <VBox styleClass="field">
+                                <Label text="Titre" />
+                                <TextField fx:id="titleField" promptText="Ex: Bootcamp Gestion RH Digitale" />
+                            </VBox>
+                            <VBox styleClass="field">
+                                <Label text="Description" />
+                                <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Presentez l'objectif et les benefices de la formation." />
+                            </VBox>
+                            <VBox styleClass="field">
+                                <Label text="Image ou visuel" />
+                                <TextField fx:id="imageUrlField" promptText="https://exemple.com/visuel.png" />
+                                <Label styleClass="help" text="Utilisez un lien public vers l'image de presentation." />
+                            </VBox>
+                            <VBox styleClass="field full">
+                                <Label text="Cours / modules" />
+                                <HBox styleClass="course-builder">
+                                    <TextField fx:id="courseInputField" promptText="Ex: Module 1 - Introduction aux outils RH" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="addCourseButton" styleClass="btn btn-ghost" text="Ajouter le cours" />
+                                </HBox>
+                                <VBox fx:id="coursesListContainer" styleClass="courses-list" />
+                                <Label styleClass="help" text="Ajoutez autant de modules que necessaire. Vous pouvez les supprimer a tout moment." />
+                            </VBox>
+                            <Label fx:id="formStatusLabel" styleClass="form-status" text="" />
+                            <HBox styleClass="form-actions">
+                                <Button fx:id="resetButton" styleClass="btn btn-ghost" text="Reinitialiser" />
+                                <Button fx:id="publishButton" styleClass="btn btn-primary" text="Publier la formation" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <VBox styleClass="card formation-preview-card">
+                        <Label styleClass="section-title" text="Apercu de la formation" />
+                        <VBox styleClass="preview-image">
+                            <ImageView fx:id="previewImageView" fitHeight="200" preserveRatio="true">
+                                <image>
+                                    <Image url="@logo.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+                        <VBox styleClass="preview-content">
+                            <Label fx:id="previewTitleLabel" styleClass="preview-title" text="Titre de formation" />
+                            <Label fx:id="previewDescriptionLabel" styleClass="muted" text="La description apparaitra ici pour presenter la formation aux candidats." wrapText="true" />
+                        </VBox>
+                        <VBox styleClass="preview-courses">
+                            <HBox styleClass="preview-courses-header">
+                                <Label text="Modules inclus" />
+                                <Label fx:id="previewCoursesCountLabel" styleClass="muted" text="0 module" />
+                            </HBox>
+                            <Label styleClass="muted" text="Ajoutez vos cours pour les voir dans l'apercu." />
+                            <VBox fx:id="previewCoursesListContainer" styleClass="preview-courses-list" />
+                        </VBox>
+                    </VBox>
+
+                    <VBox styleClass="card">
+                        <Label styleClass="section-title" text="Formations publiees" />
+                        <Label styleClass="muted" text="Gerez les formations disponibles et mettez-les a jour." />
+                        <VBox fx:id="formationList" styleClass="resource-list" />
+                    </VBox>
+                </VBox>
+            </VBox>
+        </HBox>
+    </content>
+</ScrollPane>

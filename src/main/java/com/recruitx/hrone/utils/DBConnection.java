@@ -56,6 +56,7 @@ public final class DBConnection {
             }catch (SQLException ex){
                 CError.log(LogType.ERROR, "Failed to connect to database", ex);
                 throw ex;
+
             }
         }
 
