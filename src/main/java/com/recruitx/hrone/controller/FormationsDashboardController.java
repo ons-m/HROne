@@ -2,6 +2,7 @@ package com.recruitx.hrone.controller;
 
 import com.recruitx.hrone.dao.FormationDAO;
 import com.recruitx.hrone.models.Formation;
+import com.recruitx.hrone.utils.COrdre;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -239,11 +240,13 @@ public class FormationsDashboardController {
                 editingFormation = null;
             } else {
                 // CREATE MODE
-                int orderNumber = formationDAO.getNextOrderNumber();
+                //int orderNumber = formationDAO.getNextOrderNumber();
+                long orderNumber = COrdre.GetNumOrdreNow();
+
                 Formation formation = new Formation(
                         title,
                         fullDescription,
-                        orderNumber,
+                        (int) orderNumber,
                         currentEntrepriseId,
                         imageUrl
                 );

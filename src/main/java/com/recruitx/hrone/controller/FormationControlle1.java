@@ -2,6 +2,7 @@ package com.recruitx.hrone.controller;
 
 import com.recruitx.hrone.dao.FormationDAO;
 import com.recruitx.hrone.models.Formation;
+import com.recruitx.hrone.utils.COrdre;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +22,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import java.io.File;
+
 public class FormationControlle1 {
 
     @FXML
@@ -51,6 +55,10 @@ public class FormationControlle1 {
     // Nombre de mots avant d'ajouter un saut de ligne
     private static final int WORDS_PER_LINE = 15;
 
+    // Format de date pour l'affichage
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd MMMM yyyy");
+
     @FXML
     public void initialize() {
         formationDAO = new FormationDAO();
@@ -68,6 +76,19 @@ public class FormationControlle1 {
     }
 
     /**
+     * Convertit numOrdreCreation en date formatée
+     */
+    private String getDateFromNumOrdre(int numOrdre) {
+        try {
+            LocalDateTime dateTime = COrdre.GetDateFromNumOrdre(numOrdre);
+            return dateTime.format(DATE_FORMATTER);
+        } catch (Exception e) {
+            System.err.println("Erreur de conversion de date: " + e.getMessage());
+            return "Date inconnue";
+        }
+    }
+
+    /**
      * Extrait seulement la description avant le marqueur [MODULES]
      */
     private String getDescriptionOnly(String fullDescription) {
@@ -77,11 +98,9 @@ public class FormationControlle1 {
 
         int markerIndex = fullDescription.indexOf(MODULES_MARKER);
         if (markerIndex != -1) {
-            // Retourner seulement la partie avant [MODULES]
             return fullDescription.substring(0, markerIndex).trim();
         }
 
-        // Si pas de marqueur, retourner toute la description
         return fullDescription.trim();
     }
 
@@ -134,14 +153,15 @@ public class FormationControlle1 {
         description.getStyleClass().add("muted");
         description.setWrapText(true);
 
-        // Détails
+        // Détails avec date de création
         HBox details = new HBox();
         details.getStyleClass().add("formation-details");
 
-        //Label ordre = new Label("Ordre: " + formation.getNumOrdreCreation());
-        //Label entreprise = new Label("ID: " + formation.getIdEntreprise());
+        String dateCreation = getDateFromNumOrdre(formation.getNumOrdreCreation());
+        Label dateLabel = new Label("📅 " + dateCreation);
+        dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
 
-        //details.getChildren().addAll(ordre, entreprise);
+        details.getChildren().add(dateLabel);
 
         // Bouton
         Button detailsBtn = new Button("Voir details");
@@ -172,7 +192,7 @@ public class FormationControlle1 {
             featuredTitle.setText(featured.getTitre());
         }
 
-        // Mettre à jour la description - SEULEMENT avant [MODULES]
+        // Mettre à jour la description
         VBox heroCardBody = (VBox) heroCard.lookup(".hero-card-body");
         if (heroCardBody != null && heroCardBody.getChildren().size() > 1) {
             Label desc = (Label) heroCardBody.getChildren().get(1);
@@ -181,10 +201,11 @@ public class FormationControlle1 {
             desc.setText(formattedDesc);
         }
 
-        // Mettre à jour les détails
+        // Mettre à jour les détails avec la date de création
         HBox detailGrid = (HBox) heroCard.lookup(".detail-grid");
         if (detailGrid != null) {
-            updateDetailItem(detailGrid, 0, "18 fevrier 2026");
+            String dateCreation = getDateFromNumOrdre(featured.getNumOrdreCreation());
+            updateDetailItem(detailGrid, 0, dateCreation);
             updateDetailItem(detailGrid, 1, "15 jours");
             updateDetailItem(detailGrid, 2, "En ligne");
             updateDetailItem(detailGrid, 3, "Avancé");
@@ -257,13 +278,19 @@ public class FormationControlle1 {
         title.setWrapText(true);
 
         HBox badges = new HBox(10);
-        Label badgeOrdre = new Label("Ordre: " + formation.getNumOrdreCreation());
-        badgeOrdre.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
 
-        Label badgeEntreprise = new Label("ID Entreprise: " + formation.getIdEntreprise());
+        // Badge de date
+        String dateCreation = getDateFromNumOrdre(formation.getNumOrdreCreation());
+        Label badgeDate = new Label("📅 " + dateCreation);
+        badgeDate.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+
+        // Badge entreprise avec nom + référence
+        String nomEntreprise = getEntrepriseNameById(formation.getIdEntreprise());
+        String refEntreprise = getEntrepriseRefById(formation.getIdEntreprise());
+        Label badgeEntreprise = new Label("🏢 " + nomEntreprise + " (" + refEntreprise + ")");
         badgeEntreprise.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
 
-        badges.getChildren().addAll(badgeOrdre, badgeEntreprise);
+        badges.getChildren().addAll(badgeDate, badgeEntreprise);
 
         headerInfo.getChildren().addAll(title, badges);
         header.getChildren().addAll(imageContainer, headerInfo);
@@ -296,7 +323,6 @@ public class FormationControlle1 {
         Label modulesTitle = new Label("📚 Programme - Modules");
         modulesTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // Extraire les modules depuis la description
         String modulesText = extractModulesFromDescription(formation.getDescription());
 
         if (modulesText != null && !modulesText.isEmpty()) {
@@ -372,11 +398,8 @@ public class FormationControlle1 {
 
         dialog.showAndWait();
     }
-
     /**
      * Charge une image depuis un chemin local ou une URL web
-     * @param imagePath Chemin local ou URL (http/https)
-     * @return Image chargée ou null si échec
      */
     private Image loadImage(String imagePath) {
         if (imagePath == null || imagePath.isEmpty()) {
@@ -384,21 +407,15 @@ public class FormationControlle1 {
         }
 
         try {
-            // Vérifier si c'est une URL web
             if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-                // Charger depuis internet
                 System.out.println("Chargement de l'image depuis l'URL: " + imagePath);
-                return new Image(imagePath, true); // true = chargement en arrière-plan
-            }
-            // Sinon, c'est un chemin local
-            else {
+                return new Image(imagePath, true);
+            } else {
                 File imageFile = new File(imagePath);
                 if (imageFile.exists()) {
-                    // Charger depuis le fichier local
                     System.out.println("Chargement de l'image locale: " + imagePath);
                     return new Image(imageFile.toURI().toString());
                 } else {
-                    // Essayer de charger depuis les ressources
                     System.out.println("Tentative de chargement depuis les ressources: " + imagePath);
                     String resourcePath = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
                     var stream = getClass().getResourceAsStream(resourcePath);
@@ -431,6 +448,7 @@ public class FormationControlle1 {
 
         return "";
     }
+
     @FXML
     private void handleParticiper() {
         String nom = nomField.getText();
@@ -468,6 +486,31 @@ public class FormationControlle1 {
         alert.showAndWait();
     }
 
+
+
+    private String getEntrepriseNameById(int idEntreprise) {
+        try {
+            String nomEntreprise = formationDAO.getNameEntrepriseById(idEntreprise);
+            if (nomEntreprise != null && !nomEntreprise.isEmpty()) {
+                return nomEntreprise;
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
+        }
+        return "Entreprise inconnue";
+    }
+
+    private String getEntrepriseRefById(int idEntreprise) {
+        try {
+            String refEntreprise = formationDAO.getReferenceById(idEntreprise);
+            if (refEntreprise != null && !refEntreprise.isEmpty()) {
+                return refEntreprise;
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
+        }
+        return "Entreprise inconnue";
+    }
     @FXML
     private void handleFilterAll() {
         displayFormations();

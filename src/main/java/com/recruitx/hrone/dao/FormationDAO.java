@@ -204,4 +204,49 @@ public class FormationDAO {
         formation.setImage(rs.getString("Image"));
         return formation;
     }
+
+
+    public String getReferenceById(int idEntreprise) {
+        String sql = "SELECT Reference FROM Entreprise WHERE ID_Entreprise = ?";
+        String reference = null;
+
+        try (
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, idEntreprise);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                reference = rs.getString("Reference");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de la référence: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return reference;
+    }
+
+    public String getNameEntrepriseById(int idEntreprise) {
+        String sql = "SELECT Nom_Entreprise FROM Entreprise WHERE ID_Entreprise = ?";
+        String nomEntreprise = null;
+
+        try (
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, idEntreprise);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                nomEntreprise = rs.getString("Nom_Entreprise");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du nom de l'entreprise: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return nomEntreprise;
+    }
 }
