@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" pannable="true" stylesheets="@evenements.fx.css"
+            fx:controller="com.recruitx.hrone.controller.EvenementsController" xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1">
+    <VBox styleClass="events-page">
+        <HBox styleClass="topbar">
+            <HBox styleClass="brand">
+                <ImageView fitHeight="48" fitWidth="48" preserveRatio="true" styleClass="brand-logo">
+                    <image>
+
+                    </image>
+                </ImageView>
+                <VBox>
+                    <Label text="HR One" styleClass="brand-name"/>
+                    <Label text="Portail Employes" styleClass="brand-sub"/>
+                </VBox>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <HBox styleClass="top-actions">
+                <Button text="Mes participations" styleClass="ghost"/>
+                <Button text="Contacter RH" styleClass="primary"/>
+            </HBox>
+        </HBox>
+
+        <HBox styleClass="hero">
+            <VBox styleClass="hero-text" HBox.hgrow="ALWAYS">
+                <Label text="Evenements internes" styleClass="kicker"/>
+                <Label text="Participez aux evenements RH et communautaires" styleClass="hero-title" wrapText="true"/>
+                <Label text="Rejoignez les ateliers, seances d'information et activites internes. Inscrivez-vous en quelques clics et suivez vos prochaines participations."
+                       styleClass="hero-sub" wrapText="true"/>
+                <HBox styleClass="hero-stats">
+                    <VBox styleClass="stat-item">
+                        <Label text="Evenements ouverts" styleClass="stat-label"/>
+                        <Label text="6" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-item">
+                        <Label text="Participation" styleClass="stat-label"/>
+                        <Label text="Ouverte" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-item">
+                        <Label text="Prochain RDV" styleClass="stat-label"/>
+                        <Label text="13 fevrier" styleClass="stat-value"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <VBox styleClass="hero-card" HBox.hgrow="ALWAYS">
+                <HBox styleClass="hero-card-header">
+                    <Label text="Evenement a la une" styleClass="section-title"/>
+                    <Label text="Inscriptions ouvertes" styleClass="status"/>
+                </HBox>
+                <VBox styleClass="hero-card-body">
+                    <Label text="Forum RH Bien-etre" styleClass="hero-card-title"/>
+                    <Label text="Une matinee pour decouvrir les initiatives RH 2026 et rencontrer les equipes internes."
+                           styleClass="muted" wrapText="true"/>
+                    <HBox styleClass="detail-grid">
+                        <VBox styleClass="detail-item">
+                            <Label text="Date" styleClass="detail-label"/>
+                            <Label text="13 fevrier 2026" styleClass="detail-value"/>
+                        </VBox>
+                        <VBox styleClass="detail-item">
+                            <Label text="Horaire" styleClass="detail-label"/>
+                            <Label text="09:00 - 12:30" styleClass="detail-value"/>
+                        </VBox>
+                        <VBox styleClass="detail-item">
+                            <Label text="Lieu" styleClass="detail-label"/>
+                            <Label text="Salle Atlas" styleClass="detail-value"/>
+                        </VBox>
+                        <VBox styleClass="detail-item">
+                            <Label text="Type" styleClass="detail-label"/>
+                            <Label text="Presentiel" styleClass="detail-value"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+                <HBox styleClass="hero-card-footer">
+                    <Button text="Voir le programme" styleClass="ghost"/>
+                    <Button text="Participer" styleClass="primary"/>
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <HBox styleClass="content">
+            <VBox styleClass="events" HBox.hgrow="ALWAYS">
+                <HBox styleClass="section-header">
+                    <VBox>
+                        <Label text="Evenements disponibles" styleClass="section-title"/>
+                        <Label text="Selectionnez un evenement et confirmez votre participation." styleClass="muted"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox styleClass="filters">
+                        <Button text="Tous" styleClass="filter active"/>
+                    </HBox>
+                </HBox>
+
+                <VBox fx:id="eventsGrid" styleClass="event-grid">
+                    <!-- Dynamic content here -->
+                </VBox>
+            </VBox>
+
+            <VBox styleClass="participation" HBox.hgrow="ALWAYS">
+                <VBox styleClass="participation-header">
+                    <Label text="Participation rapide" styleClass="section-title"/>
+                    <Label text="Inscrivez-vous a un evenement en quelques secondes." styleClass="muted"/>
+                </VBox>
+                <VBox styleClass="participation-form">
+                    <VBox styleClass="field">
+                        <Label text="Nom complet"/>
+                        <TextField fx:id="nomField" promptText="Votre nom"/>
+                    </VBox>
+                    <VBox styleClass="field">
+                        <Label text="Email"/>
+                        <TextField fx:id="emailField" promptText="email@entreprise.com"/>
+                    </VBox>
+                    <VBox styleClass="field">
+                        <Label text="Evenement choisi"/>
+                        <ComboBox fx:id="eventSelect" promptText="Selectionner"/>
+                    </VBox>
+                    <VBox styleClass="field">
+                        <Label text="Message (optionnel)"/>
+                        <TextArea fx:id="messageArea" prefRowCount="3" promptText="Besoin specifique ou question..."/>
+                    </VBox>
+                    <CheckBox fx:id="consentUnknown" text="Je confirme ma participation a cet evenement."
+                              styleClass="consent"/>
+                    <Label fx:id="statusLabel" visible="false"/>
+                    <Button text="Envoyer ma participation" styleClass="primary" onAction="#handleParticiper"/>
+                </VBox>
+                <VBox styleClass="participation-note">
+                    <Label text="Besoin d'aide ?" styleClass="section-title"/>
+                    <Label text="Contactez l'equipe RH pour toute question logistique." styleClass="muted"
+                           wrapText="true"/>
+                    <Button text="Envoyer un message" styleClass="ghost"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane>

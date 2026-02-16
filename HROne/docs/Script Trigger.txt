@@ -1,0 +1,299 @@
+DELIMITER $$
+
+/* ================= USER ================= */
+CREATE OR REPLACE TRIGGER trg_User_bi_Num_Ordre_Sign_In
+BEFORE INSERT ON `User`
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Sign_In IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Sign_In);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_User_bu_Num_Ordre_Sign_In
+BEFORE UPDATE ON `User`
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Sign_In IS NOT NULL
+       AND NEW.Num_Ordre_Sign_In <> OLD.Num_Ordre_Sign_In THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Sign_In);
+    END IF;
+END$$
+
+
+/* ================= EMAIL ================= */
+CREATE OR REPLACE TRIGGER trg_Email_bi_Num_Ordre_Envoi
+BEFORE INSERT ON Email
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Envoi IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Envoi);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Email_bu_Num_Ordre_Envoi
+BEFORE UPDATE ON Email
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Envoi IS NOT NULL
+       AND NEW.Num_Ordre_Envoi <> OLD.Num_Ordre_Envoi THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Envoi);
+    END IF;
+END$$
+
+
+/* ================= POST ================= */
+CREATE OR REPLACE TRIGGER trg_Post_bi_Num_Ordre_Post
+BEFORE INSERT ON Post
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Post IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Post);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Post_bu_Num_Ordre_Post
+BEFORE UPDATE ON Post
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Post IS NOT NULL
+       AND NEW.Num_Ordre_Post <> OLD.Num_Ordre_Post THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Post);
+    END IF;
+END$$
+
+
+/* ================= COMMENTAIRE ================= */
+CREATE OR REPLACE TRIGGER trg_Commentaire_bi_Num_Ordre_Commentaire
+BEFORE INSERT ON Commentaire
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Commentaire IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Commentaire);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Commentaire_bu_Num_Ordre_Commentaire
+BEFORE UPDATE ON Commentaire
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Commentaire IS NOT NULL
+       AND NEW.Num_Ordre_Commentaire <> OLD.Num_Ordre_Commentaire THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Commentaire);
+    END IF;
+END$$
+
+
+/* ================= REACTION ================= */
+CREATE OR REPLACE TRIGGER trg_Reaction_bi_Num_Ordre_Reaction
+BEFORE INSERT ON Reaction
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Reaction IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Reaction);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Reaction_bu_Num_Ordre_Reaction
+BEFORE UPDATE ON Reaction
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Reaction IS NOT NULL
+       AND NEW.Num_Ordre_Reaction <> OLD.Num_Ordre_Reaction THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Reaction);
+    END IF;
+END$$
+
+
+/* ================= ACTION_USER ================= */
+CREATE OR REPLACE TRIGGER trg_Action_User_bi_Num_Ordre
+BEFORE INSERT ON Action_User
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Action_User_bu_Num_Ordre
+BEFORE UPDATE ON Action_User
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre IS NOT NULL
+       AND NEW.Num_Ordre <> OLD.Num_Ordre THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre);
+    END IF;
+END$$
+
+
+/* ================= DEMANDE_CONGE ================= */
+CREATE OR REPLACE TRIGGER trg_Demande_Conge_bi_Num_Ordre
+BEFORE INSERT ON Demande_Conge
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Debut_Conge IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Conge);
+    END IF;
+    IF NEW.Num_Ordre_Fin_Conge IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Conge);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Demande_Conge_bu_Num_Ordre
+BEFORE UPDATE ON Demande_Conge
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Debut_Conge <> OLD.Num_Ordre_Debut_Conge THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Conge);
+    END IF;
+    IF NEW.Num_Ordre_Fin_Conge <> OLD.Num_Ordre_Fin_Conge THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Conge);
+    END IF;
+END$$
+
+
+/* ================= OFFRE ================= */
+CREATE OR REPLACE TRIGGER trg_Offre_bi_Num_Ordre
+BEFORE INSERT ON Offre
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Expiration);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Offre_bu_Num_Ordre
+BEFORE UPDATE ON Offre
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Creation <> OLD.Num_Ordre_Creation THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+    END IF;
+    IF NEW.Num_Ordre_Expiration <> OLD.Num_Ordre_Expiration THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Expiration);
+    END IF;
+END$$
+
+
+/* ================= ENTETIEN ================= */
+CREATE OR REPLACE TRIGGER trg_Entretien_bi_Num_Ordre_Entretien
+BEFORE INSERT ON Entretien
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Entretien IS NOT NULL THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Entretien);
+    END IF;
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Entretien_bu_Num_Ordre_Entretien
+BEFORE UPDATE ON Entretien
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Entretien IS NOT NULL
+       AND NEW.Num_Ordre_Entretien <> OLD.Num_Ordre_Entretien THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Entretien);
+    END IF;
+END$$
+
+
+/* ================= FORMATION ================= */
+CREATE OR REPLACE TRIGGER trg_Formation_bi_Num_Ordre_Creation
+BEFORE INSERT ON Formation
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Formation_bu_Num_Ordre_Creation
+BEFORE UPDATE ON Formation
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Creation <> OLD.Num_Ordre_Creation THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+    END IF;
+END$$
+
+
+/* ================= PARTICIPATION_FORMATION ================= */
+CREATE OR REPLACE TRIGGER trg_Participation_Formation_bi_Num_Ordre
+BEFORE INSERT ON Participation_Formation
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Participation);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Participation_Formation_bu_Num_Ordre
+BEFORE UPDATE ON Participation_Formation
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Participation <> OLD.Num_Ordre_Participation THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Participation);
+    END IF;
+END$$
+
+
+/* ================= EVENEMENT ================= */
+CREATE OR REPLACE TRIGGER trg_Evenement_bi_Num_Ordre
+BEFORE INSERT ON Evenement
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Evenement);
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Evenement);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Evenement_bu_Num_Ordre
+BEFORE UPDATE ON Evenement
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Creation <> OLD.Num_Ordre_Creation THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Creation);
+    END IF;
+    IF NEW.Num_Ordre_Debut_Evenement <> OLD.Num_Ordre_Debut_Evenement THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Evenement);
+    END IF;
+    IF NEW.Num_Ordre_Fin_Evenement <> OLD.Num_Ordre_Fin_Evenement THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Evenement);
+    END IF;
+END$$
+
+
+/* ================= DETAIL_EVENEMENT ================= */
+CREATE OR REPLACE TRIGGER trg_Detail_Evenement_bi_Num_Ordre
+BEFORE INSERT ON Detail_Evenement
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Activite);
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Activite);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Detail_Evenement_bu_Num_Ordre
+BEFORE UPDATE ON Detail_Evenement
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Debut_Activite <> OLD.Num_Ordre_Debut_Activite THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Debut_Activite);
+    END IF;
+    IF NEW.Num_Ordre_Fin_Activite <> OLD.Num_Ordre_Fin_Activite THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Fin_Activite);
+    END IF;
+END$$
+
+
+/* ================= PARTICIPATION_EVENEMENT ================= */
+CREATE OR REPLACE TRIGGER trg_Participation_Evenement_bi_Num_Ordre
+BEFORE INSERT ON Participation_Evenement
+FOR EACH ROW
+BEGIN
+    CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Participation);
+END$$
+
+CREATE OR REPLACE TRIGGER trg_Participation_Evenement_bu_Num_Ordre
+BEFORE UPDATE ON Participation_Evenement
+FOR EACH ROW
+BEGIN
+    IF NEW.Num_Ordre_Participation <> OLD.Num_Ordre_Participation THEN
+        CALL Ensure_NumOrdre_Exists(NEW.Num_Ordre_Participation);
+    END IF;
+END$$
+
+DELIMITER ;
