@@ -12,6 +12,8 @@
 
 <?import javafx.scene.layout.StackPane?>
 
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.DatePicker?>
 <StackPane fx:controller="com.recruitx.hrone.FrmGestionEmployeeController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../CSS/FrmGestionEmployee.fx.css">
     <HBox fx:id="mainContent" styleClass="app" >
         <VBox styleClass="sidebar">
@@ -130,43 +132,60 @@
                         <Label text="Enregistrez un nouvel employe dans la base." styleClass="muted" />
                     </VBox>
                 </HBox>
+
                 <VBox styleClass="form-vertical">
+
+                    <!-- NAME -->
                     <VBox styleClass="field">
                         <Label text="Nom et prenom" />
-                        <TextField promptText="Ex: Amal Zohra" />
+                        <TextField fx:id="nameField" promptText="Ex: Amal Zohra" />
                     </VBox>
-                    <VBox styleClass="field">
-                        <Label text="Num tel" />
-                        <TextField promptText="06 00 00 00 00" />
-                    </VBox>
-                    <VBox styleClass="field">
-                        <Label text="Genre" />
-                        <ComboBox promptText="Selectionnez" />
-                    </VBox>
+
+                    <!-- EMAIL -->
                     <VBox styleClass="field">
                         <Label text="Email" />
-                        <TextField promptText="email@exemple.com" />
+                        <TextField fx:id="emailField" promptText="email@exemple.com" />
                     </VBox>
+
+                    <!-- GENDER (Radio Buttons) -->
                     <VBox styleClass="field">
-                        <Label text="CIN" />
-                        <TextField promptText="Ex: AB123456" />
+                        <Label text="Genre" />
+                        <HBox spacing="20">
+                            <RadioButton fx:id="maleRadio" text="Homme" />
+                            <RadioButton fx:id="femaleRadio" text="Femme" />
+                        </HBox>
                     </VBox>
+
+                    <!-- BIRTH DATE -->
                     <VBox styleClass="field">
                         <Label text="Date de naissance" />
-                        <TextField promptText="JJ/MM/AAAA" />
+                        <DatePicker fx:id="birthDatePicker" />
                     </VBox>
+
+                    <!-- SOLDE CONGE -->
                     <VBox styleClass="field">
-                        <Label text="Sold conge" />
-                        <TextField promptText="Ex: 24" />
+                        <Label text="Solde conge" />
+                        <TextField fx:id="soldField" promptText="Ex: 24" />
                     </VBox>
-                    <VBox styleClass="field">
-                        <Label text="Sold de conge restant" />
-                        <TextField promptText="Ex: 18" />
-                    </VBox>
+
+                    <!-- WORK HOURS -->
                     <VBox styleClass="field">
                         <Label text="Nbr d'heure de travail" />
-                        <TextField promptText="Ex: 160" />
+                        <TextField fx:id="hoursField" promptText="Ex: 160" />
                     </VBox>
+
+                    <!-- MAC MACHINE -->
+                    <VBox styleClass="field">
+                        <Label text="Adresse MAC de la machine" />
+                        <TextField fx:id="macField" promptText="Ex: AA:BB:CC:DD:EE:FF" />
+                    </VBox>
+
+                    <!-- SALAIRE -->
+                    <VBox styleClass="field">
+                        <Label text="Salaire" />
+                        <TextField fx:id="salaryField" promptText="Ex: 2500" />
+                    </VBox>
+
                     <HBox styleClass="form-actions">
                         <Button fx:id="confirmButton"
                                 text="Valider"
@@ -178,9 +197,11 @@
                                 styleClass="btn btn-ghost"
                                 onAction="#handleCloseModal"/>
                     </HBox>
+
                 </VBox>
             </VBox>
         </VBox>
+
     </StackPane>
 </StackPane>
 

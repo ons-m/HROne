@@ -13,11 +13,12 @@ public class EmployeController{
     static public boolean Ajouter(Employe entity) {
         try {
             String sql =
-                    "INSERT INTO EMPLOYEE (ID_USER,SOLDE_CONGE, NBR_HEURE_DE_TRAVAIL, MAC_MACHINE) VALUES (" +
-                            "0, " +
+                    "INSERT INTO EMPLOYEE (ID_UTILISATEUR,SOLDE_CONGE, NBR_HEURE_DE_TRAVAIL, MAC_MACHINE,SALAIRE) VALUES (" +
+                            "1, " +
                             entity.getSolde_Conger() + ", " +
                             entity.getNbr_Heure_De_Travail() + ", '" +
-                            entity.getMac_Machine() + "')";
+                            entity.getMac_Machine() + "'," +
+                            entity.getSaliare() + ")";
 
             return DBHelper.ExecuteQuery(sql) == 1;
 
@@ -34,7 +35,8 @@ public class EmployeController{
                     "UPDATE EMPLOYEE SET " +
                             "SOLDE_CONGE = " + entity.getSolde_Conger() + ", " +
                             "NBR_HEURE_DE_TRAVAIL = " + entity.getNbr_Heure_De_Travail() + ", " +
-                            "MAC_MACHINE = '" + entity.getMac_Machine() + "' " +
+                            "MAC_MACHINE = '" + entity.getMac_Machine() + "', " +
+                            "SALAIRE = " + entity.getSaliare() + " " +
                             "WHERE ID_EMPLOYE = " + entity.getID_Employe();
 
             int result = DBHelper.ExecuteQuery(sql);
@@ -67,16 +69,18 @@ public class EmployeController{
             if(rs != null){
                 while (rs.next()) {
                     int ID_Employe = rs.getInt("ID_EMPLOYE");
-                    int ID_User = rs.getInt("ID_USER");
+                    int ID_User = rs.getInt("ID_UTILISATEUR");
                     int Solde_Conger = rs.getInt("SOLDE_CONGE");
                     int Nbr_Heure_De_Travail = rs.getInt("NBR_HEURE_DE_TRAVAIL");
                     String Mac_Machine = rs.getString("MAC_MACHINE");
+                    int Salaire = rs.getInt("SALAIRE");
 
-                    Employe e = new Employe(ID_Employe,ID_User, Solde_Conger, Nbr_Heure_De_Travail, Mac_Machine);
+                    Employe e = new Employe(ID_Employe,ID_User, Solde_Conger, Nbr_Heure_De_Travail, Mac_Machine,Salaire);
                     employes.add(e);
                 }
-                rs.close();
                 rs.getStatement().close();
+                rs.close();
+
             }else{
                 return  null;
             }
@@ -94,13 +98,14 @@ public class EmployeController{
             String sql = "SELECT * FROM EMPLOYEE WHERE ID_EMPLOYE = " + ID_Employe;
             ResultSet rs = DBHelper.ExecuteDataReader(sql);
             if(rs.next()){
-                int ID_User = rs.getInt("ID_USER");
+                int ID_User = rs.getInt("ID_UTILISATEUR");
                 Employe e = new Employe(ID_Employe,ID_User);
                 e.setSolde_Conger(rs.getInt("SOLDE_CONGE"));
                 e.setNbr_Heure_De_Travail(rs.getInt("NBR_HEURE_DE_TRAVAIL"));
                 e.setMac_Machine(rs.getString("MAC_MACHINE"));
+                e.setSalaire(rs.getInt("SALAIRE"));
                 rs.getStatement().close();
-
+                rs.close();
                 return e;
             }
 

@@ -1,1 +1,0 @@
-ALTER TABLE outils_de_travail ADD COLUMN Nom_Outil VARCHAR(255);

@@ -11,13 +11,15 @@ public class Employe {
     private int Solde_Conger;
     private int Nbr_Heure_De_Travail;
     private String Mac_Machine;
+    private int Salaire;
 
-    public Employe(int ID_Employe, int ID_User, int Solde_Conger, int Nbr_Heure_De_Travail, String Mac_Machine) {
+    public Employe(int ID_Employe, int ID_User, int Solde_Conger, int Nbr_Heure_De_Travail, String Mac_Machine,int salaire) {
         this.ID_Employe = ID_Employe;
         this.ID_User = ID_User;
         setSolde_Conger(Solde_Conger);
         setNbr_Heure_De_Travail(Nbr_Heure_De_Travail);
         this.Mac_Machine = Mac_Machine;
+        this.Salaire=salaire;
     }
     public Employe(int ID_Employe, int ID_User) {
         this.ID_Employe = ID_Employe;
@@ -40,6 +42,7 @@ public class Employe {
     public String getMac_Machine() {
         return Mac_Machine;
     }
+    public int getSaliare() {return Salaire;}
 
     public void setSolde_Conger(int solde_Conger) {
         if(solde_Conger < 0) {
@@ -59,6 +62,7 @@ public class Employe {
         this.Mac_Machine = mac_Machine;
     }
 
+    public void setSalaire(int salaire) {this.Salaire = salaire; }
     @Override
     public String toString() {
         return "Employe : " +
