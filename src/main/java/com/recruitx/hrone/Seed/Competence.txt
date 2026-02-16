@@ -1,0 +1,341 @@
+3D Max
+.NET
+(Visual) FoxPro
+ABAP
+Ada
+Adaptability
+Adobe After Effects
+Adobe Audition
+Adobe Bridge
+Adobe Dreamweaver
+Adobe Flash
+Adobe Illustrator
+Adobe InDesign
+Adobe Lightroom
+Adobe Premiere Pro
+Aerospace Engineering
+Agile development
+Aircraft Engine Technology
+Ajax
+Algorithms
+Alice
+Altova
+Analytical thinking
+Android
+Android studio
+Angular
+Angular JS
+Apex
+Application building
+Application design
+Artificial Intelligence
+AS/400
+ASP
+Assembly
+Atom
+Auto-CAD
+Automotive Engineering
+Awk
+AWS (Amazon Web Services)
+Baan
+Bash
+Blogging
+Boostrap
+Business Intelligence
+C
+C#
+C++
+Cake PHP
+Civil Engineering / Environmental Engineering
+Client servicing
+Cloud Computing
+Cloud computing management
+Coaching
+COBOL
+CodeIgniter
+Collaboration
+Communication
+Community Development
+Computer
+Computer aided technical design
+Construction Engineering
+Construction Management
+Consulting
+Content Management Systems
+Content Marketing
+Content Strategy
+Controlling
+Corel Draw
+Creativity
+Critical Thinking
+CSS
+CVS
+D
+Dart
+Data Analysis
+Data Analytics
+Database Administration
+Database design
+Database Management
+Databases
+Data Engineering
+Data Management
+Data Mining
+Data Science
+Data Warehousing
+DB/2
+Delphi
+Delphi/Object Pascal
+Designing Commercial Aircrafts
+Detail oriented
+Development Environment (IDE)
+Digital Marketing
+Django
+DNS
+Driver's licence
+Dropbox
+Drupal
+Eclipse
+Ecology
+EDI Files
+Elasticsearch
+Empowerment of others
+Engineering Mechanics
+Ergonomics
+Erlang
+ERP
+ETL
+Event Planning
+Excel Scripting
+Express
+Extreme programming
+F#
+Facilitation
+Filming
+Final Cut Pro
+Financial management
+Fire Safety Engineering
+First Aid
+Fluid Mechanics
+Fortran
+Foundation
+FoxPro
+Fuel Cells
+Full Stack development
+Game Development
+Git
+GIT
+Go
+Google Drive
+Graphics and Design
+Groovy
+Groupware
+GTK
+Hadoop
+Handling Pressure
+Haskell
+Heroku
+Hiring
+HR induction
+HTML
+HTML 5
+Human Resources
+Hydrology
+Hydromechanics
+Image editing
+iMovie
+Information Security
+Internet usage
+Introductory Structural design
+iOS
+IP/MPLS
+IPX
+J#
+Java
+Java EE
+Javascript
+Joomla
+jQuery
+Jscript
+JSON
+Kanban
+Keynote
+LabVIEW
+Ladder Logic
+Language Teaching
+LAN (local area network)
+Laravel
+Leadership
+Less
+Linux
+Lisp
+Logo
+Lotus Notes/Domino
+Lua
+Machine Elements
+MacOS
+Mac usage
+Manufacturing Technology
+Market Research
+Mass and Heat Transfer
+Material Science
+MATLAB
+MDL
+Mechanical Engineering
+Mechanical Process Engineering
+Mechanics
+Media Planning
+Mercury
+Microsoft Access
+Microsoft Dynamics
+Microsoft Excel
+Microsoft Powerpoint
+Microsoft SQL Server
+Microsoft Word
+Microwave Transmission
+Mobile Development
+MongoDB
+MS DOS
+MS Exchange
+MySQL
+Negotiation
+Netbeans
+Network Design
+Network management and data transmission
+Network security
+Node.js
+NoSQL
+Novell Groupwise
+Novell netware
+NPM
+Objective C
+Object Oriented Programming
+OpenEdge ABL
+Operating systems
+Operations Research
+OPS5
+Optical fibers
+Oracle
+Oracle Database
+Organisational Management
+Other Development Tools
+Pages
+Pascal
+PeopleSoft
+Perl
+Personal skills and knowledge
+Photoshop
+PHP
+PL/SQL
+PostgreSQL
+PowerBI
+Powerbuilder
+Presentation skills
+Problem Solving
+Process Engineering
+Professional Skills
+Programming skills
+Project Management
+Prolog
+Protype
+Public Relations
+Python
+Q
+QlikSense
+QlikView
+Qt
+R
+React JS
+Recruiting
+Relationship Management
+Renewable Energies
+Research
+Risk Management
+Rotor Technology
+Router setup
+RPG (OS/400)
+Ruby
+Ruby on Rails
+Rust
+Sales
+Salesforce
+SAP
+SAS
+SASS
+Scala
+Scheme
+Scratch
+SCRUM
+Search Engine Optimization (SEO)
+Self Awareness
+Self-Confidence
+SGA
+Sharepoint
+Siebel
+Slack
+Social Media Management
+Software Design
+Software Development Frameworks
+Software Engineering
+Soil Mechanics
+Solid Construction
+Solution Orientation
+Sony Vegas
+SPSS
+SQL
+SQLite
+SQL server
+Squarespace
+Stata
+Static
+Steel Construction
+Strategic Planning
+Strategy
+Struts
+Sublime
+Supply Chain management
+Swift
+Sybase
+Symfony
+Tableau
+TCP/IP
+Team Management
+Technical Support
+Technology of Building Materials
+Thermodynamics
+Time Management
+Training
+Transact-SQL
+UI design
+UMTS/GSM network management
+UNIX
+Unix shell scripting
+User Testing
+UX design
+VBScript
+Vim
+Visual Basic
+Visual C++
+Visual Studio
+Voice - IP Telephony (VoIP)
+WAN (wide area network)
+WAP (Wireless Application Protocol)
+Waste & Water Management
+WDM
+Web Content
+WiFi network setup
+Windows
+Windows PC usage
+Wix
+Wood Construction
+Wordpress
+Work Ethic
+Workplace
+World citizenship
+Writing
+Xamarin
+Xcode
+XML
+Yii
+Zend
+Zoho

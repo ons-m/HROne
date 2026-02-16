@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll" stylesheets="@FrmMesCandidatures.fx.css" fx:controller="com.recruitx.hrone.FrmMesCandidaturesController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
+  <content>
+    <VBox styleClass="candidate-app">
+      <HBox styleClass="candidate-header">
+        <HBox styleClass="brand">
+          <Label text="HR" styleClass="brand-logo" />
+          <VBox>
+            <Label text="HR One" styleClass="brand-name" />
+            <Label text="Portail Candidat" styleClass="brand-sub" />
+          </VBox>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <HBox styleClass="header-actions">
+          <Button text="Mes candidatures" styleClass="btn btn-ghost" />
+          <Button text="Nouvelle candidature" styleClass="btn btn-primary" />
+        </HBox>
+      </HBox>
+
+      <VBox styleClass="hero">
+        <VBox>
+          <Label text="Mes candidatures" styleClass="hero-title" />
+          <Label text="Suivez l'etat de vos candidatures et mettez-les a jour." styleClass="muted" />
+        </VBox>
+        <HBox styleClass="hero-meta">
+          <Label fx:id="totalCount" text="Total: 0" styleClass="pill" />
+          <Label fx:id="inProgressCount" text="En cours: 0" styleClass="pill pill-accent" />
+        </HBox>
+      </VBox>
+
+      <HBox styleClass="toolbar">
+        <TextField fx:id="searchField" promptText="Rechercher une offre, une entreprise..." HBox.hgrow="ALWAYS" />
+        <Button text="Filtrer" styleClass="btn btn-ghost" />
+      </HBox>
+
+      <VBox styleClass="card">
+        <HBox styleClass="card-header">
+          <VBox>
+            <Label text="Candidatures recentes" styleClass="section-title" />
+            <Label text="Modifiez ou supprimez une candidature." styleClass="muted" />
+          </VBox>
+        </HBox>
+        <VBox fx:id="cardList" styleClass="card-list" />
+        <Label fx:id="emptyState" text="Aucune candidature trouvee." styleClass="muted" />
+      </VBox>
+    </VBox>
+  </content>
+</ScrollPane>

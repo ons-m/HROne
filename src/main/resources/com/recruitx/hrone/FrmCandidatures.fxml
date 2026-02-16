@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox styleClass="app" stylesheets="@FrmCandidatures.fx.css" fx:controller="com.recruitx.hrone.FrmCandidaturesController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
+  <VBox styleClass="sidebar">
+    <HBox styleClass="brand">
+      <Label text="HR" styleClass="brand-logo" />
+      <VBox>
+        <Label text="HR One" styleClass="brand-name" />
+        <Label text="Espace RH" styleClass="brand-sub" />
+      </VBox>
+    </HBox>
+
+    <VBox styleClass="nav">
+      <Label text="Recrutement" styleClass="nav-section" />
+      <Button text="Gestion d'offre d'emploi" styleClass="nav-link" />
+      <Button text="Candidatures" styleClass="nav-link nav-link-active" />
+      <Button text="Entretiens" styleClass="nav-link" />
+      <Button text="Statistiques" styleClass="nav-link" />
+
+      <Label text="Gestion administrative" styleClass="nav-section" />
+      <Button text="Gerer mes employees" styleClass="nav-link" />
+      <Button text="Gerer les outils" styleClass="nav-link" />
+    </VBox>
+  </VBox>
+
+  <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
+    <content>
+      <VBox styleClass="main">
+        <HBox styleClass="topbar">
+          <VBox styleClass="user-info">
+            <Label text="Agent RH" styleClass="user-name" />
+            <Label text="Recrutement" styleClass="user-role" />
+          </VBox>
+          <Label text="AR" styleClass="avatar" />
+        </HBox>
+
+        <VBox styleClass="page-title">
+          <Label text="Candidatures" styleClass="page-title-text" />
+          <Label text="Consultez les candidatures par offre et acceptez ou rejetez." styleClass="muted" />
+        </VBox>
+
+        <VBox styleClass="card">
+          <HBox styleClass="card-header">
+            <VBox>
+              <Label text="Filtrer les candidatures" styleClass="section-title" />
+              <Label text="Selectionnez une offre ou cherchez un candidat." styleClass="muted" />
+            </VBox>
+            <Label fx:id="filterSummary" text="Filtres actifs: 0" styleClass="pill" />
+          </HBox>
+
+          <GridPane styleClass="filter-form" hgap="14" vgap="12">
+            <columnConstraints>
+              <ColumnConstraints percentWidth="33" />
+              <ColumnConstraints percentWidth="33" />
+              <ColumnConstraints percentWidth="34" />
+            </columnConstraints>
+
+            <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="0">
+              <Label text="Offre d'emploi" />
+              <ComboBox fx:id="offerFilter" />
+            </VBox>
+            <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="0">
+              <Label text="Statut" />
+              <ComboBox fx:id="statusFilter" />
+            </VBox>
+            <VBox styleClass="field" GridPane.columnIndex="2" GridPane.rowIndex="0">
+              <Label text="Recherche" />
+              <TextField fx:id="candidateSearch" promptText="Nom, email, competences" />
+            </VBox>
+            <HBox styleClass="form-actions" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.columnSpan="1">
+              <Button fx:id="resetFilters" text="Reinitialiser" styleClass="btn btn-ghost" onAction="#onResetFilters" />
+            </HBox>
+          </GridPane>
+        </VBox>
+
+        <VBox styleClass="card">
+          <HBox styleClass="card-header">
+            <VBox>
+              <Label text="Liste des candidatures" styleClass="section-title" />
+              <Label text="Acceptez ou rejetez une candidature." styleClass="muted" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="candidateCount" text="0 candidature" styleClass="pill muted-pill" />
+          </HBox>
+          <VBox fx:id="candidateList" styleClass="resource-list" />
+          <Label fx:id="candidateEmpty" text="Aucune candidature trouvee." styleClass="muted" />
+        </VBox>
+      </VBox>
+    </content>
+  </ScrollPane>
+</HBox>

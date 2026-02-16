@@ -1,0 +1,2 @@
+ALTER TABLE condidature ADD COLUMN ID_Offre INT;
+ALTER TABLE condidature ADD CONSTRAINT fk_candidature_offre FOREIGN KEY (ID_Offre) REFERENCES offre(ID_Offre) ON DELETE CASCADE;

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox styleClass="app" stylesheets="@FrmGestionOffres.fx.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.FrmGestionOffresController">
+  <VBox styleClass="sidebar">
+    <HBox styleClass="brand">
+      <Label styleClass="brand-logo" text="HR" />
+      <VBox>
+        <Label styleClass="brand-name" text="HR One" />
+        <Label styleClass="brand-sub" text="Espace RH" />
+      </VBox>
+    </HBox>
+
+    <VBox styleClass="nav">
+      <Label styleClass="nav-section" text="Recrutement" />
+      <Button styleClass="nav-link nav-link-active" text="Gestion d'offre d'emploi" />
+      <Button styleClass="nav-link" text="Candidatures" />
+      <Button styleClass="nav-link" text="Entretiens" />
+      <Button styleClass="nav-link" text="Statistiques" />
+
+      <Label styleClass="nav-section" text="Gestion administrative" />
+      <Button styleClass="nav-link" text="Gerer mes employees" />
+      <Button styleClass="nav-link" text="Gerer les outils" />
+    </VBox>
+  </VBox>
+
+  <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
+    <content>
+      <VBox styleClass="main">
+        <HBox styleClass="topbar">
+          <VBox styleClass="user-info">
+            <Label styleClass="user-name" text="Agent RH" />
+            <Label styleClass="user-role" text="Recrutement" />
+          </VBox>
+          <Label styleClass="avatar" text="AR" />
+        </HBox>
+
+        <VBox styleClass="page-title">
+          <Label styleClass="page-title-text" text="Gestion d'offre d'emploi" />
+          <Label styleClass="muted" text="Creez, modifiez et suivez vos offres d'emploi en temps reel." />
+        </VBox>
+
+        <HBox styleClass="grid">
+          <VBox styleClass="card" HBox.hgrow="ALWAYS">
+            <Label styleClass="section-title" text="Creer une offre" />
+            <Label styleClass="muted" text="Completez les informations principales de l'offre." />
+
+            <GridPane hgap="14" styleClass="offer-form" vgap="12">
+              <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+              </columnConstraints>
+
+              <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Titre du poste" />
+                <TextField fx:id="offerTitleInput" promptText="Ex: Responsable Marketing" />
+              </VBox>
+
+              <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Type de contrat" />
+                <ComboBox fx:id="offerContractSelect" />
+              </VBox>
+              <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Type de travail" />
+                <ComboBox fx:id="offerWorkTypeSelect" />
+              </VBox>
+
+              <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                  <Label text="Experience minimale (en années)" />
+                  <TextField fx:id="offerExperienceInput" promptText="Ex: 3" />
+              </VBox>
+              <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="Intervalle de salaire (MAD)" />
+                <HBox styleClass="range-field">
+                  <TextField fx:id="salaryMinInput" promptText="Min" />
+                  <Label styleClass="muted" text="-" />
+                  <TextField fx:id="salaryMaxInput" promptText="Max" />
+                </HBox>
+              </VBox>
+
+              <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <Label text="Date d'expiration de l'offre" />
+                <DatePicker fx:id="offerExpiryInput" />
+              </VBox>
+              <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Label text="Niveau d'etude requis" />
+                <ComboBox fx:id="offerEducationSelect" />
+              </VBox>
+
+              <VBox styleClass="field full" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                <Label text="Description" />
+                <TextArea fx:id="offerDescriptionInput" prefRowCount="4" promptText="Decrivez le poste et les missions..." />
+              </VBox>
+
+              <VBox styleClass="field full" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                <Label text="Competences cles" />
+                <VBox styleClass="choice-panel">
+                  <TextField fx:id="skillsSearch" promptText="Rechercher une competence..." />
+                  <ListView fx:id="skillsList" styleClass="choice-list" />
+                </VBox>
+                <Label styleClass="help" text="Minimum 2 competences." />
+              </VBox>
+
+              <VBox styleClass="field full" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                <Label text="Langues necessaires" />
+                <VBox styleClass="choice-panel">
+                  <TextField fx:id="languagesSearch" promptText="Rechercher une langue..." />
+                  <ListView fx:id="languagesList" styleClass="choice-list" />
+                </VBox>
+                <Label styleClass="help" text="Optionnel - plusieurs selections possibles." />
+              </VBox>
+
+              <VBox styleClass="field full" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="7">
+                <Label text="Background d'etude necessaire" />
+                <VBox styleClass="choice-panel">
+                  <TextField fx:id="backgroundSearch" promptText="Rechercher un background..." />
+                  <ListView fx:id="backgroundList" styleClass="choice-list" />
+                </VBox>
+                <Label styleClass="help" text="Minimum 1 background." />
+              </VBox>
+
+              <HBox styleClass="form-actions" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="8">
+                <Button styleClass="btn btn-ghost" text="Enregistrer en brouillon" />
+                <Button fx:id="publishBtn" onAction="#onPublish" styleClass="btn btn-primary" text="Publier l'offre" />
+              </HBox>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+            </GridPane>
+          </VBox>
+
+          <VBox styleClass="card" HBox.hgrow="ALWAYS">
+            <HBox styleClass="card-header">
+              <Label styleClass="section-title" text="Offres en cours" />
+              <Region HBox.hgrow="ALWAYS" />
+              <TextField fx:id="offerSearch" promptText="Rechercher une offre..." />
+            </HBox>
+            <VBox fx:id="offerList" styleClass="offer-list" />
+          </VBox>
+        </HBox>
+
+        <HBox styleClass="stats">
+          <VBox styleClass="stat">
+            <Label styleClass="stat-value" text="12" />
+            <Label styleClass="stat-label" text="Offres actives" />
+          </VBox>
+          <VBox styleClass="stat">
+            <Label styleClass="stat-value" text="86" />
+            <Label styleClass="stat-label" text="Candidatures recues" />
+          </VBox>
+          <VBox styleClass="stat">
+            <Label styleClass="stat-value" text="4" />
+            <Label styleClass="stat-label" text="Offres en validation" />
+          </VBox>
+          <VBox styleClass="stat">
+            <Label styleClass="stat-value" text="5 j" />
+            <Label styleClass="stat-label" text="Delai moyen" />
+          </VBox>
+        </HBox>
+      </VBox>
+    </content>
+  </ScrollPane>
+</HBox>
