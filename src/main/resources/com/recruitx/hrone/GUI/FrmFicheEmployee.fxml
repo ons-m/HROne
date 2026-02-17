@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitx.hrone.FrmFicheEmployeeController"
+            stylesheets="@../CSS/FrmGestionEmployee.fx.css, @../CSS/Modal.fx.css"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            alignment="CENTER">
+
+    <VBox  styleClass="modal-overlay" >
+        <VBox styleClass="modal-card">
+            <VBox styleClass="card">
+                <HBox styleClass="card-header">
+                    <VBox>
+                        <Label text="Ajouter un employe" styleClass="section-title" />
+                        <Label text="Enregistrez un nouvel employe dans la base." styleClass="muted" />
+                    </VBox>
+                </HBox>
+
+                <VBox styleClass="form-vertical">
+
+                    <!-- NAME -->
+                    <VBox styleClass="field">
+                        <Label text="Nom et prenom" />
+                        <TextField fx:id="nameField" promptText="Ex: Amal Zohra" />
+                    </VBox>
+
+                    <!-- EMAIL -->
+                    <VBox styleClass="field">
+                        <Label text="Email" />
+                        <TextField fx:id="emailField" promptText="email@exemple.com" />
+                    </VBox>
+
+                    <!-- GENDER (Radio Buttons) -->
+                    <VBox styleClass="field">
+                        <Label text="Genre" />
+                        <HBox spacing="20">
+                            <RadioButton fx:id="maleRadio" text="Homme" />
+                            <RadioButton fx:id="femaleRadio" text="Femme" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- BIRTH DATE -->
+                    <VBox styleClass="field">
+                        <Label text="Date de naissance" />
+                        <DatePicker fx:id="birthDatePicker" />
+                    </VBox>
+
+                    <!-- SOLDE CONGE -->
+                    <VBox styleClass="field">
+                        <Label text="Solde conge" />
+                        <TextField fx:id="soldField" promptText="Ex: 24" />
+                    </VBox>
+
+                    <!-- WORK HOURS -->
+                    <VBox styleClass="field">
+                        <Label text="Nbr d'heure de travail" />
+                        <TextField fx:id="hoursField" promptText="Ex: 160" />
+                    </VBox>
+
+                    <!-- MAC MACHINE -->
+                    <VBox styleClass="field">
+                        <Label text="Adresse MAC de la machine" />
+                        <TextField fx:id="macField" promptText="Ex: AA:BB:CC:DD:EE:FF" />
+                    </VBox>
+
+                    <!-- SALAIRE -->
+                    <VBox styleClass="field">
+                        <Label text="Salaire" />
+                        <TextField fx:id="salaryField" promptText="Ex: 2500" />
+                    </VBox>
+
+                    <HBox styleClass="form-actions">
+                        <Button fx:id="confirmButton"
+                                text="Valider"
+                                styleClass="btn btn-primary"
+                                onAction="#handleConfirm"/>
+
+                        <Button fx:id="cancelButton"
+                                text="Annuler"
+                                styleClass="btn btn-ghost"
+                                onAction="#handleCancle"/>
+                    </HBox>
+
+                </VBox>
+            </VBox>
+        </VBox>
+    </VBox>
+
+</StackPane>
