@@ -1,9 +1,4 @@
-package com.recruitx.hrone;
-
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+package com.recruitx.hrone.Models;
 
 public class Outil {
     private int ID_Outil;

@@ -1,18 +1,19 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.App;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
-public class HelloApplication extends Application {
+public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("GUI/FrmGestionEmployee.fxml"));
+        URL FrmMainUrl = Application.class.getResource("../View/FrmGestionEmployee.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader(FrmMainUrl);
         Scene scene = new Scene(fxmlLoader.load(),1024,600);
-        String css = HelloApplication.class.getResource("CSS/FrmGestionEmployee.fx.css").toExternalForm();
+        String css = Application.class.getResource("../Css/FrmGestionEmployee.fx.css").toExternalForm();
         scene.getStylesheets().add(css);
         stage.setTitle("Hello!");
         stage.setScene(scene);

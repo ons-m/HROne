@@ -1,5 +1,7 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Repository.EmployeRepository;
+import com.recruitx.hrone.Models.Employe;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +16,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.List;
 
-public class FrmGestionEmployeeController {
+public class FrmGestionEmployee {
 
     @FXML private TableView<EmployeeRow> employeesTable;
     @FXML private TableColumn<EmployeeRow, Boolean> selectColumn;
@@ -27,7 +29,7 @@ public class FrmGestionEmployeeController {
 
     @FXML private TableColumn<EmployeeRow, String> actionsColumn;
     @FXML private Node FrmFicheEmployee;
-    @FXML private FrmFicheEmployeeController FrmFicheEmployeeController;
+    @FXML private FrmFicheEmployee FrmFicheEmployeeController;
 
     @FXML private HBox mainContent;
 
@@ -55,7 +57,7 @@ public class FrmGestionEmployeeController {
 
         ObservableList<EmployeeRow> rows = FXCollections.observableArrayList();
 
-        List<Employe> list = EmployeController.AvoirListe();
+        List<Employe> list = EmployeRepository.AvoirListe();
         System.out.println("DB returned: " + (list == null ? "null" : list.size() + " rows"));
         if (list != null) {
             for (Employe e : list) {
@@ -87,7 +89,7 @@ public class FrmGestionEmployeeController {
 
                 System.out.println("Delete employee with id: " + id);
 
-                EmployeController.Supprimer(id);
+                EmployeRepository.Supprimer(id);
                 RefreshTable();
             }
         });

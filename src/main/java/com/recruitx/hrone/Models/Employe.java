@@ -1,9 +1,4 @@
-package com.recruitx.hrone;
-
-import com.google.protobuf.EmptyOrBuilder;
-import com.recruitx.hrone.utils.DBHelper;
-
-import java.sql.SQLException;
+package com.recruitx.hrone.Models;
 
 public class Employe {
     private int ID_Employe;

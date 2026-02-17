@@ -1,4 +1,4 @@
-package com.recruitx.hrone.utils;
+package com.recruitx.hrone.Utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package com.recruitx.hrone.utils;
+package com.recruitx.hrone.Utils;
 
 public enum LogType {
     ERROR,

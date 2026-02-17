@@ -1,4 +1,4 @@
-package com.recruitx.hrone.utils;
+package com.recruitx.hrone.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,14 +1,15 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.Repository;
 
-import com.recruitx.hrone.utils.CError;
-import com.recruitx.hrone.utils.DBHelper;
-import com.recruitx.hrone.utils.LogType;
+import com.recruitx.hrone.Models.Outil;
+import com.recruitx.hrone.Utils.CError;
+import com.recruitx.hrone.Utils.DBHelper;
+import com.recruitx.hrone.Utils.LogType;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutilController {
+public class OutilRepository {
 
     public static boolean Ajouter(Outil outil){
         try{

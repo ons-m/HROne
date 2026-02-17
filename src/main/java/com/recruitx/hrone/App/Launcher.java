@@ -1,7 +1,5 @@
-package com.recruitx.hrone;
-import com.recruitx.hrone.utils.*;
-
-import javafx.application.Application;
+package com.recruitx.hrone.App;
+import com.recruitx.hrone.Utils.*;
 
 public class Launcher {
     public static void main(String[] args) {
@@ -20,6 +18,6 @@ public class Launcher {
             return;
         }
 
-        Application.launch(HelloApplication.class, args);
+        javafx.application.Application.launch(Application.class, args);
     }
 }

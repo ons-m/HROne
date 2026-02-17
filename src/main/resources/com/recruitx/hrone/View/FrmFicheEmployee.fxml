@@ -5,8 +5,8 @@
 
 <StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.recruitx.hrone.FrmFicheEmployeeController"
-            stylesheets="@../CSS/FrmGestionEmployee.fx.css, @../CSS/Modal.fx.css"
+            fx:controller="com.recruitx.hrone.Controllers.FrmFicheEmployee"
+            stylesheets="@../Css/FrmGestionEmployee.fx.css, @../Css/Modal.fx.css"
             maxWidth="Infinity"
             maxHeight="Infinity"
             alignment="CENTER">

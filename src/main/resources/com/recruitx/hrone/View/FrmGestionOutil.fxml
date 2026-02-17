@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.layout.StackPane?>
-<StackPane stylesheets="@../CSS/FrmGestionOutil.fx.css" fx:controller="com.recruitx.hrone.FrmGestionOutilController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane stylesheets="@../Css/FrmGestionOutil.fx.css" fx:controller="com.recruitx.hrone.Controllers.FrmGestionOutil" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
     <HBox fx:id="mainContent" styleClass="app">
         <VBox styleClass="sidebar">
             <HBox styleClass="brand">

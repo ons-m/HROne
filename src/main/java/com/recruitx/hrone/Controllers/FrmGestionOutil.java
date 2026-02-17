@@ -1,5 +1,7 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Models.Outil;
+import com.recruitx.hrone.Repository.OutilRepository;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,11 +13,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-public class FrmGestionOutilController {
+public class FrmGestionOutil {
 
     private enum Mode {
         ADD,
@@ -71,7 +72,7 @@ public class FrmGestionOutilController {
         if (currentMode == Mode.ADD) {
 
             Outil outil = new Outil(nom, identifiant, hash);
-            boolean success = OutilController.Ajouter(outil);
+            boolean success = OutilRepository.Ajouter(outil);
 
             if (success) {
                 clearForm();
@@ -82,7 +83,7 @@ public class FrmGestionOutilController {
         } else {
 
             Outil outil = new Outil(editingId, nom, identifiant, hash);
-            boolean success = OutilController.Modifier(outil);
+            boolean success = OutilRepository.Modifier(outil);
 
             if (success) {
                 clearForm();
@@ -148,7 +149,7 @@ public class FrmGestionOutilController {
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
 
-                boolean success = OutilController.Supprimer(id);
+                boolean success = OutilRepository.Supprimer(id);
 
                 if (success) {
                     loadData(); // safest option
@@ -171,7 +172,7 @@ public class FrmGestionOutilController {
     }
 
     private void loadData() {
-        List<Outil> outils = OutilController.AvoirListe();
+        List<Outil> outils = OutilRepository.AvoirListe();
         ObservableList<OutilRow> rows = FXCollections.observableArrayList();
 
         if (outils != null) {

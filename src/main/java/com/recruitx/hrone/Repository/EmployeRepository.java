@@ -1,14 +1,12 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.Repository;
 
-import com.recruitx.hrone.utils.*;
-import com.sun.source.tree.TryTree;
+import com.recruitx.hrone.Models.Employe;
+import com.recruitx.hrone.Utils.*;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.EnumMap;
 import java.util.List;
 
-public class EmployeController{
+public class EmployeRepository {
 
     static public boolean Ajouter(Employe entity) {
         try {

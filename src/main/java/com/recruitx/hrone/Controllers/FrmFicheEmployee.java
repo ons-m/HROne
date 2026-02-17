@@ -1,9 +1,11 @@
-package com.recruitx.hrone;
+package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Repository.EmployeRepository;
+import com.recruitx.hrone.Models.Employe;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class FrmFicheEmployeeController {
+public class FrmFicheEmployee {
 
     private enum Mode{
         ADD,
@@ -24,7 +26,7 @@ public class FrmFicheEmployeeController {
     @FXML private TextField salaryField;
     @FXML private Button confirmButton;
     @FXML private Button cancelButton;
-    @FXML private FrmGestionEmployeeController FrmParent;
+    @FXML private FrmGestionEmployee FrmParent;
 
     public void setEditMode(int employeeId) {
         this.currentMode = Mode.EDIT;
@@ -33,7 +35,7 @@ public class FrmFicheEmployeeController {
         confirmButton.setText("Valider");
         cancelButton.setText("Annuler");
 
-        Employe e = EmployeController.AvoirEntite(editingId);
+        Employe e = EmployeRepository.AvoirEntite(editingId);
 
         if (e != null) {
 
@@ -71,7 +73,7 @@ public class FrmFicheEmployeeController {
         macField.clear();
         salaryField.clear();
     }
-    public void setFrmParent(FrmGestionEmployeeController parent){
+    public void setFrmParent(FrmGestionEmployee parent){
         this.FrmParent = parent;
     }
 
@@ -109,7 +111,7 @@ public class FrmFicheEmployeeController {
                     salaire
             );
 
-            boolean success = EmployeController.Ajouter(e);
+            boolean success = EmployeRepository.Ajouter(e);
 
             if (success) {
                 FrmParent.hideModal();
@@ -127,7 +129,7 @@ public class FrmFicheEmployeeController {
                     salaire
             );
 
-            boolean success = EmployeController.Modifier(e);
+            boolean success = EmployeRepository.Modifier(e);
             if (success) {
                 FrmParent.hideModal();
             } else {
