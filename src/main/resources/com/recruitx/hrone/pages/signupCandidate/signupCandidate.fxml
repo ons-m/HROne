@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true"
+            pannable="true"
+            xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.recruitx.hrone.gui.controllers.SignupCandidateController"
+            stylesheets="@signupCandidate.css">
+
+    <content>
+        <VBox fx:id="signupCard" styleClass="login-card" spacing="15" alignment="CENTER" style="-fx-padding: 30;">
+
+            <!-- Header -->
+            <Label text="Inscription Candidat" styleClass="card-logo"/>
+            <Label text="Remplissez les informations ci-dessous" styleClass="card-subtitle"/>
+
+            <!-- Formulaire -->
+            <VBox styleClass="login-form" spacing="10">
+
+                <VBox spacing="5">
+                    <Label text="Nom d'utilisateur"/>
+                    <TextField fx:id="candUsername" promptText="Nom d'utilisateur" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Mot de passe"/>
+                    <PasswordField fx:id="candPassword" promptText="Mot de passe" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Email"/>
+                    <TextField fx:id="candEmail" promptText="email@exemple.com" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Adresse"/>
+                    <TextField fx:id="candAddress" promptText="Adresse" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Numero de telephone"/>
+                    <TextField fx:id="candPhone" promptText="06 00 00 00 00" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="CIN"/>
+                    <TextField fx:id="candCIN" promptText="CIN" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Date de naissance"/>
+                    <DatePicker fx:id="candBirth" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Genre"/>
+                    <ComboBox fx:id="candGender" promptText="Selectionner" prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Entreprise"/>
+                    <ComboBox fx:id="candCompany" promptText="Chercher une entreprise" editable="true" prefWidth="300"/>
+                    <VBox fx:id="companyDetails" spacing="5"
+                          style="-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-background-color: #f4f4f4;">
+                        <Label fx:id="compNameLabel" text="Nom: "/>
+                        <Label fx:id="compRefLabel" text="Reference: "/>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+            <Button text="Créer un compte" styleClass="btn-primary" onAction="#handleRegisterCandidate"/>
+            <Button text="Retour à la connexion" styleClass="btn-secondary" onAction="#goToLogin"/>
+
+        </VBox>
+    </content>
+</ScrollPane>

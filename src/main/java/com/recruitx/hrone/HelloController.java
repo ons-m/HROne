@@ -14,8 +14,7 @@ public class HelloController {
     @FXML
     protected void onHelloButtonClick() {
         try {
-            // CORRECTION ICI : getConnection() au lieu de getInstance()
-            Connection connection = DBConnection.getConnection();
+            Connection connection = DBConnection.getInstance();
 
             if (connection != null && !connection.isClosed()) {
                 welcomeText.setText("✅ Connected to MySQL successfully");
@@ -25,7 +24,7 @@ public class HelloController {
 
         } catch (Exception e) {
             welcomeText.setText("❌ Database connection failed");
-            e.printStackTrace();
+            e.printStackTrace(); // visible in terminal for debugging
         }
     }
 }

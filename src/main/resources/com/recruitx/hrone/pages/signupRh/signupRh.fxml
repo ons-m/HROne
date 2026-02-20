@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" pannable="true"
+            xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.recruitx.hrone.gui.controllers.SignupRhController"
+            stylesheets="@signupRh.css">
+
+    <content>
+        <VBox fx:id="signupCard" styleClass="login-card" spacing="20" alignment="CENTER" style="-fx-padding: 30;">
+
+            <!-- Header -->
+            <Label text="Inscription RH et Entreprise" styleClass="card-logo"/>
+            <Label text="Remplissez les informations ci-dessous" styleClass="card-subtitle"/>
+
+            <!-- RH Infos -->
+            <VBox styleClass="login-form" spacing="10">
+                <Label text="Informations RH" styleClass="group-title"/>
+                <HBox spacing="10">
+                    <VBox spacing="5">
+                        <Label text="Nom d'utilisateur"/>
+                        <TextField fx:id="rhUsername" promptText="Nom d'utilisateur" prefWidth="300"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Mot de passe"/>
+                        <PasswordField fx:id="rhPassword" promptText="Mot de passe" prefWidth="300"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5">
+                        <Label text="Email"/>
+                        <TextField fx:id="rhEmail" promptText="Email" prefWidth="300"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Adresse"/>
+                        <TextField fx:id="rhAddress" promptText="Adresse" prefWidth="300"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5">
+                        <Label text="Numéro de téléphone"/>
+                        <TextField fx:id="rhPhone" promptText="06 00 00 00 00" prefWidth="300"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="CIN"/>
+                        <TextField fx:id="rhCIN" promptText="CIN" prefWidth="300"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5">
+                        <Label text="Date de naissance"/>
+                        <DatePicker fx:id="rhBirth" prefWidth="300"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Genre"/>
+                        <ComboBox fx:id="rhGender" promptText="Selectionner" prefWidth="300"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Entreprise Infos -->
+            <VBox styleClass="login-form" spacing="10">
+                <Label text="Informations Entreprise" styleClass="group-title"/>
+                <HBox spacing="10">
+                    <VBox spacing="5">
+                        <Label text="Nom de l'entreprise"/>
+                        <TextField fx:id="companyName" promptText="Nom entreprise" prefWidth="300"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Référence"/>
+                        <TextField fx:id="companyReference" promptText="Référence" prefWidth="300"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Buttons -->
+            <VBox spacing="10" alignment="CENTER">
+                <Button text="S'inscrire" styleClass="btn-primary" onAction="#handleSignupRh"/>
+                <Button text="Retour à la connexion" styleClass="btn-secondary" onAction="#goToLogin"/>
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

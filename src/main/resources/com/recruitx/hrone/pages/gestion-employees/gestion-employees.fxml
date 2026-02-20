@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane fitToWidth="true" pannable="true" stylesheets="@gestion-employees.css"
+            fx:controller="com.recruitx.hrone.gui.controllers.GestionEmployeesController"
+            xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1">
+
+    <content>
+        <VBox styleClass="main-container" spacing="24">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Gestion des Employees" styleClass="header-title"/>
+            </HBox>
+
+            <!-- Employee Form -->
+            <VBox spacing="16" styleClass="form-panel">
+                <Label text="Ajouter / Modifier un Employee" styleClass="panel-title"/>
+
+                <GridPane hgap="16" vgap="12">
+                    <Label text="Email" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="empEmail" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                    <TextField fx:id="empName" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                    <Label text="Prenom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="empPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Adresse" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                    <TextField fx:id="empAddress" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                    <Label text="Telephone" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="empPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="CIN" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                    <TextField fx:id="empCIN" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                    <Label text="Date de Naissance" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="empDOB" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Genre" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                    <ComboBox fx:id="empGender" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                </GridPane>
+
+                <HBox spacing="16" alignment="CENTER_LEFT">
+                    <Button text="Ajouter / Modifier" onAction="#handleAddOrUpdateEmployee"/>
+                    <Label fx:id="empFormStatus" style="-fx-text-fill: red;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Employee Table -->
+            <VBox spacing="12">
+                <Label text="Liste des Employees" styleClass="panel-title"/>
+                <TableView fx:id="employeeTable" prefHeight="400" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn text="ID" fx:id="colId" prefWidth="50"/>
+                        <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
+                        <TableColumn text="Email" fx:id="colEmail" prefWidth="200"/>
+                        <TableColumn text="Téléphone" fx:id="colTel" prefWidth="120"/>
+                        <TableColumn text="CIN" fx:id="colCIN" prefWidth="100"/>
+                        <TableColumn text="Date Naissance" fx:id="colDOB" prefWidth="120"/>
+                        <TableColumn text="Genre" fx:id="colGender" prefWidth="50"/>
+                        <TableColumn text="Actions" fx:id="colActions" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </content>
+</ScrollPane>

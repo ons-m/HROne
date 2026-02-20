@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<StackPane fx:id="appRoot" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.recruitx.hrone.gui.controllers.LoginController"
+           stylesheets="@login.css">
+
+    <VBox fx:id="loginCard" styleClass="login-card" spacing="15" alignment="CENTER">
+
+        <!-- Header -->
+        <ImageView fx:id="appLogo" fitWidth="150" fitHeight="150" pickOnBounds="true" preserveRatio="true"/>
+        <Label text="Connectez-vous à votre compte" styleClass="card-subtitle"/>
+
+
+        <!-- Form -->
+        <VBox styleClass="login-form" spacing="10">
+
+            <VBox spacing="5">
+                <Label text="Profil"/>
+                <ComboBox fx:id="loginRole" promptText="Sélectionner" prefWidth="300"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Email"/>
+                <TextField fx:id="loginEmail" promptText="Email" prefWidth="300"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Mot de passe"/>
+                <PasswordField fx:id="loginPassword" promptText="Mot de passe" prefWidth="300"/>
+            </VBox>
+
+            <Button text="Se connecter" styleClass="btn-primary" onAction="#handleLogin"/>
+        </VBox>
+
+        <Separator prefWidth="300"/>
+
+        <VBox spacing="10" alignment="CENTER">
+            <Label text="Vous n'avez pas de compte ?" styleClass="card-subtitle"/>
+            <Button text="S'inscrire comme Candidat" styleClass="btn-secondary" onAction="#goToCandidateSignup"/>
+            <Button text="S'inscrire comme RH" styleClass="btn-secondary" onAction="#goToRhSignup"/>
+        </VBox>
+
+    </VBox>
+
+</StackPane>
