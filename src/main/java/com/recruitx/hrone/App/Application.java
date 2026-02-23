@@ -10,10 +10,10 @@ import java.net.URL;
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        URL FrmMainUrl = Application.class.getResource("../View/FrmGestionEmployee.fxml");
+        URL FrmMainUrl = Application.class.getResource("../View/FrmDashboard.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(FrmMainUrl);
         Scene scene = new Scene(fxmlLoader.load(),1024,600);
-        String css = Application.class.getResource("../Css/FrmGestionEmployee.fx.css").toExternalForm();
+        String css = Application.class.getResource("../Css/FrmDashboard.fx.css").toExternalForm();
         scene.getStylesheets().add(css);
         stage.setTitle("Hello!");
         stage.setScene(scene);
