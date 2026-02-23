@@ -1,0 +1,609 @@
+/* ==================== STYLES GÉNÉRAUX ==================== */
+* {
+    -fx-font-family: 'Segoe UI', 'System', 'Arial', sans-serif;
+}
+
+.forum-app {
+    -fx-background-color: #f5f7fc;
+}
+
+/* ==================== COULEURS BLEU MARINE ==================== */
+:root {
+    -fx-marine-primary: #0a1929;
+    -fx-marine-secondary: #1a2b4c;
+    -fx-marine-tertiary: #2c3e6d;
+    -fx-marine-light: #4a6fa5;
+    -fx-marine-very-light: #e2eafc;
+    -fx-marine-glow: #3b5998;
+}
+
+/* ==================== EN-TÊTE ==================== */
+.forum-header {
+    -fx-background-color: #0a1929;
+    -fx-padding: 10 20;
+    -fx-alignment: center-left;
+    -fx-spacing: 20;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.3), 15, 0, 0, 5);
+}
+
+.brand-name {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.brand-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #a3c2e0;
+}
+
+.header-actions .button {
+    -fx-background-color: #1a2b4c;
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+    -fx-padding: 8 20;
+    -fx-border-color: #4a6fa5;
+    -fx-border-radius: 25;
+    -fx-cursor: hand;
+}
+
+.header-actions .button:hover {
+    -fx-background-color: #2c3e6d;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.5), 10, 0, 0, 2);
+}
+
+/* ==================== HERO SECTION ==================== */
+.forum-hero {
+    -fx-background-color: linear-gradient(to right, #0a1929, #1a2b4c, #2c3e6d);
+    -fx-padding: 50 20;
+    -fx-spacing: 20;
+    -fx-alignment: center;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 0);
+}
+
+.hero-title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+.hero-sub {
+    -fx-font-size: 16px;
+    -fx-text-fill: #cbd5e0;
+    -fx-alignment: center;
+}
+
+.hero-search {
+    -fx-max-width: 700px;
+    -fx-pref-width: 700px;
+    -fx-spacing: 10;
+}
+
+.hero-search .text-field {
+    -fx-background-radius: 30;
+    -fx-padding: 12 20;
+    -fx-font-size: 15px;
+    -fx-background-color: white;
+    -fx-border-color: #4a6fa5;
+    -fx-border-radius: 30;
+}
+
+.hero-search .button {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-padding: 12 30;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(243,156,18,0.4), 10, 0, 0, 2);
+}
+
+.hero-search .button:hover {
+    -fx-background-color: #e67e22;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* ==================== CONTENU PRINCIPAL ==================== */
+.forum-content {
+    -fx-padding: 25;
+    -fx-spacing: 25;
+    -fx-alignment: top-center;
+}
+
+.feed {
+    -fx-spacing: 20;
+    -fx-max-width: 800px;
+    -fx-pref-width: 800px;
+}
+
+.feed-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 20;
+    -fx-padding: 0 0 15 0;
+}
+
+.section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+}
+
+/* ==================== CARTES DE POST ==================== */
+.post-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.1), 15, 0, 0, 5);
+    -fx-spacing: 15;
+    -fx-padding: 20;
+    -fx-border-color: #e2eafc;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+    -fx-transition: all 0.3s;
+}
+
+.post-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.2), 20, 0, 0, 8);
+    -fx-border-color: #4a6fa5;
+}
+
+/* En-tête du post */
+.post-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.avatar {
+    -fx-background-radius: 50%;
+    -fx-background-color: linear-gradient(to bottom right, #0a1929, #2c3e6d);
+    -fx-min-width: 45px;
+    -fx-min-height: 45px;
+    -fx-max-width: 45px;
+    -fx-max-height: 45px;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.3), 5, 0, 0, 2);
+}
+
+.author-name {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+}
+
+.time-ago {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* Tags */
+.tag {
+    -fx-background-color: #e2eafc;
+    -fx-padding: 5 15;
+    -fx-background-radius: 20;
+    -fx-text-fill: #0a1929;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-color: #4a6fa5;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
+/* Titre du post */
+.post-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+    -fx-padding: 5 0 0 0;
+}
+
+.post-title:hover {
+    -fx-text-fill: #2c3e6d;
+}
+
+/* Texte du post */
+.post-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #34495e;
+    -fx-padding: 10 0;
+    -fx-line-spacing: 2;
+}
+
+/* Actions du post */
+.post-actions {
+    -fx-alignment: center-left;
+    -fx-spacing: 15;
+    -fx-padding: 10 0 0 0;
+}
+
+.action-button {
+    -fx-background-color: #f0f4fc;
+    -fx-text-fill: #0a1929;
+    -fx-padding: 8 20;
+    -fx-background-radius: 25;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 25;
+    -fx-border-width: 1;
+}
+
+.action-button:hover {
+    -fx-background-color: #d4e2fc;
+    -fx-border-color: #4a6fa5;
+    -fx-text-fill: #0a1929;
+}
+
+.action-button .ikonli-font-icon {
+    -fx-icon-color: #0a1929;
+    -fx-icon-size: 16;
+}
+
+.vote-count {
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+}
+
+/* ==================== COMMENTAIRES ==================== */
+.comments-section {
+    -fx-spacing: 15;
+    -fx-padding: 20 0 0 0;
+    -fx-border-color: linear-gradient(to right, transparent, #cbd5e0, transparent);
+    -fx-border-width: 1 0 0 0;
+}
+
+.comment {
+    -fx-background-color: #f8fafd;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-color: #e2eafc;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.comment-author {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+}
+
+.comment-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.comment-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 5 0;
+}
+
+.comment-actions {
+    -fx-spacing: 15;
+    -fx-padding: 5 0 0 0;
+}
+
+.comment-action {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4a6fa5;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-padding: 2 10;
+}
+
+.comment-action:hover {
+    -fx-text-fill: #0a1929;
+    -fx-underline: true;
+}
+
+/* Réponses */
+.reply {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10 15;
+    -fx-border-color: #e2eafc;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-margin: 5 0 5 20;
+}
+
+.reply-author {
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+    -fx-font-size: 12px;
+}
+
+.reply-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Formulaire de commentaire */
+.comment-form {
+    -fx-background-color: #f8fafd;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-color: #e2eafc;
+    -fx-border-width: 1;
+}
+
+.comment-form .text-field {
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 8;
+}
+
+.comment-form .button {
+    -fx-background-color: #0a1929;
+    -fx-text-fill: white;
+    -fx-padding: 10 25;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.comment-form .button:hover {
+    -fx-background-color: #1a2b4c;
+}
+
+/* ==================== PANEL LATÉRAL ==================== */
+.side-panel {
+    -fx-spacing: 20;
+}
+
+.panel-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.08), 12, 0, 0, 3);
+    -fx-border-color: #e2eafc;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+}
+
+.panel-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+    -fx-padding: 0 0 5 0;
+    -fx-border-color: linear-gradient(to right, #0a1929, transparent);
+    -fx-border-width: 0 0 2 0;
+}
+
+/* Boutons API */
+.api-button {
+    -fx-background-color: #0a1929;
+    -fx-text-fill: white;
+    -fx-padding: 12;
+    -fx-background-radius: 10;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: #4a6fa5;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.2), 5, 0, 0, 2);
+}
+
+.api-button:hover {
+    -fx-background-color: #1a2b4c;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.4), 10, 0, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.api-button-secondary {
+    -fx-background-color: #1a2b4c;
+    -fx-text-fill: white;
+}
+
+/* Tags populaires */
+.tag-pill {
+    -fx-background-color: #e2eafc;
+    -fx-padding: 6 16;
+    -fx-background-radius: 25;
+    -fx-text-fill: #0a1929;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-border-color: #4a6fa5;
+    -fx-border-radius: 25;
+    -fx-border-width: 1;
+}
+
+.tag-pill:hover {
+    -fx-background-color: #c7d9f5;
+    -fx-text-fill: #0a1929;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.3), 5, 0, 0, 2);
+}
+
+/* ==================== WIDGET MÉTÉO ==================== */
+.weather-widget {
+    -fx-background-color: linear-gradient(to bottom right, #0a1929, #1a2b4c);
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.3), 15, 0, 0, 5);
+}
+
+.weather-temp {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.weather-city {
+    -fx-font-size: 16px;
+    -fx-text-fill: #a3c2e0;
+}
+
+.weather-desc {
+    -fx-font-size: 14px;
+    -fx-text-fill: #cbd5e0;
+}
+
+/* ==================== CHATBOT ==================== */
+.chat-container {
+    -fx-background-color: #f8fafd;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #e2eafc;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+    -fx-max-height: 250;
+}
+
+.chat-message-user {
+    -fx-background-color: #e2eafc;
+    -fx-text-fill: #0a1929;
+    -fx-padding: 10 15;
+    -fx-background-radius: 18 18 5 18;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-max-width: 280;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.chat-message-bot {
+    -fx-background-color: #0a1929;
+    -fx-text-fill: white;
+    -fx-padding: 10 15;
+    -fx-background-radius: 18 18 18 5;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-max-width: 280;
+}
+
+.chat-input {
+    -fx-background-radius: 25;
+    -fx-padding: 12 20;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 25;
+    -fx-background-color: white;
+}
+
+.chat-send-btn {
+    -fx-background-color: #0a1929;
+    -fx-text-fill: white;
+    -fx-padding: 12 20;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.chat-send-btn:hover {
+    -fx-background-color: #1a2b4c;
+}
+
+/* ==================== STATISTIQUES ==================== */
+.stats-card {
+    -fx-background-color: linear-gradient(135deg, #0a1929, #1a2b4c);
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.3), 15, 0, 0, 5);
+}
+
+.stats-label {
+    -fx-text-fill: #a3c2e0;
+    -fx-font-size: 14px;
+}
+
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* ==================== BOUTONS PRINCIPAUX ==================== */
+.btn-primary {
+    -fx-background-color: #0a1929;
+    -fx-text-fill: white;
+    -fx-padding: 10 25;
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(10,25,41,0.2), 5, 0, 0, 2);
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1a2b4c;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.4), 10, 0, 0, 3);
+}
+
+.btn-secondary {
+    -fx-background-color: #2c3e6d;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #0a1929;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-text-fill: #0a1929;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.btn-outline:hover {
+    -fx-background-color: #e2eafc;
+}
+
+/* ==================== FORMULAIRES ==================== */
+.form-field {
+    -fx-spacing: 5;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1929;
+}
+
+.text-field, .text-area {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-background-color: #f8fafd;
+    -fx-border-color: #cbd5e0;
+    -fx-border-width: 1;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #4a6fa5;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(74,111,165,0.3), 5, 0, 0, 2);
+}
+
+/* ==================== UTILS ==================== */
+.muted-text {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}
+
+.divider {
+    -fx-background-color: linear-gradient(to right, transparent, #cbd5e0, transparent);
+    -fx-padding: 0.5 0 0 0;
+}
+
+/* ==================== ANIMATIONS ==================== */
+.button, .tag-pill, .post-card {
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { -fx-scale: 1; }
+    50% { -fx-scale: 1.02; }
+    100% { -fx-scale: 1; }
+}
+
+.pulse {
+    -fx-animation: pulse 1s infinite;
+}
