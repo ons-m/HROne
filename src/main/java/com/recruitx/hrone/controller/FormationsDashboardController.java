@@ -55,16 +55,39 @@ public class FormationsDashboardController {
 
     // Published formations list
     @FXML private VBox formationList;
+    // ✅ Ajoutez ces lignes avec les autres déclarations @FXML en haut de la classe
+    @FXML private ComboBox<String> modeComboBox;
+    @FXML private TextField nombrePlacesField;
+    @FXML private VBox placesContainer;
+    @FXML private DatePicker dateDebutPicker;
+    @FXML private DatePicker dateFinPicker;
 
     // Data storage (in-memory for courses)
     private List<String> currentCourses = new ArrayList<>();
     private Formation editingFormation = null;
     private int currentEntrepriseId = 1; // TODO: Get from logged-in user session
+    private String mode;
 
     @FXML
     public void initialize() {
         // Initialize DAO
         formationDAO = new FormationDAO();
+        // ✅ Initialiser le ComboBox mode ICI
+        modeComboBox.getItems().addAll("presentiel", "en_ligne");
+        modeComboBox.setValue("presentiel");
+
+        // ✅ Afficher/cacher places selon le mode sélectionné
+        modeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if ("en_ligne".equals(newVal)) {
+                placesContainer.setVisible(true);
+                placesContainer.setManaged(true);
+                nombrePlacesField.setText("999");
+            } else {
+                placesContainer.setVisible(true);
+                placesContainer.setManaged(true);
+                nombrePlacesField.setText("30");
+            }
+        });
 
         setupEventHandlers();
         setupRequiredFieldLabels();
@@ -262,6 +285,48 @@ public class FormationsDashboardController {
             showStatus("La description doit contenir au moins 20 caractères.", true);
             return;
         }
+        // ✅ Récupérer les places - remplacez le bloc existant
+        int nombrePlaces = 30;
+        if ("en_ligne".equals(mode)) {
+            nombrePlaces = 999;
+        } else {
+            String placesText = nombrePlacesField.getText().trim();
+            if (placesText.isEmpty()) {
+                showStatus("Le nombre de places est obligatoire supérieur à 0.", true);
+                return;
+            }
+            try {
+                nombrePlaces = Integer.parseInt(placesText);
+                if (nombrePlaces <= 0) {
+                    showStatus("Le nombre de places doit être supérieur à 0.", true);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                showStatus("Le nombre de places doit être un nombre valide.", true);
+                return;
+            }
+
+        }
+
+
+        // ✅ Valider date début
+        if (dateDebutPicker.getValue() == null) {
+            showStatus("La date de début est obligatoire.", true);
+            return;
+        }
+
+// ✅ Valider date fin
+        if (dateFinPicker.getValue() == null) {
+            showStatus("La date de fin est obligatoire.", true);
+            return;
+        }
+
+// ✅ Vérifier que date fin > date début
+        if (dateFinPicker.getValue().isBefore(dateDebutPicker.getValue()) ||
+                dateFinPicker.getValue().isEqual(dateDebutPicker.getValue())) {
+            showStatus("La date de fin doit être après la date de début.", true);
+            return;
+        }
 
         if (imageUrl.isEmpty()) {
             showStatus("L'URL de l'image est obligatoire.", true);
@@ -273,6 +338,7 @@ public class FormationsDashboardController {
             showStatus("L'image n'est pas valide. Utilisez une URL (http/https) ou sélectionnez un fichier local.", true);
             return;
         }
+        
 
         if (currentCourses.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -470,7 +536,6 @@ public class FormationsDashboardController {
 
         titleField.setText(formation.getTitre());
 
-        // Parse courses and base description
         String baseDesc = getBaseDescription(formation.getDescription());
         descriptionField.setText(baseDesc);
 
@@ -478,15 +543,44 @@ public class FormationsDashboardController {
 
         imageUrlField.setText(formation.getImage() != null ? formation.getImage() : "");
 
+        // ✅ Nouveaux champs
+        modeComboBox.setValue(
+                formation.getMode() != null ? formation.getMode() : "presentiel"
+        );
+        nombrePlacesField.setText(String.valueOf(formation.getNombrePlaces()));
+
+        if (formation.getDateDebut() != 0) {
+            dateDebutPicker.setValue(
+                    COrdre.GetDateFromNumOrdre(formation.getDateDebut()).toLocalDate()
+            );
+        } else {
+            dateDebutPicker.setValue(null);
+        }
+
+        if (formation.getDateFin() != 0) {
+            dateFinPicker.setValue(
+                    COrdre.GetDateFromNumOrdre(formation.getDateFin()).toLocalDate()
+            );
+        } else {
+            dateFinPicker.setValue(null);
+        }
+
+        // Afficher/cacher places selon mode
+        if ("en_ligne".equals(formation.getMode())) {
+            placesContainer.setVisible(false);
+            placesContainer.setManaged(false);
+        } else {
+            placesContainer.setVisible(true);
+            placesContainer.setManaged(true);
+        }
+
         refreshCoursesDisplay();
         updatePreviewCourses();
 
         publishButton.setText("Mettre à jour la formation");
         showStatus("Formation chargée pour modification.", false);
-
         titleField.requestFocus();
     }
-
     private void deleteFormation(Formation formation) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Supprimer la formation");
@@ -514,15 +608,21 @@ public class FormationsDashboardController {
         coursesListContainer.getChildren().clear();
         editingFormation = null;
 
+        // ✅ Reset nouveaux champs
+        modeComboBox.setValue("presentiel");
+        nombrePlacesField.setText("30");
+        dateDebutPicker.setValue(null);
+        dateFinPicker.setValue(null);
+        placesContainer.setVisible(true);
+        placesContainer.setManaged(true);
+
         initializeDefaultValues();
         updatePreviewCourses();
 
         publishButton.setText("Publier la formation");
-
         formStatusLabel.setText("");
         formStatusLabel.getStyleClass().removeAll("status-success", "status-error");
     }
-
     private void showStatus(String message, boolean isError) {
         formStatusLabel.setText(message);
         formStatusLabel.getStyleClass().removeAll("status-success", "status-error");

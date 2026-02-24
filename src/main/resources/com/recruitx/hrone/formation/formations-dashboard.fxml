@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <ScrollPane fitToWidth="true" pannable="true" stylesheets="@formations-dashboard.fx.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.controller.FormationsDashboardController">
     <content>
         <HBox styleClass="dashboard">
@@ -91,6 +93,26 @@
                                 </HBox>
                                 <Label styleClass="help" text="Entrez une URL ou cliquez sur Parcourir pour sélectionner un fichier local (png, jpg, jpeg, gif)." />
                             </VBox>
+                            <VBox styleClass="field">
+                                <Label text="Mode de formation" />
+                                <ComboBox fx:id="modeComboBox" promptText="Sélectionner le mode" maxWidth="Infinity" />
+                            </VBox>
+
+                            <VBox fx:id="placesContainer" styleClass="field">
+                                <Label text="Nombre de places" />
+                                <TextField fx:id="nombrePlacesField" promptText="Ex: 30" />
+                            </VBox>
+
+                            <HBox spacing="12">
+                                <VBox styleClass="field" HBox.hgrow="ALWAYS">
+                                    <Label text="Date de début" />
+                                    <DatePicker fx:id="dateDebutPicker" maxWidth="Infinity" />
+                                </VBox>
+                                <VBox styleClass="field" HBox.hgrow="ALWAYS">
+                                    <Label text="Date de fin" />
+                                    <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" />
+                                </VBox>
+                            </HBox>
                             <VBox styleClass="field full">
                                 <Label text="Cours / modules" />
                                 <HBox styleClass="course-builder">

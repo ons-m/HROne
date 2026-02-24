@@ -194,6 +194,7 @@ public class FormationDAO {
     }
 
     // Méthode utilitaire pour mapper ResultSet → Formation
+    // Mettre à jour mapResultSetToFormation
     private Formation mapResultSetToFormation(ResultSet rs) throws SQLException {
         Formation formation = new Formation();
         formation.setIdFormation(rs.getInt("ID_Formation"));
@@ -202,7 +203,33 @@ public class FormationDAO {
         formation.setNumOrdreCreation(rs.getInt("Num_Ordre_Creation"));
         formation.setIdEntreprise(rs.getInt("ID_Entreprise"));
         formation.setImage(rs.getString("Image"));
+        // Nouveaux champs
+        try {
+            formation.setMode(rs.getString("Mode"));
+            formation.setNombrePlaces(rs.getInt("NombrePlaces"));
+            formation.setPlacesRestantes(rs.getInt("PlacesRestantes"));
+            formation.setDateDebut(rs.getLong("Date_Debut"));
+            formation.setDateFin(rs.getLong("Date_Fin"));
+        } catch (SQLException e) {
+            // Colonnes pas encore ajoutées
+        }
         return formation;
+    }
+
+    // Ajouter cette méthode pour filtrer par mode
+    public List<Formation> readByMode(String mode) {
+        List<Formation> formations = new ArrayList<>();
+        String sql = "SELECT * FROM formation WHERE Mode = ? ORDER BY Num_Ordre_Creation";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, mode);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                formations.add(mapResultSetToFormation(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lecture par mode: " + e.getMessage());
+        }
+        return formations;
     }
 
 

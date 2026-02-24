@@ -1,5 +1,4 @@
 package com.recruitx.hrone.controller;
-
 import com.recruitx.hrone.dao.FormationDAO;
 import com.recruitx.hrone.models.Formation;
 import com.recruitx.hrone.utils.COrdre;
@@ -84,6 +83,36 @@ public class FormationController {
     }
 
     /**
+     * Récupère le nom de l'entreprise par son ID
+     */
+    private String getEntrepriseNameById(int idEntreprise) {
+        try {
+            String nomEntreprise = formationDAO.getNameEntrepriseById(idEntreprise);
+            if (nomEntreprise != null && !nomEntreprise.isEmpty()) {
+                return nomEntreprise;
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
+        }
+        return "Entreprise inconnue";
+    }
+
+    /**
+     * Récupère la référence de l'entreprise par son ID
+     */
+    private String getEntrepriseRefById(int idEntreprise) {
+        try {
+            String refEntreprise = formationDAO.getReferenceById(idEntreprise);
+            if (refEntreprise != null && !refEntreprise.isEmpty()) {
+                return refEntreprise;
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
+        }
+        return "";
+    }
+
+    /**
      * Extrait seulement la description avant le marqueur [MODULES]
      */
     private String getDescriptionOnly(String fullDescription) {
@@ -97,6 +126,22 @@ public class FormationController {
         }
 
         return fullDescription.trim();
+    }
+
+    /**
+     * Extrait les modules depuis la description (après [MODULES])
+     */
+    private String extractModulesFromDescription(String fullDescription) {
+        if (fullDescription == null || fullDescription.isEmpty()) {
+            return "";
+        }
+
+        int markerIndex = fullDescription.indexOf(MODULES_MARKER);
+        if (markerIndex != -1 && markerIndex + MODULES_MARKER.length() < fullDescription.length()) {
+            return fullDescription.substring(markerIndex + MODULES_MARKER.length()).trim();
+        }
+
+        return "";
     }
 
     /**
@@ -217,6 +262,9 @@ public class FormationController {
         }
     }
 
+    /**
+     * Affiche les détails de la formation dans une dialog personnalisée
+     */
     private void showFormationDetails(Formation formation) {
         // Créer une dialog personnalisée
         Dialog<Void> dialog = new Dialog<>();
@@ -231,7 +279,7 @@ public class FormationController {
         HBox header = new HBox(20);
         header.setStyle("-fx-alignment: center-left;");
 
-        // Image de la formation - Support URLs réseau ET fichiers locaux
+        // Image de la formation
         VBox imageContainer = new VBox();
         imageContainer.setStyle("-fx-alignment: center;");
         if (formation.getImage() != null && !formation.getImage().isEmpty()) {
@@ -279,10 +327,13 @@ public class FormationController {
         Label badgeDate = new Label("📅 " + dateCreation);
         badgeDate.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
 
-        // Badge entreprise avec nom + référence
+        // Badge entreprise
         String nomEntreprise = getEntrepriseNameById(formation.getIdEntreprise());
         String refEntreprise = getEntrepriseRefById(formation.getIdEntreprise());
-        Label badgeEntreprise = new Label("🏢 " + nomEntreprise + " (" + refEntreprise + ")");
+        String entrepriseText = refEntreprise.isEmpty() ?
+                "🏢 " + nomEntreprise :
+                "🏢 " + nomEntreprise + " (" + refEntreprise + ")";
+        Label badgeEntreprise = new Label(entrepriseText);
         badgeEntreprise.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
 
         badges.getChildren().addAll(badgeDate, badgeEntreprise);
@@ -312,45 +363,8 @@ public class FormationController {
         // === SÉPARATEUR ===
         Separator separator2 = new Separator();
 
-        // === MODULES ===
-        VBox modulesSection = new VBox(15);
-
-        Label modulesTitle = new Label("📚 Programme - Modules");
-        modulesTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-
-        String modulesText = extractModulesFromDescription(formation.getDescription());
-
-        if (modulesText != null && !modulesText.isEmpty()) {
-            String[] modules = modulesText.split("\n");
-
-            VBox modulesList = new VBox(8);
-
-            for (String module : modules) {
-                module = module.trim();
-                if (!module.isEmpty()) {
-                    HBox moduleItem = new HBox(10);
-                    moduleItem.setStyle("-fx-alignment: center-left; -fx-padding: 10; -fx-background-color: #f8f9fa; -fx-background-radius: 5;");
-
-                    Label bullet = new Label("▸");
-                    bullet.setStyle("-fx-font-size: 16px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
-
-                    Label moduleLabel = new Label(module);
-                    moduleLabel.setWrapText(true);
-                    moduleLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #2c3e50;");
-                    moduleLabel.setMaxWidth(600);
-                    HBox.setHgrow(moduleLabel, javafx.scene.layout.Priority.ALWAYS);
-
-                    moduleItem.getChildren().addAll(bullet, moduleLabel);
-                    modulesList.getChildren().add(moduleItem);
-                }
-            }
-
-            modulesSection.getChildren().addAll(modulesTitle, modulesList);
-        } else {
-            Label noModules = new Label("Aucun module disponible");
-            noModules.setStyle("-fx-font-size: 13px; -fx-text-fill: #95a5a6; -fx-font-style: italic;");
-            modulesSection.getChildren().addAll(modulesTitle, noModules);
-        }
+        // === MODULES STRUCTURÉS ===
+        VBox modulesSection = createModulesSection(formation);
 
         // === AJOUTER TOUS LES ÉLÉMENTS ===
         mainContent.getChildren().addAll(
@@ -364,8 +378,8 @@ public class FormationController {
         // Mettre dans un ScrollPane
         ScrollPane scrollPane = new ScrollPane(mainContent);
         scrollPane.setFitToWidth(true);
-        scrollPane.setPrefViewportWidth(700);
-        scrollPane.setPrefViewportHeight(600);
+        scrollPane.setPrefViewportWidth(750);
+        scrollPane.setPrefViewportHeight(650);
         scrollPane.setStyle("-fx-background-color: white; -fx-border-color: transparent;");
 
         dialog.getDialogPane().setContent(scrollPane);
@@ -395,8 +409,204 @@ public class FormationController {
     }
 
     /**
-     * Charge une image depuis une URL réseau (http/https) OU un fichier local (file://)
-     * Supporte également les chemins absolus sans protocole
+     * Crée la section des modules de façon structurée (style Coursera/Udemy)
+     */
+    private VBox createModulesSection(Formation formation) {
+
+        VBox modulesSection = new VBox(20);
+        modulesSection.setPadding(new Insets(20));
+        modulesSection.setStyle("-fx-background-color: #f9fafb; -fx-background-radius: 10;");
+
+        Label modulesTitle = new Label("Programme de la formation");
+        modulesTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1f2937;");
+
+        String modulesText = extractModulesFromDescription(formation.getDescription());
+
+        if (modulesText == null || modulesText.isBlank()) {
+            Label noModules = new Label("Aucun module disponible.");
+            noModules.setStyle("-fx-text-fill: #6b7280;");
+            modulesSection.getChildren().addAll(modulesTitle, noModules);
+            return modulesSection;
+        }
+
+        String[] moduleLines = modulesText.split("\n");
+
+        int totalModules = 0;
+        int totalMinutes = 0;
+
+        for (String line : moduleLines) {
+            line = line.trim();
+            if (line.matches("^\\d+\\..*")) {
+                totalModules++;
+                totalMinutes += extractDurationInMinutes(line);
+            }
+        }
+
+        // ===== Summary Header =====
+        HBox summary = new HBox(30);
+        summary.setPadding(new Insets(15));
+        summary.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;");
+
+        Label countLabel = new Label(totalModules + " modules");
+        countLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;");
+
+        Label durationLabel = new Label(formatDuration(totalMinutes));
+        durationLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;");
+
+        summary.getChildren().addAll(countLabel, durationLabel);
+
+        // ===== Accordion (Collapsible Modules like Coursera) =====
+        Accordion accordion = new Accordion();
+
+        int moduleNumber = 0;
+        for (String line : moduleLines) {
+            line = line.trim();
+            if (!line.isEmpty() && line.matches("^\\d+\\..*")) {
+                moduleNumber++;
+                TitledPane pane = createModuleCard(line, moduleNumber);
+                accordion.getPanes().add(pane);
+            }
+        }
+
+        if (!accordion.getPanes().isEmpty()) {
+            accordion.setExpandedPane(accordion.getPanes().get(0));
+        }
+
+        modulesSection.getChildren().addAll(modulesTitle, summary, accordion);
+
+        return modulesSection;
+    }
+
+    /**
+     * Extrait la durée en minutes depuis une ligne de module
+     */
+    private int extractDurationInMinutes(String line) {
+        int minutes = 0;
+
+        try {
+            if (line.contains("jour")) {
+                String[] parts = line.split("jour");
+                if (parts.length > 0) {
+                    String durePart = parts[0];
+                    // Chercher le dernier nombre avant "jour"
+                    String[] numbers = durePart.split("[^0-9.,]+");
+                    for (int i = numbers.length - 1; i >= 0; i--) {
+                        if (!numbers[i].isEmpty()) {
+                            double jours = Double.parseDouble(numbers[i].replace(",", "."));
+                            minutes = (int) (jours * 8 * 60); // 8 heures par jour
+                            break;
+                        }
+                    }
+                }
+            } else if (line.contains("heure")) {
+                String[] parts = line.split("heure");
+                if (parts.length > 0) {
+                    String durePart = parts[0];
+                    String[] numbers = durePart.split("[^0-9.,]+");
+                    for (int i = numbers.length - 1; i >= 0; i--) {
+                        if (!numbers[i].isEmpty()) {
+                            double heures = Double.parseDouble(numbers[i].replace(",", "."));
+                            minutes = (int) (heures * 60);
+                            break;
+                        }
+                    }
+                }
+            } else if (line.contains("minute")) {
+                String[] parts = line.split("minute");
+                if (parts.length > 0) {
+                    String durePart = parts[0];
+                    String[] numbers = durePart.split("[^0-9]+");
+                    for (int i = numbers.length - 1; i >= 0; i--) {
+                        if (!numbers[i].isEmpty()) {
+                            minutes = Integer.parseInt(numbers[i]);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Erreur d'extraction de durée: " + e.getMessage());
+        }
+
+        return minutes;
+    }
+
+    /**
+     * Formate la durée totale
+     */
+    private String formatDuration(int totalMinutes) {
+        if (totalMinutes == 0) {
+            return "";
+        }
+
+        if (totalMinutes >= 60) {
+            int heures = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+            if (minutes > 0) {
+                return "⏱ Total " + heures + "h " + minutes + "min";
+            } else {
+                return "⏱ Total " + heures + " heure" + (heures > 1 ? "s" : "");
+            }
+        } else {
+            return "⏱ Total " + totalMinutes + " minutes";
+        }
+    }
+
+    /**
+     * Crée une carte pour un module individuel
+     */
+    private TitledPane createModuleCard(String moduleLine, int moduleNumber) {
+
+        String moduleText = moduleLine.replaceFirst("^\\d+\\.\\s*", "");
+        String titre = moduleText;
+        String duree = "";
+
+        if (moduleText.contains("(") && moduleText.contains(")")) {
+            int start = moduleText.lastIndexOf("(");
+            int end = moduleText.lastIndexOf(")");
+            if (start < end) {
+                duree = moduleText.substring(start + 1, end);
+                titre = moduleText.substring(0, start).trim();
+            }
+        }
+
+        // ===== Header Text =====
+        String headerText = "Module " + moduleNumber + " • " + titre;
+        if (!duree.isEmpty()) {
+            headerText += "  (" + duree + ")";
+        }
+
+        // ===== Content (inside accordion) =====
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(15));
+        content.setStyle("-fx-background-color: white;");
+
+        Label videos = new Label("• Vidéos pédagogiques");
+        Label exercises = new Label("• Exercices pratiques");
+        Label resources = new Label("• Ressources téléchargeables");
+
+        videos.setStyle("-fx-text-fill: #374151;");
+        exercises.setStyle("-fx-text-fill: #374151;");
+        resources.setStyle("-fx-text-fill: #374151;");
+
+        content.getChildren().addAll(videos, exercises, resources);
+
+        TitledPane pane = new TitledPane(headerText, content);
+
+        pane.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-color: white;" +
+                        "-fx-border-color: #e5e7eb;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;"
+        );
+
+        return pane;
+    }
+
+    /**
+     * Charge une image depuis une URL réseau ou un fichier local
      */
     private Image loadImage(String imagePath) {
         if (imagePath == null || imagePath.isEmpty()) {
@@ -414,7 +624,7 @@ public class FormationController {
                 System.out.println("✅ Chargement de l'image depuis fichier local (file://): " + imagePath);
                 return new Image(imagePath, true);
             }
-            // Chemin absolu sans protocole (C:\path ou /path)
+            // Chemin absolu sans protocole
             else {
                 File imageFile = new File(imagePath);
                 if (imageFile.exists()) {
@@ -440,21 +650,6 @@ public class FormationController {
         }
     }
 
-    /**
-     * Extrait les modules depuis la description (après [MODULES])
-     */
-    private String extractModulesFromDescription(String fullDescription) {
-        if (fullDescription == null || fullDescription.isEmpty()) {
-            return "";
-        }
-
-        int markerIndex = fullDescription.indexOf(MODULES_MARKER);
-        if (markerIndex != -1 && markerIndex + MODULES_MARKER.length() < fullDescription.length()) {
-            return fullDescription.substring(markerIndex + MODULES_MARKER.length()).trim();
-        }
-
-        return "";
-    }
 
     @FXML
     private void handleParticiper() {
@@ -493,30 +688,6 @@ public class FormationController {
         alert.showAndWait();
     }
 
-    private String getEntrepriseNameById(int idEntreprise) {
-        try {
-            String nomEntreprise = formationDAO.getNameEntrepriseById(idEntreprise);
-            if (nomEntreprise != null && !nomEntreprise.isEmpty()) {
-                return nomEntreprise;
-            }
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
-        }
-        return "Entreprise inconnue";
-    }
-
-    private String getEntrepriseRefById(int idEntreprise) {
-        try {
-            String refEntreprise = formationDAO.getReferenceById(idEntreprise);
-            if (refEntreprise != null && !refEntreprise.isEmpty()) {
-                return refEntreprise;
-            }
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la récupération de l'entreprise: " + e.getMessage());
-        }
-        return "Entreprise inconnue";
-    }
-
     @FXML
     private void handleFilterAll() {
         displayFormations();
@@ -524,11 +695,13 @@ public class FormationController {
 
     @FXML
     private void handleFilterPresentiel() {
+        // TODO: Implémenter le filtrage par mode présentiel
         displayFormations();
     }
 
     @FXML
     private void handleFilterEnLigne() {
+        // TODO: Implémenter le filtrage par mode en ligne
         displayFormations();
     }
 }
