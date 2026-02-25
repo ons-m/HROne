@@ -1,0 +1,169 @@
+.main-scroll {
+  -fx-background: transparent;
+}
+
+.candidate-app {
+  -fx-background-color: #f4f6fb;
+  -fx-padding: 24 32 40 32;
+  -fx-spacing: 24;
+}
+
+.candidate-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 16;
+}
+
+.brand {
+  -fx-spacing: 12;
+  -fx-alignment: center-left;
+}
+
+.brand-name {
+  -fx-font-weight: 700;
+  -fx-font-size: 18;
+}
+
+.brand-sub {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 11;
+}
+
+.header-actions {
+  -fx-spacing: 10;
+}
+
+.hero {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 20;
+  -fx-background-radius: 20;
+  -fx-padding: 22;
+  -fx-spacing: 16;
+}
+
+.hero-title {
+  -fx-font-size: 22;
+  -fx-font-weight: 700;
+}
+
+.hero-search {
+  -fx-spacing: 10;
+}
+
+.content {
+  -fx-spacing: 24;
+}
+
+.offers {
+  -fx-spacing: 14;
+}
+
+.offers-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.count {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12;
+}
+
+.offers-grid {
+  -fx-spacing: 12;
+}
+
+.offer-card {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 18;
+  -fx-background-radius: 18;
+  -fx-padding: 14;
+  -fx-spacing: 8;
+}
+
+.offer-card-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.offer-title {
+  -fx-font-weight: 700;
+}
+
+.tag {
+  -fx-background-color: #e0e7ff;
+  -fx-text-fill: #1d4ed8;
+  -fx-padding: 4 10;
+  -fx-background-radius: 999;
+  -fx-font-size: 11;
+  -fx-font-weight: 700;
+}
+
+.offer-meta {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12;
+}
+
+.offer-desc {
+  -fx-text-fill: #334155;
+  -fx-font-size: 13;
+}
+
+.offer-footer {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.apply-panel {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 20;
+  -fx-background-radius: 20;
+  -fx-padding: 18;
+  -fx-spacing: 12;
+}
+
+.apply-form {
+  -fx-spacing: 10;
+}
+
+.section-title {
+  -fx-font-weight: 700;
+  -fx-font-size: 15;
+}
+
+.field {
+  -fx-spacing: 6;
+}
+
+.muted {
+  -fx-text-fill: #64748b;
+}
+
+.text-field,
+.text-area,
+.combo-box-base {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-padding: 8 10;
+}
+
+.btn {
+  -fx-background-radius: 10;
+  -fx-padding: 8 14;
+  -fx-font-weight: 600;
+}
+
+.btn-primary {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: white;
+}
+
+.btn-ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-text-fill: #0f172a;
+}

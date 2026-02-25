@@ -22,6 +22,7 @@ public class FrmMain {
     @FXML private Button btnTraining;
     @FXML private Button btnCommunaute;
     @FXML private Button btnEvents;
+    @FXML private Button btnGererMesOffres;
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
     private Button currentActiveButton;
@@ -33,6 +34,8 @@ public class FrmMain {
         EVENEMENTS,
         FORMATIONS,
         OFFRES,
+        MES_CANDIDATURES,
+        GESTIONOFFRES,
         TRAINING,
         COMMUNAUTE,
         EVENTS
@@ -41,6 +44,7 @@ public class FrmMain {
     /* ================================
        Navigation Handlers
        ================================ */
+    @FXML private void openGestionOffres() {loadView(ViewType.GESTIONOFFRES,btnCommunaute);}
 
     @FXML private void openGestionEmployee() {
         loadView(ViewType.GESTION_EMPLOYEE, btnEmployee);
@@ -82,23 +86,34 @@ public class FrmMain {
        Core Loader (With Cache + Highlight)
        ================================ */
 
-    private void loadView(ViewType type, Button clickedButton) {
+    public void loadView(ViewType type) {
+        loadView(type, null);
+    }
 
+    private void loadView(ViewType type, Button clickedButton) {
         try {
             Parent view;
 
-            // Lazy caching
             if (viewCache.containsKey(type)) {
                 view = viewCache.get(type);
             } else {
                 String path = resolvePath(type);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
                 view = loader.load();
+
+                Object controller = loader.getController();
+                if (controller instanceof NavigationAware navAware) {
+                    navAware.setMainController(this);
+                }
+
                 viewCache.put(type, view);
             }
 
             contentPane.getChildren().setAll(view);
-            setActiveButton(clickedButton);
+
+            if (clickedButton != null) {
+                setActiveButton(clickedButton);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,20 +126,25 @@ public class FrmMain {
                     "/com/recruitx/hrone/View/FrmGestionEmployee.fxml";
             case GESTION_USERS ->
                     "/com/recruitx/hrone/View/FrmGestionUsers.fxml";
+            //Todo : Ajouter Interface Entretien
             case ENTRETIENS ->
-                    "/com/recruitx/hrone/View/FrmEntretiens.fxml";
+                    "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
             case EVENEMENTS ->
                     "/com/recruitx/hrone/View/FrmEvenements.fxml";
             case FORMATIONS ->
                     "/com/recruitx/hrone/View/FrmFormations.fxml";
+            case MES_CANDIDATURES ->
+                    "/com/recruitx/hrone/View/FrmMesCandidatures.fxml";
             case OFFRES ->
-                    "/com/recruitx/hrone/View/FrmOffres.fxml";
+                    "/com/recruitx/hrone/View/FrmCandidat.fxml";
             case TRAINING ->
                     "/com/recruitx/hrone/View/FrmTraining.fxml";
             case COMMUNAUTE ->
                     "/com/recruitx/hrone/View/FrmCommunaute.fxml";
             case EVENTS ->
                     "/com/recruitx/hrone/View/FrmEvents.fxml";
+            case GESTIONOFFRES ->
+                    "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
         };
     }
 

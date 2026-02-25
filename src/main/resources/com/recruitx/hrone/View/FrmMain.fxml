@@ -55,6 +55,11 @@
                             styleClass="nav-link"
                             onAction="#openEntretiens"/>
 
+                    <Button fx:id=""
+                            text="gestion des offres d'emploi"
+                            styleClass="nav-link"
+                            onAction="#openGestionOffres"/>
+
                     <Button fx:id="btnEvenements"
                             text="gestion des evenements"
                             styleClass="nav-link"
