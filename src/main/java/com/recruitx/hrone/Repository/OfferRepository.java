@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class  OfferController {
+public class OfferRepository {
 
     static public boolean Ajouter(Offer entity) {
         try {

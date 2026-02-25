@@ -1,26 +1,20 @@
 package com.recruitx.hrone.Controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.recruitx.hrone.App.Application;
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 
-
-public class FrmCandidatController implements NavigationAware {
+public class FrmCandidat implements NavigationAware {
 
      private FrmMain mainController;
 
@@ -37,7 +31,7 @@ public class FrmCandidatController implements NavigationAware {
     @FXML private TextArea lettreMotivation;
     @FXML private TextField lettreRecommandation;
 
-    List<Offer> offers = OfferController.AvoirListe();
+    List<Offer> offers = OfferRepository.AvoirListe();
 
     @Override
     public void setMainController(FrmMain mainController) {
@@ -80,7 +74,7 @@ public class FrmCandidatController implements NavigationAware {
         c.setLettre_Recomendation(lettreRecommandation.getText());
         c.setCode_Type_Status(1); // default
 
-        boolean success = CandidatureController.Ajouter(c);
+        boolean success = CandidatureRepository.Ajouter(c);
 
         if (success) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

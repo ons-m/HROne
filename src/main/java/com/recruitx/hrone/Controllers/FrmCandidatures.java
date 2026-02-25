@@ -20,7 +20,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public class FrmCandidaturesController {
+public class FrmCandidatures {
     @FXML
     private ComboBox<String> offerFilter;
 
@@ -77,7 +77,7 @@ public class FrmCandidaturesController {
     }
 
     private void loadOffers() {
-        List<Offer> offerList = OfferController.AvoirListe();
+        List<Offer> offerList = OfferRepository.AvoirListe();
         if (offerList == null) {
             offerList = new ArrayList<>();
         }
@@ -92,7 +92,7 @@ public class FrmCandidaturesController {
     }
 
     private void loadCandidatures() {
-        List<Candidature> list = CandidatureController.AvoirListe();
+        List<Candidature> list = CandidatureRepository.AvoirListe();
         if (list == null) {
             list = new ArrayList<>();
         }
@@ -204,7 +204,7 @@ public class FrmCandidaturesController {
         candidate.status = statusLabel;
         candidate.candidature.setCode_Type_Status(statusCode);
 
-        boolean success = CandidatureController.Modifier(candidate.candidature);
+        boolean success = CandidatureRepository.Modifier(candidate.candidature);
         if (!success) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Erreur");

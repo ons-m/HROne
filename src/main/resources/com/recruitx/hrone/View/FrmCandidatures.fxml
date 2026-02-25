@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox styleClass="app" stylesheets="@../Css/FrmCandidatures.fx.css" fx:controller="com.recruitx.hrone.Controllers.FrmCandidaturesController" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
+<HBox styleClass="app" stylesheets="@../Css/FrmCandidatures.fx.css" fx:controller="com.recruitx.hrone.Controllers.FrmCandidatures" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
   <VBox styleClass="sidebar">
     <HBox styleClass="brand">
       <Label text="HR" styleClass="brand-logo" />

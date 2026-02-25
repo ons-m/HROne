@@ -8,7 +8,7 @@ import com.recruitx.hrone.Models.Candidature;
 import java.sql.ResultSet;
 import java.util.List;
 
-public class CandidatureController {
+public class CandidatureRepository {
 
     static public boolean Ajouter(Candidature entity) {
         try {

@@ -17,7 +17,7 @@
 
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmGestionOffresController"
+<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmGestionOffres"
            xmlns="http://javafx.com/javafx/20"
            xmlns:fx="http://javafx.com/fxml/1"
            stylesheets="@../Css/FrmGestionOffres.fx.css">
@@ -69,7 +69,7 @@
               </VBox>
 
               <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                  <Label prefHeight="18.0" prefWidth="264.0" text="Experience minimale (en années)" />
+                  <Label prefHeight="18.0" prefWidth="264.0" text="Experience minimale (en annï¿½es)" />
                   <TextField fx:id="offerExperienceInput" promptText="Ex: 3" />
               </VBox>
               <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2">

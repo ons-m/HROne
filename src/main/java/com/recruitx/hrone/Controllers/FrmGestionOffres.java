@@ -21,7 +21,7 @@ import javafx.scene.layout.VBox;
 
 import com.recruitx.hrone.Utils.*;
 
-public class FrmGestionOffresController {
+public class FrmGestionOffres {
 
     @FXML private TextField offerTitleInput;
     @FXML private ComboBox<TypeItem> offerContractSelect;
@@ -52,14 +52,14 @@ public class FrmGestionOffresController {
     @FXML
     private void initialize() {
 
-        List<Offer> data = OfferController.AvoirListe();
+        List<Offer> data = OfferRepository.AvoirListe();
         if (data != null) {
             offers.setAll(data);
         }
 
         offerContractSelect.setItems(
                 FXCollections.observableArrayList(
-                        OfferController.loadTypesContratFromDB()
+                        OfferRepository.loadTypesContratFromDB()
                 )
         );
 
@@ -67,26 +67,26 @@ public class FrmGestionOffresController {
         //offerExperienceSelect.getItems().setAll("0-2 ans", "3-5 ans", "6-10 ans", "10+ ans");
         offerEducationSelect.setItems(
                 FXCollections.observableArrayList(
-                        OfferController.loadNiveauxEtudeFromDB()
+                        OfferRepository.loadNiveauxEtudeFromDB()
                 )
         );
 
         setupListFilter(
                 skillsSearch,
                 skillsList,
-                OfferController.loadCompetencesFromDB()
+                OfferRepository.loadCompetencesFromDB()
         );
 
         setupListFilter(
                 languagesSearch,
                 languagesList,
-                OfferController.loadLanguesFromDB()
+                OfferRepository.loadLanguesFromDB()
         );
 
         setupListFilter(
                 backgroundSearch,
                 backgroundList,
-                OfferController.loadBackgroundsFromDB()
+                OfferRepository.loadBackgroundsFromDB()
         );
         offerSearch.textProperty().addListener((obs, o, n) -> renderOffers());
         renderOffers();
@@ -289,10 +289,10 @@ public class FrmGestionOffresController {
         boolean success;
 
         if (editingOfferId > 0) {
-            success = OfferController.Modifier(offerData);
+            success = OfferRepository.Modifier(offerData);
             editingOfferId = -1;
         } else {
-            success = OfferController.Ajouter(offerData);
+            success = OfferRepository.Ajouter(offerData);
         }
 
         if (!success) {
@@ -307,7 +307,7 @@ public class FrmGestionOffresController {
        RELOAD & UI RESET
        ========================= */
 
-        List<Offer> data = OfferController.AvoirListe();
+        List<Offer> data = OfferRepository.AvoirListe();
         if (data != null) {
             offers.setAll(data);
         }
@@ -465,7 +465,7 @@ public class FrmGestionOffresController {
         confirm.showAndWait().ifPresent(response -> {
             if (response != ButtonType.OK) return;
             if (response == ButtonType.OK) {
-                boolean success = OfferController.Supprimer(offerId);
+                boolean success = OfferRepository.Supprimer(offerId);
                 if (success) {
                     offers.removeIf(o -> o.getID_Offre() == offerId);
                     renderOffers();

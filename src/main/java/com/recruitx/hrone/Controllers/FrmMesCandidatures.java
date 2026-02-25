@@ -1,6 +1,5 @@
 package com.recruitx.hrone.Controllers;
 
-import com.recruitx.hrone.App.Application;
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 
@@ -8,16 +7,12 @@ import com.recruitx.hrone.Utils.CError;
 import com.recruitx.hrone.Utils.DBHelper;
 import com.recruitx.hrone.Utils.LogType;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javafx.fxml.FXML;
-
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -27,9 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class FrmMesCandidaturesController implements NavigationAware {
+public class FrmMesCandidatures implements NavigationAware {
     @FXML
     private TextField searchField;
 
@@ -81,7 +75,7 @@ public class FrmMesCandidaturesController implements NavigationAware {
     }
 
     private void loadOffers() {
-        List<Offer> offers = OfferController.AvoirListe();
+        List<Offer> offers = OfferRepository.AvoirListe();
         if (offers == null) {
             CError.log(LogType.ERROR, "loadOffers: OfferController.AvoirListe returned null");
             offers = new ArrayList<>();
@@ -140,7 +134,7 @@ public class FrmMesCandidaturesController implements NavigationAware {
     }
 
     private void loadApplications() {
-        List<Candidature> candidatures = CandidatureController.AvoirListe();
+        List<Candidature> candidatures = CandidatureRepository.AvoirListe();
         if (candidatures == null) {
             CError.log(LogType.ERROR, "loadApplications: CandidatureController.AvoirListe returned null");
             candidatures = new ArrayList<>();
@@ -310,7 +304,7 @@ public class FrmMesCandidaturesController implements NavigationAware {
         item.status = statusLabel;
         item.candidature.setCode_Type_Status(statusCodeForLabel(statusLabel));
 
-        boolean success = CandidatureController.Modifier(item.candidature);
+        boolean success = CandidatureRepository.Modifier(item.candidature);
         if (!success) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Erreur");
@@ -323,7 +317,7 @@ public class FrmMesCandidaturesController implements NavigationAware {
     }
 
     private void deleteApplication(ApplicationItem item) {
-        boolean success = CandidatureController.Supprimer(item.candidature.getID_Candidature());
+        boolean success = CandidatureRepository.Supprimer(item.candidature.getID_Candidature());
         if (!success) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Erreur");
