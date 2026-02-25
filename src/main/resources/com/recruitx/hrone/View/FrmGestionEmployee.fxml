@@ -13,28 +13,6 @@
 <?import javafx.scene.layout.StackPane?>
 
 <StackPane fx:controller="com.recruitx.hrone.Controllers.FrmGestionEmployee" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../Css/FrmGestionEmployee.fx.css">
-    <HBox fx:id="mainContent" styleClass="app" >
-        <VBox styleClass="sidebar">
-            <HBox styleClass="brand">
-                <Label text="HR" styleClass="brand-logo" />
-                <VBox>
-                    <Label text="HR One" styleClass="brand-name" />
-                    <Label text="Espace RH" styleClass="brand-sub" />
-                </VBox>
-            </HBox>
-
-            <VBox styleClass="nav">
-                <Label text="Recrutement" styleClass="nav-section" />
-                <Button text="Gestion d'offre d'emploi" styleClass="nav-link" />
-                <Button text="Candidatures" styleClass="nav-link" />
-                <Button text="Entretiens" styleClass="nav-link" />
-                <Button text="Statistiques" styleClass="nav-link" />
-
-                <Label text="Gestion administrative" styleClass="nav-section" />
-                <Button text="Gerer mes employees" styleClass="nav-link nav-link-active" />
-                <Button text="Gerer les outils" styleClass="nav-link" />
-            </VBox>
-        </VBox>
 
         <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
             <content>
@@ -113,7 +91,6 @@
                 </VBox>
             </content>
         </ScrollPane>
-    </HBox>
 
     <fx:include source="FrmFicheEmployee.fxml" fx:id="FrmFicheEmployee" managed="false" visible="false" StackPane.alignment="CENTER"/>
 
