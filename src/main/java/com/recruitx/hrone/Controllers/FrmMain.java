@@ -127,31 +127,39 @@ public class FrmMain {
 
     private String resolvePath(ViewType type) {
         return switch (type) {
+            //Interface Gestion Employee Cote HR
             case GESTION_EMPLOYEE ->
                     "/com/recruitx/hrone/View/FrmGestionEmployee.fxml";
+            //Interface Gestion Outils Cote HR
             case OUTILS ->
                     "/com/recruitx/hrone/View/FrmGestionOutil.fxml";
             case GESTION_USERS ->
                     "/com/recruitx/hrone/View/FrmGestionUsers.fxml";
-            //Todo : Ajouter Interface Entretien
+            //interface Entretiens Cote HR
             case ENTRETIENS ->
-                    "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
+                    "/com/recruitx/hrone/View/FrmCandidatures.fxml";
+            //interaface Evenement Cote Employee
             case EVENEMENTS ->
                     "/com/recruitx/hrone/View/FrmEvenement.fxml";
             case FORMATIONS ->
                     "/com/recruitx/hrone/View/FrmFormations.fxml";
+            //Interface Candidature Cote Candidat
             case MES_CANDIDATURES ->
                     "/com/recruitx/hrone/View/FrmMesCandidatures.fxml";
+            //Interface Liste Offre Cote Candidat
             case OFFRES ->
                     "/com/recruitx/hrone/View/FrmCandidat.fxml";
             case TRAINING ->
                     "/com/recruitx/hrone/View/FrmTraining.fxml";
             case COMMUNAUTE ->
                     "/com/recruitx/hrone/View/FrmCommunaute.fxml";
+            //Interface Evenement Cote HR
             case EVENTS ->
                     "/com/recruitx/hrone/View/FrmEventsDashboard.fxml";
+            //Interface Offre Cote HR
             case GESTIONOFFRES ->
                     "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
+            //Interface Activites Cote HR
             case ACTIVITES ->
                     "/com/recruitx/hrone/View/FrmActivites.fxml";
         };
