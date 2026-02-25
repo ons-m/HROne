@@ -2,11 +2,12 @@ package com.recruitx.hrone;
 
 import com.recruitx.hrone.utils.DBConnection;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-<<<<<<< HEAD
-=======
-
->>>>>>> 1dcf51ffc0dfa31816c3027349d427002b209857
+import javafx.stage.Stage;
 import java.sql.Connection;
 
 public class HelloController {
@@ -15,15 +16,17 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
+    private Button helloButton;
+
+    @FXML
     protected void onHelloButtonClick() {
         try {
-<<<<<<< HEAD
-            // Utiliser DBConnection.getConnection() directement (static)
             Connection connection = DBConnection.getConnection();
 
             if (connection != null && !connection.isClosed()) {
                 welcomeText.setText("✅ Connecté à MySQL avec succès");
                 welcomeText.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                goToBlog();
             } else {
                 welcomeText.setText("⚠️ Connexion échouée");
                 welcomeText.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
@@ -32,19 +35,21 @@ public class HelloController {
         } catch (Exception e) {
             welcomeText.setText("❌ Erreur: " + e.getMessage());
             welcomeText.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-=======
-            // CORRECTION ICI : getConnection() au lieu de getInstance()
-            Connection connection = DBConnection.getConnection();
+            e.printStackTrace();
+        }
+    }
 
-            if (connection != null && !connection.isClosed()) {
-                welcomeText.setText("✅ Connected to MySQL successfully");
-            } else {
-                welcomeText.setText("⚠️ Connection is null or closed");
-            }
+    private void goToBlog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/blog.fxml"));
+            Parent blogRoot = loader.load();
+
+            Stage stage = (Stage) helloButton.getScene().getWindow();
+            Scene scene = new Scene(blogRoot, 1200, 800);
+            stage.setScene(scene);
+            stage.setTitle("HR One - Employee Forum");
 
         } catch (Exception e) {
-            welcomeText.setText("❌ Database connection failed");
->>>>>>> 1dcf51ffc0dfa31816c3027349d427002b209857
             e.printStackTrace();
         }
     }

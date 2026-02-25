@@ -1,331 +1,312 @@
+/* ==================== THEME BLEU MARINE DÉGRADÉ ==================== */
 .root {
-  -fx-font-family: "Segoe UI";
-  -fx-text-fill: #0f172a;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.scroll-pane {
-  -fx-background-color: #f4f6fb;
+/* Dégradé de fond principal */
+.scroll-pane, .viewport {
+    -fx-background-color: linear-gradient(to bottom, #0a1929, #1a3a5f, #0a2a4a);
 }
 
-.scroll-pane > .viewport {
-  -fx-background-color: #f4f6fb;
+/* Header avec dégradé plus foncé */
+.header-hbox {
+    -fx-background-color: linear-gradient(to right, #051524, #0a1f33, #051524);
+    -fx-padding: 15 25;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.8), 20, 0, 0, 5);
 }
 
-.forum-app {
-  -fx-background-color: #f4f6fb;
-  -fx-padding: 24 32 40 32;
-  -fx-spacing: 24;
+/* Bannière principale */
+.hero-banner {
+    -fx-background-color: linear-gradient(135deg, #0a1a2f, #1a3f5f, #0a2a4a);
+    -fx-padding: 40;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.6), 25, 0, 0, 8);
 }
 
-.forum-header {
-  -fx-alignment: center-left;
-  -fx-spacing: 16;
+/* Widget météo */
+.weather-widget {
+    -fx-background-color: linear-gradient(to bottom, #0a1f35, #03101d);
+    -fx-padding: 25;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5);
+    -fx-border-color: #2a4a7a;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
 }
 
-.brand {
-  -fx-alignment: center-left;
-  -fx-spacing: 12;
+/* Cartes de post */
+.post-card {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f5f9ff);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.3), 15, 0, 0, 5);
+    -fx-padding: 20;
+    -fx-spacing: 12;
+    -fx-border-color: #2a4a7a;
+    -fx-border-width: 0 0 0 5;
+    -fx-border-radius: 15;
 }
 
-.brand-logo {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 16;
-  -fx-background-radius: 16;
+.post-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,50,100,0.5), 20, 0, 0, 8);
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+    -fx-transition: all 0.3s ease;
 }
 
-.brand-name {
-  -fx-font-size: 18;
-  -fx-font-weight: 600;
+/* Formulaire de post */
+.post-form-card {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e8f0fe);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.3), 15, 0, 0, 5);
+    -fx-border-color: #1a3a5f;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
 }
 
-.brand-sub {
-  -fx-font-size: 12;
-  -fx-text-fill: #64748b;
+/* Sidebar */
+.side-panel-card {
+    -fx-background-color: linear-gradient(to bottom, #0a1a30, #031526);
+    -fx-padding: 25;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5);
+    -fx-border-color: #2a5a8a;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
 }
 
-.header-actions {
-  -fx-spacing: 10;
+/* Titres */
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3, 0, 0, 2);
 }
 
-.btn {
-  -fx-background-radius: 12;
-  -fx-border-radius: 12;
-  -fx-font-weight: 600;
-  -fx-padding: 8 14;
-  -fx-cursor: hand;
+.section-title-blue {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(to right, #4a9eff, #7ac7ff);
+    -fx-effect: dropshadow(gaussian, rgba(0,100,255,0.5), 5, 0, 0, 2);
 }
 
+/* Tags */
+.tag {
+    -fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a);
+    -fx-text-fill: white;
+    -fx-padding: 5 15;
+    -fx-background-radius: 25;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 1);
+}
+
+.tag:hover {
+    -fx-background-color: linear-gradient(to right, #2a4f7a, #3a6fa5);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Boutons principaux */
 .btn-primary {
-  -fx-background-color: #2563eb;
-  -fx-text-fill: #ffffff;
+    -fx-background-color: linear-gradient(to right, #0a2a4a, #1a4a7a, #0a2a4a);
+    -fx-text-fill: white;
+    -fx-padding: 12 25;
+    -fx-background-radius: 25;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,50,100,0.5), 8, 0, 0, 2);
 }
 
 .btn-primary:hover {
-  -fx-background-color: #1d4ed8;
+    -fx-background-color: linear-gradient(to right, #1a3f6f, #2a5f9f, #1a3f6f);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(0,100,200,0.7), 12, 0, 0, 3);
 }
 
-.btn-ghost {
-  -fx-background-color: transparent;
-  -fx-border-color: #e2e8f0;
-  -fx-text-fill: #0f172a;
+/* Boutons secondaires */
+.btn-secondary {
+    -fx-background-color: linear-gradient(to right, #1a3f5f, #2a5a8a);
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-background-radius: 20;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
 }
 
-.btn-ghost:hover {
-  -fx-background-color: #f1f5f9;
+/* Boutons API */
+.api-btn {
+    -fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a);
+    -fx-text-fill: white;
+    -fx-padding: 12;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-border-color: #3a6faf;
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
 }
 
-.forum-hero {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 20;
-  -fx-background-radius: 20;
-  -fx-padding: 24;
-  -fx-spacing: 18;
+.api-btn:hover {
+    -fx-background-color: linear-gradient(to right, #1a3f6f, #2a5f9f);
+    -fx-effect: dropshadow(gaussian, rgba(0,100,200,0.5), 10, 0, 0, 2);
 }
 
-.hero-title {
-  -fx-font-size: 22;
-  -fx-font-weight: 700;
+/* Votes */
+.vote-container {
+    -fx-background-color: #e8f0fe;
+    -fx-background-radius: 30;
+    -fx-padding: 5;
+    -fx-spacing: 5;
 }
 
-.hero-sub {
-  -fx-text-fill: #64748b;
+.vote-btn-up {
+    -fx-background-color: linear-gradient(to right, #2ecc71, #27ae60);
+    -fx-text-fill: white;
+    -fx-padding: 5 15;
+    -fx-background-radius: 20;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
 }
 
-.hero-search {
-  -fx-spacing: 10;
-  -fx-alignment: center-left;
+.vote-btn-down {
+    -fx-background-color: linear-gradient(to right, #e74c3c, #c0392b);
+    -fx-text-fill: white;
+    -fx-padding: 5 15;
+    -fx-background-radius: 20;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
 }
 
-.forum-content {
-  -fx-spacing: 24;
+.vote-count {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a1a30;
+    -fx-padding: 5 10;
 }
 
-.feed {
-  -fx-spacing: 16;
+/* Chatbot */
+.chat-container {
+    -fx-background-color: linear-gradient(to bottom, #0a1f35, #031526);
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #2a5a8a;
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
 }
 
-.feed-header {
-  -fx-alignment: center-left;
-  -fx-spacing: 12;
+.chat-message-user {
+    -fx-background-color: linear-gradient(to right, #1a3f6f, #2a5f9f);
+    -fx-text-fill: white;
+    -fx-padding: 10 15;
+    -fx-background-radius: 20 20 5 20;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
 }
 
-.section-title {
-  -fx-font-size: 16;
-  -fx-font-weight: 600;
+.chat-message-bot {
+    -fx-background-color: linear-gradient(to right, #2a4f7a, #3a6fa5);
+    -fx-text-fill: white;
+    -fx-padding: 10 15;
+    -fx-background-radius: 20 20 20 5;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
 }
 
-.tabs {
-  -fx-spacing: 8;
-}
-
-.tab {
-  -fx-border-color: #e2e8f0;
-  -fx-background-color: #ffffff;
-  -fx-background-radius: 12;
-  -fx-border-radius: 12;
-  -fx-padding: 6 12;
-  -fx-font-weight: 600;
-  -fx-cursor: hand;
-}
-
-.tab-active {
-  -fx-background-color: #2563eb;
-  -fx-text-fill: #ffffff;
-  -fx-border-color: #2563eb;
-}
-
-.post-card {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 18;
-  -fx-background-radius: 18;
-  -fx-padding: 18;
-  -fx-spacing: 16;
-}
-
-.vote {
-  -fx-alignment: top-center;
-  -fx-spacing: 6;
-}
-
-.vote-btn {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 10;
-  -fx-background-radius: 10;
-  -fx-min-width: 36;
-  -fx-min-height: 36;
-  -fx-font-weight: 700;
-  -fx-cursor: hand;
-}
-
-.vote-score {
-  -fx-font-weight: 600;
-}
-
-.post-body {
-  -fx-spacing: 10;
-}
-
-.post-meta {
-  -fx-spacing: 8;
-}
-
-.post-meta .label {
-  -fx-text-fill: #64748b;
-  -fx-font-size: 12;
-}
-
-.tag {
-  -fx-font-size: 12;
-  -fx-padding: 4 10;
-  -fx-background-radius: 999;
-  -fx-background-color: #e0e7ff;
-  -fx-text-fill: #1d4ed8;
-  -fx-font-weight: 600;
-}
-
-.tag-green {
-  -fx-background-color: #dcfce7;
-  -fx-text-fill: #15803d;
-}
-
-.tag-amber {
-  -fx-background-color: #fef3c7;
-  -fx-text-fill: #b45309;
-}
-
-.post-title {
-  -fx-font-size: 15;
-  -fx-font-weight: 600;
-}
-
-.post-text {
-  -fx-text-fill: #334155;
-  -fx-font-size: 13;
-}
-
-.post-footer {
-  -fx-alignment: center-left;
-  -fx-spacing: 10;
-}
-
-.post-actions {
-  -fx-spacing: 8;
-}
-
-.chip {
-  -fx-border-color: #e2e8f0;
-  -fx-background-color: #ffffff;
-  -fx-background-radius: 12;
-  -fx-border-radius: 12;
-  -fx-padding: 6 12;
-  -fx-font-weight: 600;
-  -fx-cursor: hand;
-}
-
-.comments {
-  -fx-spacing: 10;
-}
-
+/* Commentaires */
 .comment {
-  -fx-border-color: transparent transparent transparent #e0e7ff;
-  -fx-border-width: 0 0 0 3;
-  -fx-padding: 0 0 0 10;
-  -fx-spacing: 6;
+    -fx-background-color: #f8faff;
+    -fx-padding: 12;
+    -fx-background-radius: 12;
+    -fx-border-color: #b0c4de;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-spacing: 8;
 }
 
-.comment-author {
-  -fx-font-weight: 600;
-  -fx-font-size: 13;
+.comment-vote {
+    -fx-background-color: #e8f0fe;
+    -fx-background-radius: 20;
+    -fx-padding: 3 10;
+    -fx-spacing: 5;
 }
 
-.comment-text {
-  -fx-text-fill: #64748b;
-  -fx-font-size: 13;
+/* Footer */
+.footer {
+    -fx-background-color: linear-gradient(to right, #051e2f, #0a2a4a, #051e2f);
+    -fx-padding: 20 25;
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
 }
 
-.comment-actions {
-  -fx-spacing: 12;
+/* Statistiques */
+.stats-card {
+    -fx-background-color: linear-gradient(135deg, #0a1a30, #1a3f5f);
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,50,100,0.5), 15, 0, 0, 5);
 }
 
-.link-btn {
-  -fx-background-color: transparent;
-  -fx-border-color: transparent;
-  -fx-text-fill: #2563eb;
-  -fx-font-weight: 600;
-  -fx-padding: 0;
-  -fx-cursor: hand;
+.stats-label {
+    -fx-text-fill: #aac9ff;
+    -fx-font-size: 14px;
 }
 
-.comment-form {
-  -fx-alignment: center-left;
-  -fx-spacing: 10;
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
 }
 
-.side-panel {
-  -fx-spacing: 16;
+/* Indicateurs de sentiment */
+.sentiment-positive {
+    -fx-background-color: linear-gradient(to right, #27ae60, #2ecc71);
+    -fx-text-fill: white;
+    -fx-padding: 3 10;
+    -fx-background-radius: 15;
 }
 
-.panel-card {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 20;
-  -fx-background-radius: 20;
-  -fx-padding: 18;
-  -fx-spacing: 12;
+.sentiment-neutral {
+    -fx-background-color: linear-gradient(to right, #7f8c8d, #95a5a6);
+    -fx-text-fill: white;
+    -fx-padding: 3 10;
+    -fx-background-radius: 15;
 }
 
-.post-form-card {
-  -fx-spacing: 12;
+.sentiment-negative {
+    -fx-background-color: linear-gradient(to right, #c0392b, #e74c3c);
+    -fx-text-fill: white;
+    -fx-padding: 3 10;
+    -fx-background-radius: 15;
 }
 
-.post-form {
-  -fx-spacing: 12;
+/* Barre de recherche */
+.search-field {
+    -fx-background-color: white;
+    -fx-padding: 15 20;
+    -fx-background-radius: 30;
+    -fx-font-size: 15px;
+    -fx-prompt-text-fill: #7f8c8d;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-.field {
-  -fx-spacing: 8;
+/* WhatsApp Button */
+.whatsapp-btn {
+    -fx-background-color: linear-gradient(to right, #25D366, #128C7E);
+    -fx-text-fill: white;
+    -fx-padding: 12 20;
+    -fx-background-radius: 25;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
-.form-actions {
-  -fx-alignment: center-right;
-  -fx-spacing: 10;
-}
-
-.muted {
-  -fx-text-fill: #64748b;
-}
-
-.tag-list {
-  -fx-spacing: 8;
-}
-
-.pill {
-  -fx-background-color: #f8fafc;
-  -fx-border-color: #e2e8f0;
-  -fx-background-radius: 999;
-  -fx-border-radius: 999;
-  -fx-padding: 6 10;
-  -fx-font-size: 12;
-  -fx-font-weight: 600;
-}
-
-.tips {
-  -fx-spacing: 6;
-}
-
-.tips .label {
-  -fx-text-fill: #64748b;
-}
-
-.text-field,
-.text-area {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 12;
-  -fx-background-radius: 12;
-  -fx-padding: 8 12;
+.whatsapp-btn:hover {
+    -fx-background-color: linear-gradient(to right, #128C7E, #075E54);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
