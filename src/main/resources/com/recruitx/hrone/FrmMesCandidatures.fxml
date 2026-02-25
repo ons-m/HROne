@@ -22,7 +22,11 @@
         <Region HBox.hgrow="ALWAYS" />
         <HBox styleClass="header-actions">
           <Button text="Mes candidatures" styleClass="btn btn-ghost" />
+<<<<<<< Updated upstream
           <Button text="Nouvelle candidature" styleClass="btn btn-primary" />
+=======
+          <Button text="Nouvelle candidature" styleClass="btn btn-primary" onAction="#onShowNewApplication" />
+>>>>>>> Stashed changes
         </HBox>
       </HBox>
 

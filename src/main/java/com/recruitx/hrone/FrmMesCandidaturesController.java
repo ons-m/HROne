@@ -3,12 +3,21 @@ package com.recruitx.hrone;
 import com.recruitx.hrone.utils.CError;
 import com.recruitx.hrone.utils.DBHelper;
 import com.recruitx.hrone.utils.LogType;
+<<<<<<< Updated upstream
+=======
+import java.io.IOException;
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javafx.fxml.FXML;
+<<<<<<< Updated upstream
+=======
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+>>>>>>> Stashed changes
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +26,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+<<<<<<< Updated upstream
+=======
+import javafx.stage.Stage;
+>>>>>>> Stashed changes
 
 public class FrmMesCandidaturesController {
     @FXML
@@ -237,6 +250,31 @@ public class FrmMesCandidaturesController {
         emptyState.setManaged(empty);
     }
 
+<<<<<<< Updated upstream
+=======
+    @FXML
+    private void onShowNewApplication() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    HelloApplication.class.getResource("FrmCandidat.fxml")
+            );
+            Scene scene = new Scene(loader.load(), 1024, 768);
+            String css = HelloApplication.class
+                    .getResource("FrmCandidat.fx.css")
+                    .toExternalForm();
+            scene.getStylesheets().add(css);
+
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Erreur");
+            alert.setContentText("Impossible d'ouvrir la page candidat.");
+            alert.showAndWait();
+        }
+    }
+
+>>>>>>> Stashed changes
     private VBox buildCard(ApplicationItem item) {
         VBox card = new VBox();
         card.getStyleClass().add("card-item");

@@ -1,13 +1,26 @@
 package com.recruitx.hrone;
 
+<<<<<<< Updated upstream
+=======
+import java.io.IOException;
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javafx.fxml.FXML;
+<<<<<<< Updated upstream
+=======
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+>>>>>>> Stashed changes
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+<<<<<<< Updated upstream
+=======
+import javafx.stage.Stage;
+>>>>>>> Stashed changes
 
 public class FrmCandidatController {
 
@@ -99,6 +112,31 @@ public class FrmCandidatController {
         filterOffers();
     }
 
+<<<<<<< Updated upstream
+=======
+    @FXML
+    private void onShowMyApplications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    HelloApplication.class.getResource("FrmMesCandidatures.fxml")
+            );
+            Scene scene = new Scene(loader.load(), 1024, 768);
+            String css = HelloApplication.class
+                    .getResource("FrmMesCandidatures.fx.css")
+                    .toExternalForm();
+            scene.getStylesheets().add(css);
+
+            Stage stage = (Stage) offerSearch.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Erreur");
+            alert.setContentText("Impossible d'ouvrir Mes candidatures.");
+            alert.showAndWait();
+        }
+    }
+
+>>>>>>> Stashed changes
     private void filterOffers() {
         String query = normalize(offerSearch.getText());
         String location = offerLocation.getValue() == null ? "" : offerLocation.getValue();

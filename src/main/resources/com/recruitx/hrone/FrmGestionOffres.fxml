@@ -66,7 +66,11 @@
               </columnConstraints>
 
               <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="0">
+<<<<<<< Updated upstream
                 <Label text="Titre du poste" />
+=======
+                <Label prefHeight="18.0" prefWidth="151.0" text="Titre du poste" textFill="#232323" />
+>>>>>>> Stashed changes
                 <TextField fx:id="offerTitleInput" promptText="Ex: Responsable Marketing" />
               </VBox>
 
@@ -80,7 +84,11 @@
               </VBox>
 
               <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="2">
+<<<<<<< Updated upstream
                   <Label text="Experience minimale (en années)" />
+=======
+                  <Label prefHeight="18.0" prefWidth="264.0" text="Experience minimale (en années)" />
+>>>>>>> Stashed changes
                   <TextField fx:id="offerExperienceInput" promptText="Ex: 3" />
               </VBox>
               <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2">
