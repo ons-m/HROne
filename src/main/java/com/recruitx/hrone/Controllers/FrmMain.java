@@ -142,7 +142,7 @@ public class FrmMain {
             case EVENEMENTS ->
                     "/com/recruitx/hrone/View/FrmEvenement.fxml";
             case FORMATIONS ->
-                    "/com/recruitx/hrone/View/FrmFormations.fxml";
+                    "/com/recruitx/hrone/View/FrmFormationDashboard.fxml";
             //Interface Candidature Cote Candidat
             case MES_CANDIDATURES ->
                     "/com/recruitx/hrone/View/FrmMesCandidatures.fxml";
@@ -150,7 +150,7 @@ public class FrmMain {
             case OFFRES ->
                     "/com/recruitx/hrone/View/FrmCandidat.fxml";
             case TRAINING ->
-                    "/com/recruitx/hrone/View/FrmTraining.fxml";
+                    "/com/recruitx/hrone/View/FrmFormation.fxml";
             case COMMUNAUTE ->
                     "/com/recruitx/hrone/View/FrmCommunaute.fxml";
             //Interface Evenement Cote HR
