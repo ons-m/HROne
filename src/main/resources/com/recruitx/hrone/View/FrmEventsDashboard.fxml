@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmEventsDashboard"
+           xmlns="http://javafx.com/javafx/20"
+           xmlns:fx="http://javafx.com/fxml/1"
+           stylesheets="@../Css/FrmEventsDashboard.fx.css">
+
+    <ScrollPane fitToWidth="true"
+                pannable="true">
+
+        <content>
+            <VBox styleClass="main">
+
+                <!-- Topbar -->
+                <HBox styleClass="topbar">
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox styleClass="user">
+                        <VBox styleClass="user-info">
+                            <Label text="Agent RH" styleClass="user-name"/>
+                            <Label text="Evenements" styleClass="user-role"/>
+                        </VBox>
+                        <Label text="AR" styleClass="avatar"/>
+                    </HBox>
+                </HBox>
+
+                <!-- Main Grid -->
+                <VBox styleClass="grid formation-builder">
+
+                    <!-- Create Event Card -->
+                    <VBox styleClass="card">
+
+                        <Label text="Creer un evenement"
+                               styleClass="section-title"/>
+
+                        <Label text="Ajoutez un evenement RH avec ses dates et sa localisation."
+                               styleClass="muted"/>
+
+                        <VBox styleClass="formation-form">
+
+                            <VBox styleClass="field">
+                                <Label text="Titre"/>
+                                <TextField fx:id="titreField"
+                                           promptText="Ex: Atelier RH and Data"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Localisation"/>
+                                <TextField fx:id="localisationField"
+                                           promptText="Ex: Casablanca"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Date de debut"/>
+                                <DatePicker fx:id="dateDebutPicker"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Date de fin"/>
+                                <DatePicker fx:id="dateFinPicker"/>
+                            </VBox>
+
+                            <VBox styleClass="field full">
+                                <Label text="Description"/>
+                                <TextArea fx:id="descriptionArea"
+                                          prefRowCount="4"
+                                          promptText="Presentez l’objectif de l’evenement."/>
+                            </VBox>
+
+                            <VBox styleClass="field full">
+                                <Label text="Image (optionnel)"/>
+                                <TextField fx:id="imageField"
+                                           promptText="https://exemple.com/evenement.png"/>
+                            </VBox>
+
+                            <Label fx:id="statusLabel"
+                                   text=""
+                                   styleClass="form-status"/>
+
+                            <HBox styleClass="form-actions">
+                                <Button text="Reinitialiser"
+                                        styleClass="btn btn-ghost"
+                                        onAction="#handlePublier"/>
+
+                                <Button text="Gérer les Activités"
+                                        styleClass="btn btn-secondary"
+                                        onAction="#handleManageActivites"/>
+
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Button text="Publier l’evenement"
+                                        styleClass="btn btn-primary"
+                                        onAction="#handlePublier"/>
+                            </HBox>
+
+                        </VBox>
+                    </VBox>
+
+                    <!-- Event List Card -->
+                    <VBox styleClass="card">
+
+                        <Label text="Evenements planifies"
+                               styleClass="section-title"/>
+
+                        <Label text="Modifiez ou supprimez les evenements publies."
+                               styleClass="muted"/>
+
+                        <VBox fx:id="eventList"
+                              styleClass="resource-list"/>
+
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </content>
+
+    </ScrollPane>
+
+</StackPane>

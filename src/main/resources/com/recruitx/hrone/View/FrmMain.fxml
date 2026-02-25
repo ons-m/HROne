@@ -50,6 +50,11 @@
                             styleClass="nav-link"
                             onAction="#openGestionEmployee"/>
 
+                    <Button fx:id="btnOutils"
+                            text="gestion Outils"
+                            styleClass="nav-link"
+                            onAction="#openGestionOutils"/>
+
                     <Button fx:id="btnEntretiens"
                             text="gestion des entretiens"
                             styleClass="nav-link"
@@ -63,7 +68,7 @@
                     <Button fx:id="btnEvenements"
                             text="gestion des evenements"
                             styleClass="nav-link"
-                            onAction="#openEvenements"/>
+                            onAction="#openEvents"/>
 
                     <Button fx:id="btnFormations"
                             text="gestions des formations"
@@ -88,7 +93,7 @@
                     <Button fx:id="btnEvents"
                             text="evenements"
                             styleClass="nav-link"
-                            onAction="#openEvents"/>
+                            onAction="#openEvenements"/>
 
                 </VBox>
             </VBox>

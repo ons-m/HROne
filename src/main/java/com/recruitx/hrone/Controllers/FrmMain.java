@@ -23,6 +23,7 @@ public class FrmMain {
     @FXML private Button btnCommunaute;
     @FXML private Button btnEvents;
     @FXML private Button btnGererMesOffres;
+    @FXML private Button btnOutils;
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
     private Button currentActiveButton;
@@ -34,11 +35,13 @@ public class FrmMain {
         EVENEMENTS,
         FORMATIONS,
         OFFRES,
+        OUTILS,
         MES_CANDIDATURES,
         GESTIONOFFRES,
         TRAINING,
         COMMUNAUTE,
-        EVENTS
+        EVENTS,
+        ACTIVITES
     }
 
     /* ================================
@@ -49,6 +52,8 @@ public class FrmMain {
     @FXML private void openGestionEmployee() {
         loadView(ViewType.GESTION_EMPLOYEE, btnEmployee);
     }
+
+    @FXML private void openGestionOutils() { loadView(ViewType.OUTILS, btnOutils); }
 
     @FXML private void openGestionUsers() {
         loadView(ViewType.GESTION_USERS, btnUsers);
@@ -124,13 +129,15 @@ public class FrmMain {
         return switch (type) {
             case GESTION_EMPLOYEE ->
                     "/com/recruitx/hrone/View/FrmGestionEmployee.fxml";
+            case OUTILS ->
+                    "/com/recruitx/hrone/View/FrmGestionOutil.fxml";
             case GESTION_USERS ->
                     "/com/recruitx/hrone/View/FrmGestionUsers.fxml";
             //Todo : Ajouter Interface Entretien
             case ENTRETIENS ->
                     "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
             case EVENEMENTS ->
-                    "/com/recruitx/hrone/View/FrmEvenements.fxml";
+                    "/com/recruitx/hrone/View/FrmEvenement.fxml";
             case FORMATIONS ->
                     "/com/recruitx/hrone/View/FrmFormations.fxml";
             case MES_CANDIDATURES ->
@@ -142,9 +149,11 @@ public class FrmMain {
             case COMMUNAUTE ->
                     "/com/recruitx/hrone/View/FrmCommunaute.fxml";
             case EVENTS ->
-                    "/com/recruitx/hrone/View/FrmEvents.fxml";
+                    "/com/recruitx/hrone/View/FrmEventsDashboard.fxml";
             case GESTIONOFFRES ->
                     "/com/recruitx/hrone/View/FrmGestionOffres.fxml";
+            case ACTIVITES ->
+                    "/com/recruitx/hrone/View/FrmActivites.fxml";
         };
     }
 
