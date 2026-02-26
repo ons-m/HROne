@@ -5,13 +5,10 @@ import com.recruitx.hrone.Repository.UtilisateurRepository;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.Objects;
-
-public class LoginController implements NavigationAware{
+public class FrmLogin implements NavigationAware{
 
     @FXML private ImageView appLogo;          // logo ajouté
     @FXML private ComboBox<String> loginRole;
@@ -29,10 +26,10 @@ public class LoginController implements NavigationAware{
 
     @FXML
     public void initialize() {
-        // Charger le logo
-        Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/recruitx/hrone/images/logo.png"))); // place ton logo dans src/main/resources/images/logo.png
-        appLogo.setImage(logo);
-
+//        // Charger le logo
+//        Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/recruitx/hrone/images/logo.png"))); // place ton logo dans src/main/resources/images/logo.png
+//        appLogo.setImage(logo);
+//
         loginRole.setItems(FXCollections.observableArrayList("CANDIDAT", "AGENT RH", "EMPLOYEE"));
     }
 

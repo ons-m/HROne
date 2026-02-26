@@ -177,11 +177,11 @@ public class FrmMain {
             case ACTIVITES ->
                     "/com/recruitx/hrone/View/FrmActivites.fxml";
             case SIGNUPCANDIDAT ->
-                "";
+                    "/com/recruitx/hrone/View/FrmSignUpCandiat.fxml";
             case SIGNUPENTREPRISE ->
-                "";
+                    "/com/recruitx/hrone/View/FrmSignUpEntreprise.fxml";
             case LOGIN ->
-                "";
+                    "/com/recruitx/hrone/View/FrmLogin.fxml";
         };
     }
 

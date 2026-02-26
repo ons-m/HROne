@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SignupCandidateController implements NavigationAware{
+public class FrmSignUpCandidat implements NavigationAware{
 
     @FXML private TextField candUsername;
     @FXML private PasswordField candPassword;

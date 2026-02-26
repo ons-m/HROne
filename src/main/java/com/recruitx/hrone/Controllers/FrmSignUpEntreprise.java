@@ -12,7 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
-public class SignupRhController implements NavigationAware{
+public class FrmSignUpEntreprise implements NavigationAware{
 
     // ---------------- RH Infos ----------------
     @FXML private TextField rhUsername;
