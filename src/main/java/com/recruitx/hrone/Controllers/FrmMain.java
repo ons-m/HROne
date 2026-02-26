@@ -24,6 +24,9 @@ public class FrmMain {
     @FXML private Button btnEvents;
     @FXML private Button btnGererMesOffres;
     @FXML private Button btnOutils;
+    @FXML private Button btnLogin;
+    @FXML private Button btnLoginCandidat;
+    @FXML private Button btnSignUpEntreprise;
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
     private Button currentActiveButton;
@@ -41,7 +44,10 @@ public class FrmMain {
         TRAINING,
         COMMUNAUTE,
         EVENTS,
-        ACTIVITES
+        ACTIVITES,
+        LOGIN,
+        SIGNUPCANDIDAT,
+        SIGNUPENTREPRISE
     }
 
     /* ================================
@@ -86,6 +92,13 @@ public class FrmMain {
     @FXML private void openEvents() {
         loadView(ViewType.EVENTS, btnEvents);
     }
+
+    @FXML private void openLogin() { loadView(ViewType.LOGIN, btnLogin);}
+
+    @FXML private void openLoginCandidat() { loadView(ViewType.SIGNUPCANDIDAT, btnLoginCandidat);}
+
+    @FXML private void openSignUp() { loadView(ViewType.SIGNUPENTREPRISE, btnSignUpEntreprise);}
+
 
     /* ================================
        Core Loader (With Cache + Highlight)
@@ -133,8 +146,9 @@ public class FrmMain {
             //Interface Gestion Outils Cote HR
             case OUTILS ->
                     "/com/recruitx/hrone/View/FrmGestionOutil.fxml";
+            //Interface Gestion Users Cote Admin
             case GESTION_USERS ->
-                    "/com/recruitx/hrone/View/FrmGestionUsers.fxml";
+                    "/com/recruitx/hrone/View/FrmUserDashboard.fxml";
             //interface Entretiens Cote HR
             case ENTRETIENS ->
                     "/com/recruitx/hrone/View/FrmCandidatures.fxml";
@@ -162,6 +176,12 @@ public class FrmMain {
             //Interface Activites Cote HR
             case ACTIVITES ->
                     "/com/recruitx/hrone/View/FrmActivites.fxml";
+            case SIGNUPCANDIDAT ->
+                "";
+            case SIGNUPENTREPRISE ->
+                "";
+            case LOGIN ->
+                "";
         };
     }
 

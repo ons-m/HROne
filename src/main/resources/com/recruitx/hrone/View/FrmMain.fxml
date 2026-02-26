@@ -45,6 +45,25 @@
                             styleClass="nav-link"
                             onAction="#openGestionUsers"/>
 
+<<<<<<< Updated upstream
+=======
+                    <Button fx:id="btnLogin"
+                            text="Login"
+                            styleClass="nav-link"
+                            onAction="#openLogin"/>
+
+                    <Button fx:id="btnLoginCandidat"
+                            text="SignUp Candidat"
+                            styleClass="nav-link"
+                            onAction="#openLoginCandidat"/>
+
+                    <Button fx:id="btnSignUpEntreprise"
+                            text="SignUp Entreprise"
+                            styleClass="nav-link"
+                            onAction="#openSignUp"/>
+
+
+>>>>>>> Stashed changes
                     <Button fx:id="btnEmployee"
                             text="gestion administrative"
                             styleClass="nav-link"
