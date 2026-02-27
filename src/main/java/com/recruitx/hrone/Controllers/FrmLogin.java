@@ -12,8 +12,6 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class FrmLogin implements NavigationAware{
 
-    @FXML private ImageView appLogo;          // logo ajouté
-    @FXML private ComboBox<String> loginRole;
     @FXML private TextField loginEmail;
     @FXML private PasswordField loginPassword;
 
@@ -28,47 +26,35 @@ public class FrmLogin implements NavigationAware{
 
     @FXML
     public void initialize() {
-        loginRole.setItems(FXCollections.observableArrayList("CANDIDAT", "AGENT RH", "EMPLOYEE"));
     }
 
     @FXML
     private void handleLogin() {
-        String role = loginRole.getValue();
         String email = loginEmail.getText().trim();
         String password = loginPassword.getText().trim();
 
-        if (role == null || email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Erreur", "Veuillez remplir tous les champs.");
             return;
         }
 
         Utilisateur loggedUser = utilisateurCRUD.findByEmail(email);
 
-        if (loggedUser != null) {
-            // Vérifier le mot de passe hashé
-            if (!BCrypt.checkpw(password, loggedUser.getMotPasse())) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Email ou mot de passe incorrect !");
-                return;
-            }
-
-            // Vérifier le rôle
-            boolean roleMatch =
-                    (role.equals("CANDIDAT") && loggedUser.getIdProfil() == 1) ||
-                            (role.equals("AGENT RH") && loggedUser.getIdProfil() == 2) ||
-                            (role.equals("EMPLOYEE") && loggedUser.getIdProfil() == 3);
-
-            if (!roleMatch) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle incorrect !");
-                return;
-            }
-            mainController.showSidebar();
-            mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
-            mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser));
-
-        } else {
+        if (loggedUser == null) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Email ou mot de passe incorrect !");
             return;
         }
+
+        // Vérifier le mot de passe hashé
+        if (!BCrypt.checkpw(password, loggedUser.getMotPasse())) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Email ou mot de passe incorrect !");
+            return;
+        }
+
+        mainController.showSidebar();
+        mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
+        mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser));
+        mainController.setVisisiblityByRole();
     }
 
     private Entreprise GetUserEntreprise(Utilisateur user){

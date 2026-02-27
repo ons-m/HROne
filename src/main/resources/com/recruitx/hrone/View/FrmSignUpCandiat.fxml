@@ -83,25 +83,6 @@
                                   prefWidth="300"/>
                     </VBox>
 
-                    <VBox spacing="5">
-                        <Label text="Entreprise"/>
-                        <ComboBox fx:id="candCompany"
-                                  promptText="Chercher une entreprise"
-                                  editable="true"
-                                  prefWidth="300"/>
-
-                        <VBox spacing="5"
-                              styleClass="company-details">
-
-                            <Label fx:id="compNameLabel"
-                                   text="Nom: "/>
-
-                            <Label fx:id="compRefLabel"
-                                   text="Reference: "/>
-
-                        </VBox>
-                    </VBox>
-
                 </VBox>
 
                 <!-- Actions -->

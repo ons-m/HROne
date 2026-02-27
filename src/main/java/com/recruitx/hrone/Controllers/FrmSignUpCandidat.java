@@ -1,5 +1,6 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
@@ -24,14 +25,11 @@ public class FrmSignUpCandidat implements NavigationAware{
     @FXML private TextField candCIN;
     @FXML private DatePicker candBirth;
     @FXML private ComboBox<String> candGender;
-    @FXML private ComboBox<com.recruitx.hrone.Models.Entreprise> candCompany;
-    @FXML private Label compNameLabel;
-    @FXML private Label compRefLabel;
 
     private final UtilisateurRepository utilisateurCRUD = new UtilisateurRepository();
-    private final EntrepriseRepository entrepriseCRUD = new EntrepriseRepository();
-    private ObservableList<com.recruitx.hrone.Models.Entreprise> entrepriseList;
+    private ObservableList<Entreprise> entrepriseList;
 
+    private static final int DEFAULT_ENTREPRISE_ID = 1;
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
@@ -46,48 +44,6 @@ public class FrmSignUpCandidat implements NavigationAware{
     @FXML
     public void initialize() {
         candGender.setItems(FXCollections.observableArrayList("Homme", "Femme"));
-        loadEntreprises();
-        setupCompanySelection();
-    }
-
-    // ================= LOAD ENTREPRISES =================
-    private void loadEntreprises() {
-        List<com.recruitx.hrone.Models.Entreprise> list = entrepriseCRUD.getAll();
-        entrepriseList = FXCollections.observableArrayList(list);
-        candCompany.setItems(entrepriseList);
-
-        candCompany.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(com.recruitx.hrone.Models.Entreprise item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNomEntreprise());
-            }
-        });
-
-        candCompany.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(com.recruitx.hrone.Models.Entreprise item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNomEntreprise());
-            }
-        });
-
-        candCompany.setEditable(false);
-    }
-
-    // ================= COMPANY SELECTION =================
-    private void setupCompanySelection() {
-        candCompany.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldVal, newVal) -> {
-
-                    if (newVal != null) {
-                        compNameLabel.setText("Nom: " + newVal.getNomEntreprise());
-                        compRefLabel.setText("Reference: " + newVal.getReference());
-                    } else {
-                        compNameLabel.setText("Nom: ");
-                        compRefLabel.setText("Reference: ");
-                    }
-                });
     }
 
     // ================= REGISTER CANDIDATE =================
@@ -102,12 +58,11 @@ public class FrmSignUpCandidat implements NavigationAware{
         String cin = candCIN.getText().trim();
         LocalDate birth = candBirth.getValue();
         String gender = candGender.getValue();
-        com.recruitx.hrone.Models.Entreprise selectedEntreprise = candCompany.getValue();
 
         // ===== VALIDATION =====
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()
                 || address.isEmpty() || phone.isEmpty() || cin.isEmpty()
-                || birth == null || gender == null || selectedEntreprise == null) {
+                || birth == null || gender == null) {
 
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez remplir tous les champs.");
@@ -157,7 +112,7 @@ public class FrmSignUpCandidat implements NavigationAware{
             u.setGender(gender.charAt(0));
             u.setDateNaissance(java.sql.Date.valueOf(birth));
             u.setIdProfil(1); // Candidat
-            u.setIdEntreprise(selectedEntreprise.getIdEntreprise());
+            u.setIdEntreprise(DEFAULT_ENTREPRISE_ID);
             u.setNumOrdreSignIn((int) COrdre.GetNumOrdreNow());
             u.setFirstLogin(0);
 

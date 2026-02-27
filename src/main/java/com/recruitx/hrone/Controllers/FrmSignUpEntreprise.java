@@ -1,6 +1,7 @@
 package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Models.Utilisateur;
+import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
 import com.recruitx.hrone.Utils.COrdre;
@@ -31,6 +32,7 @@ public class FrmSignUpEntreprise implements NavigationAware{
     private final UtilisateurRepository utilisateurCRUD = new UtilisateurRepository();
     private final EntrepriseRepository entrepriseCRUD = new EntrepriseRepository();
 
+    private static final int DEFAULT_PROFILE_ID_RH = 2;
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
@@ -109,7 +111,7 @@ public class FrmSignUpEntreprise implements NavigationAware{
 
         try {
             // ================= CREATE ENTREPRISE =================
-            com.recruitx.hrone.Models.Entreprise entreprise = new com.recruitx.hrone.Models.Entreprise();
+            Entreprise entreprise = new Entreprise();
             entreprise.setNomEntreprise(compName);
             entreprise.setReference(compRef);
             entrepriseCRUD.create(entreprise);
@@ -129,7 +131,7 @@ public class FrmSignUpEntreprise implements NavigationAware{
             rh.setCin(cin);
             rh.setGender(gender.charAt(0));
             rh.setDateNaissance(java.sql.Date.valueOf(birth));
-            rh.setIdProfil(2); // RH
+            rh.setIdProfil(DEFAULT_PROFILE_ID_RH); // RH
             rh.setIdEntreprise(entrepriseId);
             rh.setNumOrdreSignIn((int) COrdre.GetNumOrdreNow());
             rh.setFirstLogin(0);

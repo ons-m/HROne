@@ -32,10 +32,6 @@ public class FrmMain {
     @FXML private Button btntracabilite;
     @FXML private Button btnGestionConge;
     @FXML private Button btnDemandeConge;
-    //    @FXML private Button btnLogin;
-//    @FXML private Button btnLoginCandidat;
-//    @FXML private Button btnSignUpEntreprise;
-
 
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
@@ -119,12 +115,6 @@ public class FrmMain {
     @FXML private void opengGestionConge() {loadView(ViewType.GESTION_CONGE, btnGestionConge);}
 
     @FXML private void openDemangeConge() {loadView(ViewType.DEMANDE_CONGE, btnDemandeConge);}
-
-//    @FXML private void openLogin() { loadView(ViewType.LOGIN, btnLogin);}
-//
-//    @FXML private void openLoginCandidat() { loadView(ViewType.SIGNUPCANDIDAT, btnLoginCandidat);}
-//
-//    @FXML private void openSignUp() { loadView(ViewType.SIGNUPENTREPRISE, btnSignUpEntreprise);}
 
 
     /* ================================
@@ -257,5 +247,9 @@ public class FrmMain {
 
         Session.setCurrentUser(currentUser);
         Session.setCurrentEntreprise(currEntreprise);
+    }
+
+    public void setVisisiblityByRole(){
+
     }
 }
