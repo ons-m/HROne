@@ -46,7 +46,7 @@
                             onAction="#openGestionUsers"/>
 
                     <Button fx:id="btnLogin"
-                            text="login"
+                            text="Login"
                             styleClass="nav-link"
                             onAction="#openLogin"/>
 

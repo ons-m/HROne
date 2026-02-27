@@ -36,10 +36,8 @@
 
           <!-- Page Title -->
           <VBox styleClass="page-title">
-              <Label styleClass="page-title-text"
-                     text="Gestion d'offre d'emploi"/>
-              <Label styleClass="muted"
-                     text="Creez, modifiez et suivez vos offres d'emploi en temps reel."/>
+              <Label styleClass="page-title-text" text="Gestion d'offre d'emploi" />
+              <Label styleClass="muted" text="Creez, modifiez et suivez vos offres d'emploi en temps reel." />
           </VBox>
 
           <!-- Main Grid -->
@@ -65,7 +63,7 @@
               </VBox>
               <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <Label text="Type de travail" />
-                <ComboBox fx:id="offerWorkTypeSelect" />
+                <ComboBox fx:id="offerWorkTypeSelect" prefHeight="43.0" prefWidth="159.0" />
               </VBox>
 
               <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="2">
@@ -73,7 +71,7 @@
                   <TextField fx:id="offerExperienceInput" promptText="Ex: 3" />
               </VBox>
               <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                <Label text="Intervalle de salaire (MAD)" />
+                <Label text="Intervalle de salaire" />
                 <HBox styleClass="range-field">
                   <TextField fx:id="salaryMinInput" promptText="Min" />
                   <Label styleClass="muted" text="-" />
@@ -143,15 +141,12 @@
             <VBox styleClass="card" HBox.hgrow="ALWAYS">
 
                 <HBox styleClass="card-header">
-                    <Label styleClass="section-title"
-                           text="Offres en cours"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <TextField fx:id="offerSearch"
-                               promptText="Rechercher une offre..."/>
+                    <Label styleClass="section-title" text="Offres en cours" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="offerSearch" promptText="Rechercher une offre..." />
                 </HBox>
 
-                <VBox fx:id="offerList"
-                      styleClass="offer-list"/>
+                <VBox fx:id="offerList" styleClass="offer-list" />
 
             </VBox>
         </HBox>
@@ -159,23 +154,23 @@
           <!-- Stats -->
           <HBox styleClass="stats">
               <VBox styleClass="stat">
-                  <Label styleClass="stat-value" text="12"/>
-                  <Label styleClass="stat-label" text="Offres actives"/>
+                  <Label styleClass="stat-value" text="12" />
+                  <Label styleClass="stat-label" text="Offres actives" />
               </VBox>
 
               <VBox styleClass="stat">
-                  <Label styleClass="stat-value" text="86"/>
-                  <Label styleClass="stat-label" text="Candidatures recues"/>
+                  <Label styleClass="stat-value" text="86" />
+                  <Label styleClass="stat-label" text="Candidatures recues" />
               </VBox>
 
               <VBox styleClass="stat">
-                  <Label styleClass="stat-value" text="4"/>
-                  <Label styleClass="stat-label" text="Offres en validation"/>
+                  <Label styleClass="stat-value" text="4" />
+                  <Label styleClass="stat-label" text="Offres en validation" />
               </VBox>
 
               <VBox styleClass="stat">
-                  <Label styleClass="stat-value" text="5 j"/>
-                  <Label styleClass="stat-label" text="Delai moyen"/>
+                  <Label styleClass="stat-value" text="5 j" />
+                  <Label styleClass="stat-label" text="Delai moyen" />
               </VBox>
           </HBox>
 

@@ -1,17 +1,24 @@
 package com.recruitx.hrone.Controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.io.File;
 
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
+import com.recruitx.hrone.Utils.DBHelper;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 
 
 public class FrmCandidat implements NavigationAware {
@@ -32,6 +39,11 @@ public class FrmCandidat implements NavigationAware {
     @FXML private TextField lettreRecommandation;
 
     List<Offer> offers = OfferRepository.AvoirListe();
+    private Map<String, String> competenceLabelsByCode = new HashMap<>();
+    private Map<String, String> langueLabelsByCode = new HashMap<>();
+    private Map<String, String> backgroundLabelsByCode = new HashMap<>();
+    private Map<String, String> contratLabelsByCode = new HashMap<>();
+    private Map<String, String> niveauLabelsByCode = new HashMap<>();
 
     @Override
     public void setMainController(FrmMain mainController) {
@@ -49,6 +61,7 @@ public class FrmCandidat implements NavigationAware {
     private void onApply() {
 
         List<String> errors = new ArrayList<>();
+        final int currentCandidateId = 1; // TEMP – utilisateur connecte
 
         if (selectedOffer.getValue() == null) {
             errors.add("Veuillez selectionner une offre.");
@@ -56,6 +69,10 @@ public class FrmCandidat implements NavigationAware {
 
         if (lettreMotivation.getText() == null || lettreMotivation.getText().isBlank()) {
             errors.add("La lettre de motivation est obligatoire.");
+        }
+
+        if (cv.getText() == null || cv.getText().isBlank()) {
+            errors.add("Veuillez selectionner un fichier CV depuis votre ordinateur.");
         }
 
         if (!errors.isEmpty()) {
@@ -66,8 +83,17 @@ public class FrmCandidat implements NavigationAware {
             return;
         }
 
+        boolean cvSaved = saveCandidateCvPath(currentCandidateId, cv.getText().trim());
+        if (!cvSaved) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Erreur CV");
+            alert.setContentText("Impossible d'enregistrer le chemin du CV.");
+            alert.showAndWait();
+            return;
+        }
+
         Candidature c = new Candidature();
-        c.setID_Candidat(1); // TEMP – utilisateur connecte
+        c.setID_Candidat(currentCandidateId); // TEMP – utilisateur connecte
         c.setID_Offre(selectedOffer.getValue().getID_Offre());
         c.setLettre_Motivation(lettreMotivation.getText().trim());
         c.setPortfolio(portfolio.getText());
@@ -96,6 +122,14 @@ public class FrmCandidat implements NavigationAware {
             offers = new ArrayList<>();
         }
 
+        cv.setEditable(false);
+
+        competenceLabelsByCode = buildLookupMap(OfferRepository.loadCompetencesFromDB());
+        langueLabelsByCode = buildLookupMap(OfferRepository.loadLanguesFromDB());
+        backgroundLabelsByCode = buildLookupMap(OfferRepository.loadBackgroundsFromDB());
+        contratLabelsByCode = buildLookupMap(OfferRepository.loadTypesContratFromDB());
+        niveauLabelsByCode = buildLookupMap(OfferRepository.loadNiveauxEtudeFromDB());
+
         offerLocation.getItems().setAll(
                 "Toutes les villes", "Casablanca", "Rabat", "Tanger", "Remote"
         );
@@ -111,6 +145,21 @@ public class FrmCandidat implements NavigationAware {
         offerLocation.valueProperty().addListener((obs, o, n) -> filterOffers());
 
         filterOffers();
+    }
+
+    @FXML
+    private void onBrowseCvFile() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Selectionner un fichier CV");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Fichiers CV", "*.pdf", "*.doc", "*.docx"),
+                new FileChooser.ExtensionFilter("Tous les fichiers", "*.*")
+        );
+
+        File selected = chooser.showOpenDialog(cv.getScene() != null ? cv.getScene().getWindow() : null);
+        if (selected != null) {
+            cv.setText(selected.getAbsolutePath());
+        }
     }
 
     @FXML
@@ -189,6 +238,7 @@ public class FrmCandidat implements NavigationAware {
 
         Button detailsBtn = new Button("Voir details");
         detailsBtn.getStyleClass().addAll("btn", "btn-ghost");
+        detailsBtn.setOnAction(e -> showOfferDetails(offer));
 
         Button applyBtn = new Button("Postuler");
         applyBtn.getStyleClass().addAll("btn", "btn-primary");
@@ -202,11 +252,134 @@ public class FrmCandidat implements NavigationAware {
         return card;
     }
 
+    private void showOfferDetails(Offer offer) {
+        Alert details = new Alert(Alert.AlertType.INFORMATION);
+        details.setTitle("Details de l'offre");
+        details.setHeaderText(offer.getTitre());
+        details.initModality(Modality.APPLICATION_MODAL);
+
+        TextArea content = new TextArea(buildOfferDetailsText(offer));
+        content.setWrapText(true);
+        content.setEditable(false);
+        content.setPrefRowCount(18);
+        details.getDialogPane().setContent(content);
+
+        ButtonType applyNow = new ButtonType("Appliquer maintenant", ButtonBar.ButtonData.OK_DONE);
+        details.getButtonTypes().setAll(applyNow, ButtonType.CLOSE);
+
+        details.showAndWait().ifPresent(type -> {
+            if (type == applyNow) {
+                selectedOffer.getSelectionModel().select(offer);
+                lettreMotivation.requestFocus();
+            }
+        });
+    }
+
+    private String buildOfferDetailsText(Offer offer) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Contrat: ")
+                .append(translateCode(offer.getCode_Type_Contrat(), contratLabelsByCode))
+                .append("\n");
+        builder.append("Localisation / Work type: ").append(orDefault(offer.getWork_Type())).append("\n");
+        builder.append("Experience requise: ").append(offer.getNbr_Annee_Experience()).append(" an(s)\n");
+        builder.append("Niveau d'etude: ")
+                .append(translateCode(offer.getCode_Type_Niveau_Etude(), niveauLabelsByCode))
+                .append("\n");
+        builder.append("Salaire: ").append(formatSalary(offer.getMin_Salaire(), offer.getMax_Salaire())).append("\n");
+        builder.append("\nDescription:\n").append(orDefault(offer.getDescription())).append("\n\n");
+        builder.append("Competences: ")
+                .append(joinTranslatedValues(offer.getCodes_Competences(), competenceLabelsByCode))
+                .append("\n");
+        builder.append("Langues: ")
+                .append(joinTranslatedValues(offer.getCodes_Langues(), langueLabelsByCode))
+                .append("\n");
+        builder.append("Backgrounds: ")
+                .append(joinTranslatedValues(offer.getCodes_Backgrounds(), backgroundLabelsByCode));
+        return builder.toString();
+    }
+
+    private String joinTranslatedValues(List<String> values, Map<String, String> labelsByCode) {
+        if (values == null || values.isEmpty()) {
+            return "N/A";
+        }
+        String result = values.stream()
+                .filter(v -> v != null && !v.isBlank())
+                .map(v -> translateCode(v, labelsByCode))
+                .collect(Collectors.joining(", "));
+        return result.isBlank() ? "N/A" : result;
+    }
+
+    private String translateCode(String code, Map<String, String> labelsByCode) {
+        String normalized = normalizeCode(code);
+        if (normalized.isBlank()) {
+            return "N/A";
+        }
+        String label = labelsByCode.get(normalized);
+        return (label == null || label.isBlank()) ? normalized : label;
+    }
+
+    private String normalizeCode(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim();
+    }
+
+    private Map<String, String> buildLookupMap(List<TypeItem> items) {
+        Map<String, String> map = new HashMap<>();
+        if (items == null) {
+            return map;
+        }
+
+        for (TypeItem item : items) {
+            if (item == null) {
+                continue;
+            }
+            String code = normalizeCode(item.getCode());
+            String label = normalizeCode(item.getLabel());
+            if (!code.isBlank() && !label.isBlank()) {
+                map.put(code, label);
+            }
+        }
+        return map;
+    }
+
+    private String orDefault(String value) {
+        if (value == null || value.isBlank()) {
+            return "N/A";
+        }
+        return value;
+    }
+
+    private String formatSalary(double min, double max) {
+        if (min <= 0 && max <= 0) {
+            return "N/A";
+        }
+        if (min > 0 && max > 0) {
+            return String.format(Locale.ROOT, "%.0f - %.0f MAD", min, max);
+        }
+        if (min > 0) {
+            return String.format(Locale.ROOT, "A partir de %.0f MAD", min);
+        }
+        return String.format(Locale.ROOT, "Jusqu'a %.0f MAD", max);
+    }
+
     private String normalize(String value) {
         if (value == null) {
             return "";
         }
         return value.toLowerCase(Locale.ROOT).trim();
+    }
+
+    private boolean saveCandidateCvPath(int candidateId, String cvPath) {
+        try {
+            String safePath = cvPath.replace("'", "''");
+            String sql =
+                    "UPDATE CONDIDAT SET CV = '" + safePath + "' WHERE ID_CONDIDAT = " + candidateId;
+            return DBHelper.ExecuteQuery(sql) > 0;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private void clearApplyForm() {

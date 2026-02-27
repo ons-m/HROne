@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<?import javafx.scene.layout.StackPane?>
-
-<StackPane stylesheets="@../Css/FrmUserDashboard.fx.css"
-           fx:controller="com.recruitx.hrone.Controllers.FrmUserDashboard"
+<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmUserDashboard"
            xmlns="http://javafx.com/javafx/20"
-           xmlns:fx="http://javafx.com/fxml/1">
+           xmlns:fx="http://javafx.com/fxml/1"
+           stylesheets="@../Css/FrmUserDashboard.fx.css">
+
     <ScrollPane fitToWidth="true"
                 pannable="true">
+
         <content>
-            <!-- Main content -->
-            <VBox styleClass="main" HBox.hgrow="ALWAYS" spacing="24">
+            <VBox styleClass="main" spacing="24">
+
                 <padding>
                     <Insets top="24" right="32" bottom="40" left="32"/>
                 </padding>
@@ -40,7 +31,132 @@
                     </HBox>
                 </HBox>
 
+                <!-- GRID -->
+                <VBox styleClass="grid formation-builder">
+
+                    <!-- Add User -->
+                    <VBox styleClass="card">
+                        <Label text="Ajouter un utilisateur"
+                               styleClass="section-title"/>
+                        <Label text="Creez un utilisateur RH et associez-le a une entreprise."
+                               styleClass="muted"/>
+
+                        <VBox styleClass="formation-form">
+
+                            <VBox styleClass="field">
+                                <Label text="Email"/>
+                                <TextField fx:id="userEmail"
+                                           promptText="prenom.nom@entreprise.com"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Adresse"/>
+                                <TextField fx:id="userAddress"
+                                           promptText="Ex: 12 Rue des Fleurs"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Num tel"/>
+                                <TextField fx:id="userPhone"
+                                           promptText="06 00 00 00 00"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="CIN"/>
+                                <TextField fx:id="userCIN"
+                                           promptText="Ex: AB123456"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Date naissance"/>
+                                <DatePicker fx:id="userDOB"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Genre"/>
+                                <ComboBox fx:id="genderSelect"
+                                          promptText="Selectionnez"/>
+                            </VBox>
+
+                            <VBox styleClass="field full">
+                                <Label text="ID entreprise"/>
+                                <ComboBox fx:id="companySelect"
+                                          promptText="Selectionnez une entreprise"/>
+                                <Label text="Ajoutez d'abord une entreprise si la liste est vide."
+                                       styleClass="help"/>
+                            </VBox>
+
+                            <Label fx:id="userFormStatus"
+                                   text=""
+                                   styleClass="form-status"/>
+
+                            <HBox styleClass="form-actions">
+                                <Button text="Reinitialiser"
+                                    styleClass="btn btn-ghost"
+                                    onAction="#handleResetUserForm"/>
+                                <Button text="Ajouter l'utilisateur"
+                                        styleClass="btn btn-primary"
+                                        onAction="#handleAddUser"/>
+                            </HBox>
+
+                        </VBox>
+                    </VBox>
+
+                    <!-- Add Company -->
+                    <VBox styleClass="card">
+                        <Label text="Ajouter une entreprise"
+                               styleClass="section-title"/>
+                        <Label text="Enregistrez une entreprise pour lier les utilisateurs."
+                               styleClass="muted"/>
+
+                        <VBox styleClass="formation-form">
+
+                            <VBox styleClass="field">
+                                <Label text="Nom de l'entreprise"/>
+                                <TextField fx:id="companyNameField"
+                                           promptText="Ex: HR One"/>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Reference"/>
+                                <TextField fx:id="companyRefField"
+                                           promptText="Ex: HRONE-2026"/>
+                            </VBox>
+
+                            <Label fx:id="companyFormStatus"
+                                   text=""
+                                   styleClass="form-status"/>
+
+                            <HBox styleClass="form-actions">
+                                <Button text="Reinitialiser"
+                                    styleClass="btn btn-ghost"
+                                    onAction="#handleResetCompanyForm"/>
+                                <Button text="Ajouter l'entreprise"
+                                        styleClass="btn btn-primary"
+                                        onAction="#handleAddCompany"/>
+                            </HBox>
+
+                        </VBox>
+
+                        <VBox fx:id="companyList"
+                              styleClass="resource-list"/>
+                    </VBox>
+
+                    <!-- User List -->
+                    <VBox styleClass="card">
+                        <Label text="Utilisateurs enregistres"
+                               styleClass="section-title"/>
+                        <Label text="Gerez les comptes et leurs entreprises."
+                               styleClass="muted"/>
+                        <VBox fx:id="userList"
+                              styleClass="resource-list"/>
+                    </VBox>
+
+                </VBox>
+
             </VBox>
         </content>
+
     </ScrollPane>
+
 </StackPane>
