@@ -1,0 +1,101 @@
+================== ONS =========================
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS reaction;
+DROP TABLE IF EXISTS type_reaction;
+DROP TABLE IF EXISTS commentaire;
+DROP TABLE IF EXISTS post;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(255),
+    tag VARCHAR(50) DEFAULT 'General',
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    parent_comment_id INT NULL,
+    content TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+CREATE TABLE IF NOT EXISTS post_votes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('up', 'down') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_post_vote (post_id, user_id));
+
+
+CREATE TABLE IF NOT EXISTS comment_votes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    comment_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('up', 'down') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_comment_vote (comment_id, user_id));
+
+CREATE TABLE IF NOT EXISTS newsletter_emails (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+
+=============== AYMEN ========================
+
+ALTER TABLE utilisateur ADD COLUMN firstLogin INT DEFAULT 0;
+
+INSERT INTO type_action (Code_Type_Action, Description_Action) VALUES
+('ACT001', 'Ajouter Utilisateur'),
+('ACT002', 'Modifier Utilisateur'),
+('ACT003', 'Supprimer Utilisateur'),
+
+('ACT004', 'Ajouter Entreprise'),
+('ACT005', 'Modifier Entreprise'),
+('ACT006', 'Supprimer Entreprise'),
+
+('ACT007', 'Ajouter Employe'),
+('ACT008', 'Modifier Employe'),
+('ACT009', 'Supprimer Employe'),
+
+('ACT010', 'Ajouter Outil'),
+('ACT011', 'Modifier Outil'),
+('ACT012', 'Supprimer Outil'),
+
+('ACT013', 'Ajouter Offre'),
+('ACT014', 'Modifier Offre'),
+('ACT015', 'Supprimer Offre'),
+
+('ACT016', 'Accepter Candidat'),
+('ACT017', 'Planifier Entretien'),
+('ACT018', 'Rejeter Candidat'),
+('ACT019', 'Appliquer à Offre'),
+
+('ACT020', 'Ajouter Evenement'),
+('ACT021', 'Modifier Evenement'),
+('ACT022', 'Supprimer Evenement'),
+('ACT023', 'Participer à evenement'),
+
+('ACT024', 'Ajouter Formation'),
+('ACT025', 'Modifier Formation'),
+('ACT026', 'Supprimer Formation'),
+('ACT027', 'Participer à formation'),
+
+('ACT028', 'Ajouter Post'),
+('ACT029', 'Modifier Post'),
+('ACT030', 'Supprimer Post'),
+
+('ACT031', 'Ajouter Commentaire'),
+('ACT032', 'Modifier Commentaire'),
+('ACT033', 'Supprimer Commentaire');
+
