@@ -1,5 +1,6 @@
 package com.recruitx.hrone.controller;
 import com.recruitx.hrone.dao.FormationDAO;
+import com.recruitx.hrone.dao.ParticipationFormationDAO;
 import com.recruitx.hrone.models.Formation;
 import com.recruitx.hrone.utils.COrdre;
 import javafx.collections.FXCollections;
@@ -64,11 +65,40 @@ public class FormationController {
 
     private void loadFormations() {
         formations = formationDAO.readAll();
-        ObservableList<Formation> list =
-                FXCollections.observableArrayList(formations);
+        ObservableList<Formation> list = FXCollections.observableArrayList(formations);
         formationSelect.setItems(list);
-    }
 
+        // ✅ Afficher places dans le ComboBox
+        formationSelect.setCellFactory(lv -> new ListCell<Formation>() {
+            @Override
+            protected void updateItem(Formation f, boolean empty) {
+                super.updateItem(f, empty);
+                if (empty || f == null) {
+                    setText(null);
+                } else {
+                    int places = f.getPlacesRestantes();
+                    String statut = places <= 0 ? " 🔴 Complet" : " 🟢 " + places + " places";
+                    String mode = "en_ligne".equals(f.getMode()) ? " 🌐" : " 🏢";
+                    setText(f.getTitre() + mode + statut);
+                }
+            }
+        });
+
+        formationSelect.setButtonCell(new ListCell<Formation>() {
+            @Override
+            protected void updateItem(Formation f, boolean empty) {
+                super.updateItem(f, empty);
+                if (empty || f == null) {
+                    setText("Sélectionner");
+                } else {
+                    int places = f.getPlacesRestantes();
+                    String statut = places <= 0 ? " 🔴 Complet" : " 🟢 " + places + " places";
+                    String mode = "en_ligne".equals(f.getMode()) ? " 🌐" : " 🏢";
+                    setText(f.getTitre() + mode + statut);
+                }
+            }
+        });
+    }
     /**
      * Convertit numOrdreCreation en date formatée
      */
@@ -181,35 +211,82 @@ public class FormationController {
         VBox card = new VBox();
         card.getStyleClass().add("formation-card");
 
-        // Titre
+        // ── Titre ──
         Label title = new Label(formation.getTitre());
         title.getStyleClass().add("card-title");
 
-        // Description - SEULEMENT avant [MODULES]
+        // ── Badges ──
+        HBox badgeBox = new HBox(8);
+        badgeBox.setStyle("-fx-padding: 4 0;");
+
+        String mode = formation.getMode() != null ? formation.getMode() : "presentiel";
+        int places = formation.getPlacesRestantes();
+        int total = formation.getNombrePlaces();
+
+        // Badge Mode
+        Label modeBadge = new Label(
+                "en_ligne".equals(mode) ? "🌐 En ligne" : "🏢 Présentiel"
+        );
+        modeBadge.setStyle(
+                "en_ligne".equals(mode)
+                        ? "-fx-background-color: #2980b9; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;"
+                        : "-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;"
+        );
+
+        // Badge Places
+        Label placesLabel;
+        if ("en_ligne".equals(mode)) {
+            // En ligne → afficher seulement X places (pas illimité)
+            placesLabel = new Label("🪑 " + places + "/" + total + " places");
+        } else {
+            // Présentiel → afficher X/Y places
+            placesLabel = new Label("🪑 " + places + "/" + total + " places");
+        }
+        placesLabel.setStyle(
+                "-fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; " +
+                        "-fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px;"
+        );
+
+        // Badge Disponible / Complet
+        Label statusBadge;
+        if (places <= 0) {
+            statusBadge = new Label("🔴 Complet");
+            statusBadge.setStyle(
+                    "-fx-background-color: #e74c3c; -fx-text-fill: white; " +
+                            "-fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;"
+            );
+        } else {
+            statusBadge = new Label("🟢 Disponible");
+            statusBadge.setStyle(
+                    "-fx-background-color: #27ae60; -fx-text-fill: white; " +
+                            "-fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;"
+            );
+        }
+
+        // ✅ Ajouter UNE SEULE fois chaque badge
+        badgeBox.getChildren().addAll(modeBadge, placesLabel, statusBadge);
+
+        // ── Description ──
         String descriptionOnly = getDescriptionOnly(formation.getDescription());
         String formattedDescription = formatTextWithLineBreaks(descriptionOnly, WORDS_PER_LINE);
-
         Label description = new Label(formattedDescription);
         description.getStyleClass().add("muted");
         description.setWrapText(true);
 
-        // Détails avec date de création
+        // ── Date ──
         HBox details = new HBox();
         details.getStyleClass().add("formation-details");
-
         String dateCreation = getDateFromNumOrdre(formation.getNumOrdreCreation());
         Label dateLabel = new Label("📅 " + dateCreation);
         dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
-
         details.getChildren().add(dateLabel);
 
-        // Bouton
-        Button detailsBtn = new Button("Voir details");
+        // ── Bouton ──
+        Button detailsBtn = new Button("Voir détails");
         detailsBtn.getStyleClass().add("ghost");
         detailsBtn.setOnAction(e -> showFormationDetails(formation));
 
-        card.getChildren().addAll(title, description, details, detailsBtn);
-
+        card.getChildren().addAll(title, badgeBox, description, details, detailsBtn);
         return card;
     }
 
@@ -266,11 +343,9 @@ public class FormationController {
      * Affiche les détails de la formation dans une dialog personnalisée
      */
     private void showFormationDetails(Formation formation) {
-        // Créer une dialog personnalisée
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Détails de la formation");
 
-        // Conteneur principal
         VBox mainContent = new VBox(20);
         mainContent.setPadding(new Insets(20));
         mainContent.setStyle("-fx-background-color: white;");
@@ -279,14 +354,13 @@ public class FormationController {
         HBox header = new HBox(20);
         header.setStyle("-fx-alignment: center-left;");
 
-        // Image de la formation
+        // Image
         VBox imageContainer = new VBox();
         imageContainer.setStyle("-fx-alignment: center;");
         if (formation.getImage() != null && !formation.getImage().isEmpty()) {
             try {
                 ImageView imageView = new ImageView();
                 Image image = loadImage(formation.getImage());
-
                 if (image != null) {
                     imageView.setImage(image);
                     imageView.setFitWidth(200);
@@ -303,7 +377,6 @@ public class FormationController {
                 Label noImage = new Label("📷 Erreur de chargement");
                 noImage.setStyle("-fx-font-size: 14px; -fx-text-fill: #999;");
                 imageContainer.getChildren().add(noImage);
-                System.err.println("Erreur lors du chargement de l'image: " + e.getMessage());
             }
         } else {
             Label noImage = new Label("📷 Aucune image");
@@ -320,25 +393,81 @@ public class FormationController {
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         title.setWrapText(true);
 
+        // ── Ligne 1 de badges : Date + Entreprise ──
         HBox badges = new HBox(10);
+        badges.setStyle("-fx-flex-wrap: wrap;");
 
-        // Badge de date
         String dateCreation = getDateFromNumOrdre(formation.getNumOrdreCreation());
         Label badgeDate = new Label("📅 " + dateCreation);
-        badgeDate.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+        badgeDate.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; " +
+                "-fx-padding: 5 10; -fx-background-radius: 5;");
 
-        // Badge entreprise
         String nomEntreprise = getEntrepriseNameById(formation.getIdEntreprise());
         String refEntreprise = getEntrepriseRefById(formation.getIdEntreprise());
-        String entrepriseText = refEntreprise.isEmpty() ?
-                "🏢 " + nomEntreprise :
-                "🏢 " + nomEntreprise + " (" + refEntreprise + ")";
+        String entrepriseText = refEntreprise.isEmpty()
+                ? "🏢 " + nomEntreprise
+                : "🏢 " + nomEntreprise + " (" + refEntreprise + ")";
         Label badgeEntreprise = new Label(entrepriseText);
-        badgeEntreprise.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+        badgeEntreprise.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; " +
+                "-fx-padding: 5 10; -fx-background-radius: 5;");
 
-        badges.getChildren().addAll(badgeDate, badgeEntreprise);
+        // ✅ Badge Mode
+        String modeText = "en_ligne".equals(formation.getMode()) ? "🌐 En ligne" : "🏢 Présentiel";
+        String modeCouleur = "en_ligne".equals(formation.getMode()) ? "#2980b9" : "#27ae60";
+        Label badgeMode = new Label(modeText);
+        badgeMode.setStyle("-fx-background-color: " + modeCouleur + "; -fx-text-fill: white; " +
+                "-fx-padding: 5 10; -fx-background-radius: 5;");
 
-        headerInfo.getChildren().addAll(title, badges);
+        badges.getChildren().addAll(badgeDate, badgeEntreprise, badgeMode);
+
+        // ── Ligne 2 de badges : Durée + Places + Statut ──
+        HBox badges2 = new HBox(10);
+
+        // ✅ Badge Durée
+        if (formation.getDateDebut() != 0 && formation.getDateFin() != 0) {
+            java.time.LocalDateTime debut = COrdre.GetDateFromNumOrdre(formation.getDateDebut());
+            java.time.LocalDateTime fin = COrdre.GetDateFromNumOrdre(formation.getDateFin());
+            long jours = java.time.temporal.ChronoUnit.DAYS.between(debut, fin);
+
+            String dureeText;
+            if (jours <= 1) {
+                dureeText = "⏱ 1 jour";
+            } else if (jours < 30) {
+                dureeText = "⏱ " + jours + " jours";
+            } else if (jours < 365) {
+                long mois = jours / 30;
+                dureeText = "⏱ " + mois + " mois";
+            } else {
+                long ans = jours / 365;
+                dureeText = "⏱ " + ans + " an" + (ans > 1 ? "s" : "");
+            }
+
+            Label badgeDuree = new Label(dureeText);
+            badgeDuree.setStyle("-fx-background-color: #e67e22; -fx-text-fill: white; " +
+                    "-fx-padding: 5 10; -fx-background-radius: 5;");
+            badges2.getChildren().add(badgeDuree);
+        }
+
+        // ✅ Badge Places
+        int places = formation.getPlacesRestantes();
+        int total = formation.getNombrePlaces();
+        if (total > 0) {
+            Label badgePlaces = new Label("🪑 " + places + "/" + total + " places");
+            badgePlaces.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; " +
+                    "-fx-padding: 5 10; -fx-background-radius: 5;");
+            badges2.getChildren().add(badgePlaces);
+        }
+
+        // ✅ Badge Disponible / Complet
+        Label badgeStatut = places > 0
+                ? new Label("🟢 Disponible")
+                : new Label("🔴 Complet");
+        badgeStatut.setStyle(places > 0
+                ? "-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+        badges2.getChildren().add(badgeStatut);
+
+        headerInfo.getChildren().addAll(title, badges, badges2);
         header.getChildren().addAll(imageContainer, headerInfo);
 
         // === SÉPARATEUR ===
@@ -346,27 +475,24 @@ public class FormationController {
 
         // === DESCRIPTION ===
         VBox descriptionSection = new VBox(10);
-
         Label descTitle = new Label("📋 Description");
         descTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         String descriptionOnly = getDescriptionOnly(formation.getDescription());
         String formattedDescription = formatTextWithLineBreaks(descriptionOnly, WORDS_PER_LINE);
-
         Label descContent = new Label(formattedDescription);
         descContent.setWrapText(true);
         descContent.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e; -fx-line-spacing: 3px;");
         descContent.setMaxWidth(650);
-
         descriptionSection.getChildren().addAll(descTitle, descContent);
 
         // === SÉPARATEUR ===
         Separator separator2 = new Separator();
 
-        // === MODULES STRUCTURÉS ===
+        // === MODULES ===
         VBox modulesSection = createModulesSection(formation);
 
-        // === AJOUTER TOUS LES ÉLÉMENTS ===
+        // === ASSEMBLAGE ===
         mainContent.getChildren().addAll(
                 header,
                 separator1,
@@ -375,7 +501,6 @@ public class FormationController {
                 modulesSection
         );
 
-        // Mettre dans un ScrollPane
         ScrollPane scrollPane = new ScrollPane(mainContent);
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefViewportWidth(750);
@@ -384,19 +509,17 @@ public class FormationController {
 
         dialog.getDialogPane().setContent(scrollPane);
 
-        // Boutons
         ButtonType closeButton = new ButtonType("Fermer", ButtonBar.ButtonData.OK_DONE);
         ButtonType participerButton = new ButtonType("Participer", ButtonBar.ButtonData.APPLY);
         dialog.getDialogPane().getButtonTypes().addAll(participerButton, closeButton);
 
-        // Style des boutons
         Button participerBtn = (Button) dialog.getDialogPane().lookupButton(participerButton);
-        participerBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
+        participerBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; " +
+                "-fx-font-weight: bold; -fx-padding: 10 20;");
 
         Button closeBtn = (Button) dialog.getDialogPane().lookupButton(closeButton);
         closeBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 20;");
 
-        // Action sur le bouton Participer
         participerBtn.setOnAction(e -> {
             dialog.close();
             formationSelect.setValue(formation);
@@ -407,7 +530,6 @@ public class FormationController {
 
         dialog.showAndWait();
     }
-
     /**
      * Crée la section des modules de façon structurée (style Coursera/Udemy)
      */
@@ -652,27 +774,72 @@ public class FormationController {
 
 
     @FXML
+// ✅ Ajouter en haut de la classe
+    private ParticipationFormationDAO participationDAO = new ParticipationFormationDAO();
+
+    @FXML
     private void handleParticiper() {
-        String nom = nomField.getText();
-        String email = emailField.getText();
-        String tel = telephoneField.getText();
+        String nom = nomField.getText().trim();
+        String email = emailField.getText().trim();
+        String tel = telephoneField.getText().trim();
         Formation selected = formationSelect.getValue();
 
+        // ── 1. Validation champs ──
         if (nom.isEmpty() || email.isEmpty() || tel.isEmpty() || selected == null) {
-            showAlert(Alert.AlertType.WARNING,
-                    "Erreur",
+            showAlert(Alert.AlertType.WARNING, "Erreur",
                     "Veuillez remplir tous les champs.");
             return;
         }
 
-        showAlert(Alert.AlertType.INFORMATION,
-                "Inscription réussie",
-                "Participation envoyée pour la formation : "
-                        + selected.getTitre());
+        int idFormation = selected.getIdFormation();
+
+        // ── 2. Vérifier places disponibles ──
+        int placesRestantes = participationDAO.getPlacesRestantes(idFormation);
+        if (placesRestantes <= 0) {
+            showAlert(Alert.AlertType.WARNING, "Formation saturée",
+                    "⚠️ La formation \"" + selected.getTitre() + "\" est complète.\n" +
+                            "Aucune place disponible pour le moment.");
+            return;
+        }
+
+        // ── 3. Trouver l'ID du participant ──
+        int idParticipant = participationDAO.getIdParticipantByEmail(email);
+        if (idParticipant == -1) {
+            showAlert(Alert.AlertType.WARNING, "Email introuvable",
+                    "Aucun compte trouvé avec l'email : " + email);
+            return;
+        }
+
+        // ── 4. Vérifier si déjà inscrit ──
+        if (participationDAO.estDejaInscrit(idFormation, idParticipant)) {
+            showAlert(Alert.AlertType.WARNING, "Déjà inscrit",
+                    "Vous êtes déjà inscrit à la formation \"" + selected.getTitre() + "\".");
+            return;
+        }
+
+        // ── 5. Insérer participation ──
+        boolean succes = participationDAO.insererParticipation(idFormation, idParticipant);
+        if (!succes) {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Une erreur est survenue. Réessayez.");
+            return;
+        }
+
+        // ── 6. Rafraîchir la liste ──
+        loadFormations();
+        displayFormations();
+
+        // ── 7. Message succès ──
+        int placesApres = participationDAO.getPlacesRestantes(idFormation);
+        String modeLabel = "en_ligne".equals(selected.getMode()) ? "🌐 En ligne" : "🏢 Présentiel";
+        showAlert(Alert.AlertType.INFORMATION, "Inscription réussie",
+                "✅ Inscription confirmée !\n\n" +
+                        "Formation : " + selected.getTitre() + "\n" +
+                        "Mode : " + modeLabel + "\n" +
+                        "Places restantes : " + placesApres);
 
         clearFields();
     }
-
     private void clearFields() {
         nomField.clear();
         emailField.clear();
@@ -690,18 +857,43 @@ public class FormationController {
 
     @FXML
     private void handleFilterAll() {
+        formations = formationDAO.readAll(); // ✅ recharge toutes
         displayFormations();
+        updateActiveFilter("all");
     }
 
     @FXML
     private void handleFilterPresentiel() {
-        // TODO: Implémenter le filtrage par mode présentiel
+        formations = formationDAO.readByMode("presentiel"); // ✅ filtre présentiel
         displayFormations();
+        updateActiveFilter("presentiel");
     }
 
     @FXML
     private void handleFilterEnLigne() {
-        // TODO: Implémenter le filtrage par mode en ligne
+        formations = formationDAO.readByMode("en_ligne"); // ✅ filtre en ligne
         displayFormations();
+        updateActiveFilter("en_ligne");
+    }
+
+    // ✅ Met à jour le style du bouton actif
+    private void updateActiveFilter(String active) {
+        // Récupérer les boutons depuis le FXML
+        // On utilise lookup pour trouver les boutons
+        formationGrid.getScene().getRoot().lookupAll(".filter").forEach(node -> {
+            node.getStyleClass().remove("active");
+        });
+
+        String selector = switch (active) {
+            case "presentiel" -> "Presentiel";
+            case "en_ligne" -> "En ligne";
+            default -> "Toutes";
+        };
+
+        formationGrid.getScene().getRoot().lookupAll(".filter").forEach(node -> {
+            if (node instanceof Button btn && btn.getText().equals(selector)) {
+                btn.getStyleClass().add("active");
+            }
+        });
     }
 }

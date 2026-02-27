@@ -22,8 +22,10 @@ public class FormationDAO {
     }
     // CREATE
     public boolean create(Formation formation) {
-        String sql = "INSERT INTO formation (Titre, Description, Num_Ordre_Creation, ID_Entreprise, Image) VALUES (?, ?, ?, ?, ?)";
-        System.out.println("--------------------------------------------");
+        String sql = "INSERT INTO formation " +
+                "(Titre, Description, Num_Ordre_Creation, ID_Entreprise, Image, " +
+                "Mode, NombrePlaces, PlacesRestantes, Date_Debut, Date_Fin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, formation.getTitre());
@@ -31,19 +33,17 @@ public class FormationDAO {
             stmt.setInt(3, formation.getNumOrdreCreation());
             stmt.setInt(4, formation.getIdEntreprise());
             stmt.setString(5, formation.getImage());
-            System.out.println("--------------------------------------------"+ formation);
-            int rows = stmt.executeUpdate();
-            System.out.println("--------------------------------------------");
+            stmt.setString(6, formation.getMode() != null ? formation.getMode() : "presentiel"); // ✅
+            stmt.setInt(7, formation.getNombrePlaces());     // ✅
+            stmt.setInt(8, formation.getPlacesRestantes());  // ✅
+            stmt.setLong(9, formation.getDateDebut());       // ✅
+            stmt.setLong(10, formation.getDateFin());        // ✅
 
+            int rows = stmt.executeUpdate();
             if (rows > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
-                System.out.println("--------------------------------------------");
-
                 if (rs.next()) {
-                    System.out.println("--------------------------------------------");
-
                     formation.setIdFormation(rs.getInt(1));
-
                 }
                 return true;
             }
@@ -52,7 +52,6 @@ public class FormationDAO {
         }
         return false;
     }
-
     // READ ALL
     public List<Formation> readAll() {
         List<Formation> formations = new ArrayList<>();
@@ -108,7 +107,12 @@ public class FormationDAO {
 
     // UPDATE
     public boolean update(Formation formation) {
-        String sql = "UPDATE formation SET Titre = ?, Description = ?, Num_Ordre_Creation = ?, ID_Entreprise = ?, Image = ? WHERE ID_Formation = ?";
+        String sql = "UPDATE formation SET " +
+                "Titre = ?, Description = ?, Num_Ordre_Creation = ?, " +
+                "ID_Entreprise = ?, Image = ?, " +
+                "Mode = ?, NombrePlaces = ?, PlacesRestantes = ?, " +
+                "Date_Debut = ?, Date_Fin = ? " +
+                "WHERE ID_Formation = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, formation.getTitre());
@@ -116,16 +120,19 @@ public class FormationDAO {
             stmt.setInt(3, formation.getNumOrdreCreation());
             stmt.setInt(4, formation.getIdEntreprise());
             stmt.setString(5, formation.getImage());
-            stmt.setInt(6, formation.getIdFormation());
+            stmt.setString(6, formation.getMode() != null ? formation.getMode() : "presentiel"); // ✅
+            stmt.setInt(7, formation.getNombrePlaces());     // ✅
+            stmt.setInt(8, formation.getPlacesRestantes());  // ✅
+            stmt.setLong(9, formation.getDateDebut());       // ✅
+            stmt.setLong(10, formation.getDateFin());        // ✅
+            stmt.setInt(11, formation.getIdFormation());
 
-            int rows = stmt.executeUpdate();
-            return rows > 0;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("❌ Erreur update formation: " + e.getMessage());
         }
         return false;
     }
-
     // DELETE
     public boolean delete(int id) {
         String sql = "DELETE FROM formation WHERE ID_Formation = ?";
