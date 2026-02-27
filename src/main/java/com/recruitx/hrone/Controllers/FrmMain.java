@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class FrmMain {
 
     @FXML private StackPane contentPane;
+    @FXML private VBox sidebar;
 
     @FXML private Button btnUsers;
     @FXML private Button btnEmployee;
@@ -24,9 +26,11 @@ public class FrmMain {
     @FXML private Button btnEvents;
     @FXML private Button btnGererMesOffres;
     @FXML private Button btnOutils;
-    @FXML private Button btnLogin;
-    @FXML private Button btnLoginCandidat;
-    @FXML private Button btnSignUpEntreprise;
+//    @FXML private Button btnLogin;
+//    @FXML private Button btnLoginCandidat;
+//    @FXML private Button btnSignUpEntreprise;
+
+
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
     private Button currentActiveButton;
@@ -49,6 +53,14 @@ public class FrmMain {
         SIGNUPCANDIDAT,
         SIGNUPENTREPRISE
     }
+
+
+    @FXML
+    public void initialize() {
+        hideSidebar();
+        loadView(ViewType.LOGIN);
+    }
+
 
     /* ================================
        Navigation Handlers
@@ -93,11 +105,11 @@ public class FrmMain {
         loadView(ViewType.EVENTS, btnEvents);
     }
 
-    @FXML private void openLogin() { loadView(ViewType.LOGIN, btnLogin);}
-
-    @FXML private void openLoginCandidat() { loadView(ViewType.SIGNUPCANDIDAT, btnLoginCandidat);}
-
-    @FXML private void openSignUp() { loadView(ViewType.SIGNUPENTREPRISE, btnSignUpEntreprise);}
+//    @FXML private void openLogin() { loadView(ViewType.LOGIN, btnLogin);}
+//
+//    @FXML private void openLoginCandidat() { loadView(ViewType.SIGNUPCANDIDAT, btnLoginCandidat);}
+//
+//    @FXML private void openSignUp() { loadView(ViewType.SIGNUPENTREPRISE, btnSignUpEntreprise);}
 
 
     /* ================================
@@ -203,5 +215,15 @@ public class FrmMain {
 
         button.getStyleClass().add("nav-link-active");
         currentActiveButton = button;
+    }
+
+    public void showSidebar() {
+        sidebar.setVisible(true);
+        sidebar.setManaged(true);
+    }
+
+    public void hideSidebar() {
+        sidebar.setVisible(false);
+        sidebar.setManaged(false);
     }
 }

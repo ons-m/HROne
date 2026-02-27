@@ -20,7 +20,7 @@
         <HBox styleClass="dashboard">
 
             <!-- Sidebar -->
-            <VBox styleClass="sidebar">
+            <VBox styleClass="sidebar" fx:id="sidebar">
 
                 <HBox styleClass="brand">
                     <ImageView fitHeight="52"
@@ -45,20 +45,20 @@
                             styleClass="nav-link"
                             onAction="#openGestionUsers"/>
 
-                    <Button fx:id="btnLogin"
-                            text="Login"
-                            styleClass="nav-link"
-                            onAction="#openLogin"/>
+<!--                    <Button fx:id="btnLogin"-->
+<!--                            text="Login"-->
+<!--                            styleClass="nav-link"-->
+<!--                            onAction="#openLogin"/>-->
 
-                    <Button fx:id="btnSignUpEntreprise"
-                            text="SignUp Entreprise"
-                            styleClass="nav-link"
-                            onAction="#openSignUp"/>
+<!--                    <Button fx:id="btnSignUpEntreprise"-->
+<!--                            text="SignUp Entreprise"-->
+<!--                            styleClass="nav-link"-->
+<!--                            onAction="#openSignUp"/>-->
 
-                    <Button fx:id="btnLoginCandidat"
-                            text="Sign Up Login"
-                            styleClass="nav-link"
-                            onAction="#openLoginCandidat"/>
+<!--                    <Button fx:id="btnLoginCandidat"-->
+<!--                            text="Sign Up Login"-->
+<!--                            styleClass="nav-link"-->
+<!--                            onAction="#openLoginCandidat"/>-->
 
                     <Button fx:id="btnEmployee"
                             text="gestion administrative"

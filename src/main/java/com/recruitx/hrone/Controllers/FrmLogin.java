@@ -26,10 +26,6 @@ public class FrmLogin implements NavigationAware{
 
     @FXML
     public void initialize() {
-//        // Charger le logo
-//        Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/recruitx/hrone/images/logo.png"))); // place ton logo dans src/main/resources/images/logo.png
-//        appLogo.setImage(logo);
-//
         loginRole.setItems(FXCollections.observableArrayList("CANDIDAT", "AGENT RH", "EMPLOYEE"));
     }
 
@@ -64,17 +60,21 @@ public class FrmLogin implements NavigationAware{
                 return;
             }
 
-//            // Connecter l'utilisateur
-//            Session.setLoggedUser(loggedUser);
+            // Connecter l'utilisateur
+            // Session.setLoggedUser(loggedUser);
 
-            // Redirection selon rôle
-            switch (role) {
-                case "AGENT RH" -> {
-                    if (mainController != null) {
-                        mainController.loadView(FrmMain.ViewType.GESTION_EMPLOYEE);
-                    }
-                }
-            }
+//            // Redirection selon rôle
+//            switch (role) {
+//                case "AGENT RH" -> {
+//                    if (mainController != null) {
+//                        mainController.loadView(FrmMain.ViewType.GESTION_EMPLOYEE);
+//                    }
+//                }
+//            }
+
+            mainController.showSidebar();
+            mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
+            //mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser.getId()));
 
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Email ou mot de passe incorrect !");
