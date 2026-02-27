@@ -60,21 +60,6 @@
                             styleClass="nav-link"
                             onAction="#openDemangeConge"/>
 
-                    <!--                    <Button fx:id="btnLogin"-->
-<!--                            text="Login"-->
-<!--                            styleClass="nav-link"-->
-<!--                            onAction="#openLogin"/>-->
-
-<!--                    <Button fx:id="btnSignUpEntreprise"-->
-<!--                            text="SignUp Entreprise"-->
-<!--                            styleClass="nav-link"-->
-<!--                            onAction="#openSignUp"/>-->
-
-<!--                    <Button fx:id="btnLoginCandidat"-->
-<!--                            text="Sign Up Login"-->
-<!--                            styleClass="nav-link"-->
-<!--                            onAction="#openLoginCandidat"/>-->
-
                     <Button fx:id="btnEmployee"
                             text="gestion administrative"
                             styleClass="nav-link"
@@ -90,7 +75,7 @@
                             styleClass="nav-link"
                             onAction="#openEntretiens"/>
 
-                    <Button fx:id=""
+                    <Button fx:id="GestionOffres"
                             text="gestion des offres d'emploi"
                             styleClass="nav-link"
                             onAction="#openGestionOffres"/>

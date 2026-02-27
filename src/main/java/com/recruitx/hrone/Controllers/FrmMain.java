@@ -26,6 +26,7 @@ public class FrmMain {
     @FXML private Button btnOffres;
     @FXML private Button btnTraining;
     @FXML private Button btnCommunaute;
+    @FXML private Button GestionOffres;
     @FXML private Button btnEvents;
     @FXML private Button btnGererMesOffres;
     @FXML private Button btnOutils;
@@ -70,7 +71,7 @@ public class FrmMain {
     /* ================================
        Navigation Handlers
        ================================ */
-    @FXML private void openGestionOffres() {loadView(ViewType.GESTIONOFFRES,btnCommunaute);}
+    @FXML private void openGestionOffres() {loadView(ViewType.GESTIONOFFRES,GestionOffres);}
 
     @FXML private void openGestionEmployee() {
         loadView(ViewType.GESTION_EMPLOYEE, btnEmployee);
@@ -211,6 +212,7 @@ public class FrmMain {
             //Interface Gestion Conge Cote RH
             case GESTION_CONGE ->
                     "/com/recruitx/hrone/View/FrmGestionConge.fxml";
+            //Interface Demande Conge Cote Employee
             case DEMANDE_CONGE ->
                     "/com/recruitx/hrone/View/FrmDemandeConge.fxml";
         };
@@ -257,25 +259,37 @@ public class FrmMain {
 
         switch (role) {
 
-            case 1 -> { // CANDIDAT
+            // =========================
+            // CANDIDAT
+            // =========================
+            case 1 -> {
                 showSideBarButton(btnOffres);
-                showSideBarButton(btnCommunaute);
             }
 
-            case 2 -> { // RH
+            // =========================
+            // RH
+            // =========================
+            case 2 -> {
                 showSideBarButton(btnEmployee);
                 showSideBarButton(btnOutils);
                 showSideBarButton(btnEntretiens);
                 showSideBarButton(btnFormations);
+                showSideBarButton(GestionOffres);
+                showSideBarButton(btnEvenements);
+                showSideBarButton(btnGestionConge);
                 showSideBarButton(btnCommunaute);
-                showSideBarButton(btnEvents);
             }
 
-            case 3 -> { // EMPLOYEE
+            // =========================
+            // EMPLOYEE
+            // =========================
+            case 3 -> {
                 showSideBarButton(btnTraining);
-                showSideBarButton(btnEvenements);
+                showSideBarButton(btnEvents);
+                showSideBarButton(btnDemandeConge);
                 showSideBarButton(btnCommunaute);
             }
+
         }
 
     }
@@ -300,8 +314,13 @@ public class FrmMain {
         hideSideBarButton(btnOffres);
         hideSideBarButton(btnTraining);
         hideSideBarButton(btnCommunaute);
+        hideSideBarButton(GestionOffres);
         hideSideBarButton(btnEvents);
+        //hideSideBarButton(btnGererMesOffres);
         hideSideBarButton(btnOutils);
+        hideSideBarButton(btntracabilite);
+        hideSideBarButton(btnGestionConge);
+        hideSideBarButton(btnDemandeConge);
 
     }
 }
