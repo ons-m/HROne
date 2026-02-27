@@ -250,6 +250,58 @@ public class FrmMain {
     }
 
     public void setVisisiblityByRole(){
+        int role = Session.getCurrentUser().getIdProfil();
+
+        // First: hide everything
+        hideAllSidebarButtons();
+
+        switch (role) {
+
+            case 1 -> { // CANDIDAT
+                showSideBarButton(btnOffres);
+                showSideBarButton(btnCommunaute);
+            }
+
+            case 2 -> { // RH
+                showSideBarButton(btnEmployee);
+                showSideBarButton(btnOutils);
+                showSideBarButton(btnEntretiens);
+                showSideBarButton(btnFormations);
+                showSideBarButton(btnCommunaute);
+                showSideBarButton(btnEvents);
+            }
+
+            case 3 -> { // EMPLOYEE
+                showSideBarButton(btnTraining);
+                showSideBarButton(btnEvenements);
+                showSideBarButton(btnCommunaute);
+            }
+        }
+
+    }
+
+    private void hideSideBarButton(Button button) {
+        button.setVisible(false);
+        button.setManaged(false);
+    }
+
+    private void showSideBarButton(Button button) {
+        button.setVisible(true);
+        button.setManaged(true);
+    }
+
+    private void hideAllSidebarButtons() {
+
+        hideSideBarButton(btnUsers);
+        hideSideBarButton(btnEmployee);
+        hideSideBarButton(btnEntretiens);
+        hideSideBarButton(btnEvenements);
+        hideSideBarButton(btnFormations);
+        hideSideBarButton(btnOffres);
+        hideSideBarButton(btnTraining);
+        hideSideBarButton(btnCommunaute);
+        hideSideBarButton(btnEvents);
+        hideSideBarButton(btnOutils);
 
     }
 }

@@ -52,9 +52,14 @@ public class FrmLogin implements NavigationAware{
         }
 
         mainController.showSidebar();
-        mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
         mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser));
         mainController.setVisisiblityByRole();
+        switch(loggedUser.getIdProfil()){
+            case 1 -> mainController.loadView(FrmMain.ViewType.OFFRES);
+            case 2, 3 -> mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
+        }
+
+
     }
 
     private Entreprise GetUserEntreprise(Utilisateur user){
