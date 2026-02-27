@@ -217,12 +217,12 @@ public class FrmMain {
                     "/com/recruitx/hrone/View/FrmLogin.fxml";
             //Interface Tracabilite Cote Admin
             case TRACABILITE ->
-                    "";
+                    "/com/recruitx/hrone/View/FrmTracabilite.fxml";
             //Interface Gestion Conge Cote RH
             case GESTION_CONGE ->
-                    "";
+                    "/com/recruitx/hrone/View/FrmGestionConge.fxml";
             case DEMANDE_CONGE ->
-                    "";
+                    "/com/recruitx/hrone/View/FrmDemandeConge.fxml";
         };
     }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+<VBox xmlns="http://javafx.com/javafx/20"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recruitx.hrone.Controllers.FrmGestionConge"
+      stylesheets="@../Css/FrmGestionConge.fx.css"
+      spacing="24"
+      styleClass="page-root">
+
+    <!-- Top Bar -->
+    <HBox styleClass="topbar">
+        <VBox>
+            <Label text="PAGE TITLE"
+                   styleClass="page-title"/>
+            <Label text="Short page description here."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Example session usage -->
+        <Label fx:id="lblCurrentUser"
+               styleClass="user-label"/>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox styleClass="content-container" spacing="16">
+        <Label text="Main content starts here..."
+               styleClass="content-text"/>
+    </VBox>
+
+</VBox>

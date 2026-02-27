@@ -1,0 +1,35 @@
+.page-root {
+    -fx-padding: 30;
+    -fx-background-color: #f8fafc;
+}
+
+.topbar {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.page-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+.user-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+}
+
+.content-container {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);
+}
+
+.content-text {
+    -fx-font-size: 14px;
+}
