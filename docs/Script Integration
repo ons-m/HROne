@@ -99,3 +99,9 @@ INSERT INTO type_action (Code_Type_Action, Description_Action) VALUES
 ('ACT032', 'Modifier Commentaire'),
 ('ACT033', 'Supprimer Commentaire');
 
+DELETE FROM PROFIL;
+
+INSERT INTO PROFIL(ID_PROFIL,NOM_PROFIL) VALUES
+(1,'Candidat'),
+(2,'RH'),
+(3,'Employee');
