@@ -10,6 +10,23 @@ import java.util.List;
 
 public class UtilisateurRepository {
 
+    private Date safeReadDate(ResultSet rs, String column) throws SQLException {
+        try {
+            return rs.getDate(column);
+        } catch (SQLException ex) {
+            String message = ex.getMessage();
+            if (message != null && message.toLowerCase().contains("zero date value")) {
+                return null;
+            }
+            throw ex;
+        }
+    }
+
+    private char safeReadGender(ResultSet rs, String column) throws SQLException {
+        String value = rs.getString(column);
+        return (value == null || value.isBlank()) ? 'N' : value.charAt(0);
+    }
+
 
     public void create(Utilisateur utilisateur) {
         String checkSql = "SELECT 1 FROM utilisateur WHERE Email = ? OR CIN = ?";
@@ -84,8 +101,8 @@ public class UtilisateurRepository {
                         rs.getString("Num_Tel"),
                         rs.getString("CIN"),
                         rs.getInt("Num_Ordre_Sign_In"),
-                        rs.getDate("Date_Naissance"),
-                        rs.getString("Gender").charAt(0),
+                        safeReadDate(rs, "Date_Naissance"),
+                        safeReadGender(rs, "Gender"),
                         rs.getInt("firstLogin") // <-- firstLogin as int
                 );
                 list.add(u);
@@ -119,8 +136,8 @@ public class UtilisateurRepository {
                         rs.getString("Num_Tel"),
                         rs.getString("CIN"),
                         rs.getInt("Num_Ordre_Sign_In"),
-                        rs.getDate("Date_Naissance"),
-                        rs.getString("Gender").charAt(0),
+                        safeReadDate(rs, "Date_Naissance"),
+                        safeReadGender(rs, "Gender"),
                         rs.getInt("firstLogin") // <-- firstLogin as int
                 );
             }
@@ -152,8 +169,8 @@ public class UtilisateurRepository {
                         rs.getString("Num_Tel"),
                         rs.getString("CIN"),
                         rs.getInt("Num_Ordre_Sign_In"),
-                        rs.getDate("Date_Naissance"),
-                        rs.getString("Gender").charAt(0),
+                        safeReadDate(rs, "Date_Naissance"),
+                        safeReadGender(rs, "Gender"),
                         rs.getInt("firstLogin")
                 );
             }
@@ -193,8 +210,8 @@ public class UtilisateurRepository {
                             rs.getString("Num_Tel"),
                             rs.getString("CIN"),
                             rs.getInt("Num_Ordre_Sign_In"),
-                            rs.getDate("Date_Naissance"),
-                            rs.getString("Gender").charAt(0),
+                            safeReadDate(rs, "Date_Naissance"),
+                            safeReadGender(rs, "Gender"),
                             rs.getInt("firstLogin")
                     );
 

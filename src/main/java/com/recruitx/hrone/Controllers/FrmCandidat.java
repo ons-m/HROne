@@ -1,10 +1,12 @@
 package com.recruitx.hrone.Controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.io.File;
 
@@ -27,6 +29,10 @@ public class FrmCandidat implements NavigationAware {
 
     @FXML private TextField offerSearch;
     @FXML private ComboBox<String> offerLocation;
+    @FXML private ComboBox<String> offerContractType;
+    @FXML private TextField salaryMin;
+    @FXML private TextField salaryMax;
+    @FXML private CheckBox showFavoritesOnly;
     @FXML private VBox offersGrid;
     @FXML private Label offerCount;
     @FXML private ComboBox<Offer> selectedOffer;
@@ -44,6 +50,7 @@ public class FrmCandidat implements NavigationAware {
     private Map<String, String> backgroundLabelsByCode = new HashMap<>();
     private Map<String, String> contratLabelsByCode = new HashMap<>();
     private Map<String, String> niveauLabelsByCode = new HashMap<>();
+    private final Set<Integer> favoriteOfferIds = new HashSet<>();
 
     @Override
     public void setMainController(FrmMain mainController) {
@@ -135,6 +142,11 @@ public class FrmCandidat implements NavigationAware {
         );
         offerLocation.getSelectionModel().selectFirst();
 
+        offerContractType.getItems().setAll(
+            "Tous les contrats", "Freelancer", "CDI", "CDD", "Stage"
+        );
+        offerContractType.getSelectionModel().selectFirst();
+
         List<String> offerTitles = new ArrayList<>();
         for (Offer offer : offers) {
             offerTitles.add(offer.getTitre());
@@ -143,6 +155,10 @@ public class FrmCandidat implements NavigationAware {
 
         offerSearch.textProperty().addListener((obs, o, n) -> filterOffers());
         offerLocation.valueProperty().addListener((obs, o, n) -> filterOffers());
+        offerContractType.valueProperty().addListener((obs, o, n) -> filterOffers());
+        salaryMin.textProperty().addListener((obs, o, n) -> filterOffers());
+        salaryMax.textProperty().addListener((obs, o, n) -> filterOffers());
+        showFavoritesOnly.selectedProperty().addListener((obs, o, n) -> filterOffers());
 
         filterOffers();
     }
@@ -170,8 +186,15 @@ public class FrmCandidat implements NavigationAware {
     private void filterOffers() {
         String query = normalize(offerSearch.getText());
         String location = offerLocation.getValue() == null ? "" : offerLocation.getValue();
+        String contractType = offerContractType.getValue() == null ? "" : offerContractType.getValue();
+        Double salaryMinValue = parseSalaryValue(salaryMin.getText());
+        Double salaryMaxValue = parseSalaryValue(salaryMax.getText());
+        boolean favoritesOnly = showFavoritesOnly != null && showFavoritesOnly.isSelected();
+
         boolean allLocations =
                 location.isBlank() || location.equalsIgnoreCase("Toutes les villes");
+        boolean allContracts =
+            contractType.isBlank() || contractType.equalsIgnoreCase("Tous les contrats");
 
         List<Offer> filtered = new ArrayList<>();
         for (Offer offer : offers) {
@@ -182,7 +205,12 @@ public class FrmCandidat implements NavigationAware {
             boolean matchesLocation =
                     allLocations || offer.getWork_Type().equalsIgnoreCase(location);
 
-            if (matchesQuery && matchesLocation) {
+            boolean matchesContract = allContracts || matchesContractType(offer, contractType);
+
+            boolean matchesSalary = matchesSalaryRange(offer, salaryMinValue, salaryMaxValue);
+            boolean matchesFavorite = !favoritesOnly || favoriteOfferIds.contains(offer.getID_Offre());
+
+            if (matchesQuery && matchesLocation && matchesContract && matchesSalary && matchesFavorite) {
                 filtered.add(offer);
             }
         }
@@ -196,6 +224,57 @@ public class FrmCandidat implements NavigationAware {
                 offer.getWork_Type() + " " +
                 offer.getCode_Type_Contrat() + " " +
                 offer.getDescription();
+    }
+
+    private boolean matchesContractType(Offer offer, String selectedType) {
+        String offerContractCode = normalizeCode(offer.getCode_Type_Contrat());
+        String translatedContract = normalize(translateCode(offer.getCode_Type_Contrat(), contratLabelsByCode));
+        String selectedNormalized = normalize(selectedType);
+
+        return translatedContract.contains(selectedNormalized)
+                || normalize(offerContractCode).contains(selectedNormalized);
+    }
+
+    private boolean matchesSalaryRange(Offer offer, Double salaryMinFilter, Double salaryMaxFilter) {
+        if (salaryMinFilter == null && salaryMaxFilter == null) {
+            return true;
+        }
+
+        double offerMin = offer.getMin_Salaire();
+        double offerMax = offer.getMax_Salaire();
+
+        if (offerMin <= 0 && offerMax <= 0) {
+            return false;
+        }
+
+        if (offerMin <= 0) {
+            offerMin = offerMax;
+        }
+        if (offerMax <= 0) {
+            offerMax = offerMin;
+        }
+
+        if (salaryMinFilter != null && offerMax < salaryMinFilter) {
+            return false;
+        }
+        if (salaryMaxFilter != null && offerMin > salaryMaxFilter) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Double parseSalaryValue(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        String normalized = value.trim().replace(',', '.');
+        try {
+            return Double.parseDouble(normalized);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     private void renderOffers(List<Offer> list) {
@@ -240,13 +319,18 @@ public class FrmCandidat implements NavigationAware {
         detailsBtn.getStyleClass().addAll("btn", "btn-ghost");
         detailsBtn.setOnAction(e -> showOfferDetails(offer));
 
+        Button favoriteBtn = new Button();
+        favoriteBtn.getStyleClass().addAll("btn", "btn-favorite");
+        syncFavoriteButton(favoriteBtn, offer);
+        favoriteBtn.setOnAction(e -> toggleFavorite(offer));
+
         Button applyBtn = new Button("Postuler");
         applyBtn.getStyleClass().addAll("btn", "btn-primary");
         applyBtn.setOnAction(e ->
                 selectedOffer.getSelectionModel().select(offer)
         );
 
-        footer.getChildren().addAll(detailsBtn, applyBtn);
+        footer.getChildren().addAll(detailsBtn, favoriteBtn, applyBtn);
 
         card.getChildren().addAll(header, meta, desc, footer);
         return card;
@@ -273,6 +357,28 @@ public class FrmCandidat implements NavigationAware {
                 lettreMotivation.requestFocus();
             }
         });
+    }
+
+    private void toggleFavorite(Offer offer) {
+        int offerId = offer.getID_Offre();
+        if (favoriteOfferIds.contains(offerId)) {
+            favoriteOfferIds.remove(offerId);
+            filterOffers();
+            return;
+        }
+        favoriteOfferIds.add(offerId);
+        filterOffers();
+    }
+
+    private void syncFavoriteButton(Button button, Offer offer) {
+        boolean favorite = favoriteOfferIds.contains(offer.getID_Offre());
+        button.getStyleClass().remove("btn-favorite-active");
+        if (favorite) {
+            button.setText("Retirer favori");
+            button.getStyleClass().add("btn-favorite-active");
+            return;
+        }
+        button.setText("Ajouter favoris");
     }
 
     private String buildOfferDetailsText(Offer offer) {

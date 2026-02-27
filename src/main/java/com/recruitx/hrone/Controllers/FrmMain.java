@@ -29,7 +29,10 @@ public class FrmMain {
     @FXML private Button btnEvents;
     @FXML private Button btnGererMesOffres;
     @FXML private Button btnOutils;
-//    @FXML private Button btnLogin;
+    @FXML private Button btntracabilite;
+    @FXML private Button btnGestionConge;
+    @FXML private Button btnDemandeConge;
+    //    @FXML private Button btnLogin;
 //    @FXML private Button btnLoginCandidat;
 //    @FXML private Button btnSignUpEntreprise;
 
@@ -54,7 +57,10 @@ public class FrmMain {
         ACTIVITES,
         LOGIN,
         SIGNUPCANDIDAT,
-        SIGNUPENTREPRISE
+        SIGNUPENTREPRISE,
+        TRACABILITE,
+        GESTION_CONGE,
+        DEMANDE_CONGE
     }
 
 
@@ -107,6 +113,12 @@ public class FrmMain {
     @FXML private void openEvents() {
         loadView(ViewType.EVENTS, btnEvents);
     }
+
+    @FXML private void openTracabilite() {loadView(ViewType.TRACABILITE, btntracabilite);}
+
+    @FXML private void opengGestionConge() {loadView(ViewType.GESTION_CONGE, btnGestionConge);}
+
+    @FXML private void openDemangeConge() {loadView(ViewType.DEMANDE_CONGE, btnDemandeConge);}
 
 //    @FXML private void openLogin() { loadView(ViewType.LOGIN, btnLogin);}
 //
@@ -203,6 +215,14 @@ public class FrmMain {
             //Interface Login
             case LOGIN ->
                     "/com/recruitx/hrone/View/FrmLogin.fxml";
+            //Interface Tracabilite Cote Admin
+            case TRACABILITE ->
+                    "";
+            //Interface Gestion Conge Cote RH
+            case GESTION_CONGE ->
+                    "";
+            case DEMANDE_CONGE ->
+                    "";
         };
     }
 

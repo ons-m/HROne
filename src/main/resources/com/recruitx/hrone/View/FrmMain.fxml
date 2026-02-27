@@ -45,7 +45,22 @@
                             styleClass="nav-link"
                             onAction="#openGestionUsers"/>
 
-<!--                    <Button fx:id="btnLogin"-->
+                    <Button fx:id="btntracabilite"
+                            text="Historique des actions"
+                            styleClass="nav-link"
+                            onAction="#openTracabilite"/>
+
+                    <Button fx:id="btnGestionConge"
+                            text="Gestion Des Congés"
+                            styleClass="nav-link"
+                            onAction="#opengGestionConge"/>
+
+                    <Button fx:id="btnDemandeConge"
+                            text="Demande de Congé"
+                            styleClass="nav-link"
+                            onAction="#openDemangeConge"/>
+
+                    <!--                    <Button fx:id="btnLogin"-->
 <!--                            text="Login"-->
 <!--                            styleClass="nav-link"-->
 <!--                            onAction="#openLogin"/>-->

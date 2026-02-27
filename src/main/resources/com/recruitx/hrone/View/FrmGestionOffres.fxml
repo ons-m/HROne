@@ -13,14 +13,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.StackPane?>
-
-<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmGestionOffres"
-           xmlns="http://javafx.com/javafx/20"
-           xmlns:fx="http://javafx.com/fxml/1"
-           stylesheets="@../Css/FrmGestionOffres.fx.css">
+<StackPane stylesheets="@../Css/FrmGestionOffres.fx.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.Controllers.FrmGestionOffres">
 
   <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
     <content>
@@ -28,10 +24,10 @@
           <!-- Top Bar -->
           <HBox styleClass="topbar">
               <VBox styleClass="user-info">
-                  <Label styleClass="user-name" text="Agent RH"/>
-                  <Label styleClass="user-role" text="Recrutement"/>
+                  <Label styleClass="user-name" text="Agent RH" />
+                  <Label styleClass="user-role" text="Recrutement" />
               </VBox>
-              <Label styleClass="avatar" text="AR"/>
+              <Label styleClass="avatar" text="AR" />
           </HBox>
 
           <!-- Page Title -->

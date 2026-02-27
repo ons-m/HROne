@@ -50,6 +50,10 @@
   -fx-spacing: 10;
 }
 
+.hero-search-row {
+  -fx-spacing: 10;
+}
+
 .content {
   -fx-spacing: 24;
 }
@@ -166,4 +170,17 @@
   -fx-border-color: #e2e8f0;
   -fx-border-radius: 10;
   -fx-text-fill: #0f172a;
+}
+
+.btn-favorite {
+  -fx-background-color: #b3d5ff;
+  -fx-border-color: #fed7aa;
+  -fx-border-radius: 10;
+  -fx-text-fill: #9a3412;
+}
+
+.btn-favorite-active {
+  -fx-background-color: #b3d5ff;
+  -fx-border-color: #fb923c;
+  -fx-text-fill: #7c2d12;
 }

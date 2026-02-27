@@ -9,6 +9,7 @@ import com.recruitx.hrone.Utils.LogType;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,19 +17,27 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import javafx.fxml.FXML;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -36,6 +45,7 @@ import javafx.scene.layout.VBox;
 
 public class FrmCandidatures {
     private static final DateTimeFormatter INTERVIEW_INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter INTERVIEW_TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 
     @FXML
     private ComboBox<String> offerFilter;
@@ -44,7 +54,10 @@ public class FrmCandidatures {
     private ComboBox<String> statusFilter;
 
     @FXML
-    private TextField candidateSearch;
+    private ComboBox<String> experienceFilter;
+
+    @FXML
+    private TextField skillsFilter;
 
     @FXML
     private VBox candidateList;
@@ -60,6 +73,24 @@ public class FrmCandidatures {
 
     @FXML
     private Button resetFilters;
+
+    @FXML
+    private Label statTotalOffers;
+
+    @FXML
+    private Label statTotalApplications;
+
+    @FXML
+    private Label statAccepted;
+
+    @FXML
+    private Label statRejected;
+
+    @FXML
+    private Label statMostAppliedJob;
+
+    @FXML
+    private Label statAvgInterviewScore;
 
     private final List<String> offers = new ArrayList<>();
     private final List<Candidate> candidates = new ArrayList<>();
@@ -78,18 +109,29 @@ public class FrmCandidatures {
         statusFilter.getItems().setAll("Tous les statuts", "En attente", "Acceptee", "Rejetee");
         statusFilter.getSelectionModel().selectFirst();
 
+        experienceFilter.getItems().setAll(
+            "Toutes les experiences",
+            "0-1 ans",
+            "2-4 ans",
+            "5+ ans"
+        );
+        experienceFilter.getSelectionModel().selectFirst();
+
         offerFilter.valueProperty().addListener((obs, oldValue, newValue) -> renderCandidates());
         statusFilter.valueProperty().addListener((obs, oldValue, newValue) -> renderCandidates());
-        candidateSearch.textProperty().addListener((obs, oldValue, newValue) -> renderCandidates());
+        experienceFilter.valueProperty().addListener((obs, oldValue, newValue) -> renderCandidates());
+        skillsFilter.textProperty().addListener((obs, oldValue, newValue) -> renderCandidates());
 
         renderCandidates();
+        refreshStatistics();
     }
 
     @FXML
     private void onResetFilters() {
         offerFilter.getSelectionModel().selectFirst();
         statusFilter.getSelectionModel().selectFirst();
-        candidateSearch.clear();
+        experienceFilter.getSelectionModel().selectFirst();
+        skillsFilter.clear();
         renderCandidates();
     }
 
@@ -131,6 +173,7 @@ public class FrmCandidatures {
             String experience = profile != null ? buildProfileSummary(profile) : "";
             String status = statusLabelFromCode(candidature.getCode_Type_Status());
             String skills = buildSkills(candidature);
+                int requiredExperienceYears = offer != null ? offer.getNbr_Annee_Experience() : -1;
 
             candidates.add(
                     new Candidate(
@@ -139,11 +182,143 @@ public class FrmCandidatures {
                             name,
                             email,
                             experience,
+                        requiredExperienceYears,
                             status,
                             skills,
                             profile
                     )
             );
+        }
+    }
+
+    private void refreshStatistics() {
+        int totalOffers = offersById.size();
+        int totalApplications = candidates.size();
+
+        int accepted = 0;
+        int rejected = 0;
+        Map<String, Integer> applicationsPerOffer = new HashMap<>();
+
+        for (Candidate candidate : candidates) {
+            if ("Acceptee".equals(candidate.status)) {
+                accepted++;
+            }
+            if ("Rejetee".equals(candidate.status)) {
+                rejected++;
+            }
+
+            applicationsPerOffer.put(
+                    candidate.offerTitle,
+                    applicationsPerOffer.getOrDefault(candidate.offerTitle, 0) + 1
+            );
+        }
+
+        String mostAppliedJob = "-";
+        if (!applicationsPerOffer.isEmpty()) {
+            mostAppliedJob = applicationsPerOffer.entrySet().stream()
+                    .max(
+                            Comparator
+                                    .comparingInt((Map.Entry<String, Integer> e) -> e.getValue())
+                                    .thenComparing(Map.Entry::getKey)
+                    )
+                    .map(Map.Entry::getKey)
+                    .orElse("-");
+        }
+
+        String avgScore = computeAverageInterviewScore();
+
+        if (statTotalOffers != null) {
+            statTotalOffers.setText(String.valueOf(totalOffers));
+        }
+        if (statTotalApplications != null) {
+            statTotalApplications.setText(String.valueOf(totalApplications));
+        }
+        if (statAccepted != null) {
+            statAccepted.setText(String.valueOf(accepted));
+        }
+        if (statRejected != null) {
+            statRejected.setText(String.valueOf(rejected));
+        }
+        if (statMostAppliedJob != null) {
+            statMostAppliedJob.setText(mostAppliedJob);
+        }
+        if (statAvgInterviewScore != null) {
+            statAvgInterviewScore.setText(avgScore);
+        }
+    }
+
+    private String computeAverageInterviewScore() {
+        String sql = "SELECT EVALUATION FROM ENTRETIEN";
+        ResultSet rs = null;
+
+        double sum = 0;
+        int count = 0;
+
+        try {
+            rs = DBHelper.ExecuteDataReader(sql);
+            while (rs.next()) {
+                Double score = parseNumericScore(rs.getString("EVALUATION"));
+                if (score != null) {
+                    sum += score;
+                    count++;
+                }
+            }
+        } catch (Exception ex) {
+            CError.log(LogType.ERROR, "Erreur calcul score moyen entretien", ex);
+            return "N/A";
+        } finally {
+            if (rs != null) {
+                try {
+                    if (rs.getStatement() != null) {
+                        rs.getStatement().close();
+                    }
+                    rs.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        if (count == 0) {
+            return "N/A";
+        }
+
+        DecimalFormat format = new DecimalFormat("0.00");
+        return format.format(sum / count);
+    }
+
+    private Double parseNumericScore(String evaluation) {
+        if (evaluation == null || evaluation.isBlank()) {
+            return null;
+        }
+
+        String normalized = evaluation.trim().replace(',', '.');
+        StringBuilder numeric = new StringBuilder();
+        boolean dotSeen = false;
+
+        for (int index = 0; index < normalized.length(); index++) {
+            char ch = normalized.charAt(index);
+            if (Character.isDigit(ch)) {
+                numeric.append(ch);
+                continue;
+            }
+            if (ch == '.' && !dotSeen) {
+                numeric.append(ch);
+                dotSeen = true;
+                continue;
+            }
+            if (numeric.length() > 0) {
+                break;
+            }
+        }
+
+        if (numeric.length() == 0 || ".".contentEquals(numeric)) {
+            return null;
+        }
+
+        try {
+            return Double.parseDouble(numeric.toString());
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 
@@ -191,7 +366,8 @@ public class FrmCandidatures {
     private void renderCandidates() {
         String selectedOffer = offerFilter.getValue();
         String selectedStatus = statusFilter.getValue();
-        String query = normalize(candidateSearch.getText());
+        String selectedExperience = experienceFilter.getValue();
+        String skillsQuery = normalize(skillsFilter.getText());
 
         int activeFilters = 0;
         if (selectedOffer != null && !selectedOffer.equals("Toutes les offres")) {
@@ -200,7 +376,10 @@ public class FrmCandidatures {
         if (selectedStatus != null && !selectedStatus.equals("Tous les statuts")) {
             activeFilters++;
         }
-        if (!query.isBlank()) {
+        if (selectedExperience != null && !selectedExperience.equals("Toutes les experiences")) {
+            activeFilters++;
+        }
+        if (!skillsQuery.isBlank()) {
             activeFilters++;
         }
         filterSummary.setText("Filtres actifs: " + activeFilters);
@@ -213,9 +392,10 @@ public class FrmCandidatures {
             boolean matchesStatus = selectedStatus == null
                 || selectedStatus.equals("Tous les statuts")
                 || candidate.status.equals(selectedStatus);
-            boolean matchesQuery = query.isBlank() || normalize(candidate.searchText()).contains(query);
+            boolean matchesExperience = matchesExperienceFilter(candidate.requiredExperienceYears, selectedExperience);
+            boolean matchesSkills = skillsQuery.isBlank() || normalize(candidate.skills).contains(skillsQuery);
 
-            if (matchesOffer && matchesStatus && matchesQuery) {
+            if (matchesOffer && matchesStatus && matchesExperience && matchesSkills) {
                 filtered.add(candidate);
             }
         }
@@ -282,51 +462,21 @@ public class FrmCandidatures {
             return;
         }
 
-        TextInputDialog dateDialog = new TextInputDialog();
-        dateDialog.setTitle("Planifier entretien");
-        dateDialog.setHeaderText("Date et heure d'entretien pour " + candidate.name);
-        dateDialog.setContentText("Format: yyyy-MM-dd HH:mm");
-        Optional<String> dateInput = dateDialog.showAndWait();
-        if (dateInput.isEmpty()) {
+        Optional<InterviewPlanInput> input = showInterviewPlannerDialog(candidate);
+        if (input.isEmpty()) {
             return;
         }
 
-        LocalDateTime interviewDateTime;
-        try {
-            interviewDateTime = LocalDateTime.parse(dateInput.get().trim(), INTERVIEW_INPUT_FORMAT);
-        } catch (DateTimeParseException ex) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Format invalide");
-            alert.setContentText("Utilisez le format: yyyy-MM-dd HH:mm");
-            alert.showAndWait();
-            return;
-        }
-
-        TextInputDialog locationDialog = new TextInputDialog();
-        locationDialog.setTitle("Planifier entretien");
-        locationDialog.setHeaderText("Localisation de l'entretien");
-        locationDialog.setContentText("Ex: Salle A / Meet / Teams");
-        Optional<String> locationInput = locationDialog.showAndWait();
-        if (locationInput.isEmpty() || locationInput.get().isBlank()) {
-            return;
-        }
-
-        TextInputDialog evaluationDialog = new TextInputDialog();
-        evaluationDialog.setTitle("Planifier entretien");
-        evaluationDialog.setHeaderText("Note / evaluation (optionnel)");
-        evaluationDialog.setContentText("Laissez vide si non applicable");
-        Optional<String> evaluationInput = evaluationDialog.showAndWait();
-        if (evaluationInput.isEmpty()) {
-            return;
-        }
+        InterviewPlanInput interviewInput = input.get();
+        LocalDateTime interviewDateTime = LocalDateTime.of(interviewInput.date, interviewInput.time);
 
         Entretien entretien = new Entretien();
         entretien.setIdCandidat(candidate.candidature.getID_Candidat());
         entretien.setIdRh(getCurrentRhId());
         entretien.setNumOrdreEntretien((int) COrdre.GetNumOrdreFromDate(interviewDateTime));
-        entretien.setLocalisation(locationInput.get().trim());
+        entretien.setLocalisation(interviewInput.location);
         entretien.setStatusEntretien(0);
-        entretien.setEvaluation(evaluationInput.get().trim());
+        entretien.setEvaluation(interviewInput.evaluation);
 
         boolean success = EntretienRepository.Ajouter(entretien);
         if (!success) {
@@ -339,8 +489,116 @@ public class FrmCandidatures {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText("Entretien planifie");
-        alert.setContentText("Entretien planifie le " + interviewDateTime.format(INTERVIEW_INPUT_FORMAT) + " a " + locationInput.get().trim());
+        alert.setContentText("Entretien planifie le " + interviewDateTime.format(INTERVIEW_INPUT_FORMAT) + " a " + interviewInput.location);
         alert.showAndWait();
+
+        refreshStatistics();
+    }
+
+    private Optional<InterviewPlanInput> showInterviewPlannerDialog(Candidate candidate) {
+        Dialog<InterviewPlanInput> dialog = new Dialog<>();
+        dialog.setTitle("Planifier entretien");
+
+        DialogPane pane = dialog.getDialogPane();
+        pane.getStyleClass().add("interview-dialog");
+
+        if (getClass().getResource("/com/recruitx/hrone/Css/FrmCandidatures.fx.css") != null) {
+            pane.getStylesheets().add(
+                    getClass().getResource("/com/recruitx/hrone/Css/FrmCandidatures.fx.css").toExternalForm()
+            );
+        }
+
+        ButtonType planType = new ButtonType("Planifier", ButtonBar.ButtonData.OK_DONE);
+        pane.getButtonTypes().addAll(ButtonType.CANCEL, planType);
+
+        Label title = new Label("Planifier un entretien");
+        title.getStyleClass().add("dialog-title");
+
+        Label subtitle = new Label("Candidat: " + candidate.name + " • Offre: " + candidate.offerTitle);
+        subtitle.getStyleClass().add("muted");
+
+        DatePicker datePicker = new DatePicker(LocalDate.now().plusDays(1));
+        TextField timeField = new TextField("09:30");
+        timeField.setPromptText("HH:mm");
+
+        TextField locationField = new TextField();
+        locationField.setPromptText("Salle A / Meet / Teams");
+
+        TextArea evaluationArea = new TextArea();
+        evaluationArea.setPromptText("Notes de preparation (optionnel)");
+        evaluationArea.setPrefRowCount(3);
+
+        Label errorLabel = new Label();
+        errorLabel.getStyleClass().add("field-error");
+        errorLabel.setManaged(false);
+        errorLabel.setVisible(false);
+
+        GridPane form = new GridPane();
+        form.getStyleClass().add("interview-form");
+        form.setHgap(12);
+        form.setVgap(10);
+
+        form.add(buildDialogField("Date", datePicker), 0, 0);
+        form.add(buildDialogField("Heure", timeField), 1, 0);
+        form.add(buildDialogField("Localisation", locationField), 0, 1, 2, 1);
+        form.add(buildDialogField("Evaluation", evaluationArea), 0, 2, 2, 1);
+
+        VBox container = new VBox(10, title, subtitle, form, errorLabel);
+        container.getStyleClass().add("interview-dialog-content");
+        pane.setContent(container);
+
+        Button planBtn = (Button) pane.lookupButton(planType);
+        planBtn.getStyleClass().addAll("btn", "btn-primary");
+
+        Button cancelBtn = (Button) pane.lookupButton(ButtonType.CANCEL);
+        cancelBtn.getStyleClass().addAll("btn", "btn-ghost");
+
+        final InterviewPlanInput[] result = new InterviewPlanInput[1];
+        planBtn.addEventFilter(ActionEvent.ACTION, event -> {
+            String error = null;
+
+            LocalDate date = datePicker.getValue();
+            if (date == null) {
+                error = "Selectionnez une date d'entretien.";
+            }
+
+            LocalTime time = null;
+            if (error == null) {
+                try {
+                    time = LocalTime.parse(timeField.getText().trim(), INTERVIEW_TIME_FORMAT);
+                } catch (DateTimeParseException ex) {
+                    error = "Heure invalide. Utilisez HH:mm (ex: 14:30).";
+                }
+            }
+
+            String location = locationField.getText() == null ? "" : locationField.getText().trim();
+            if (error == null && location.isBlank()) {
+                error = "La localisation est obligatoire.";
+            }
+
+            if (error != null) {
+                errorLabel.setText(error);
+                errorLabel.setManaged(true);
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+
+            String evaluation = evaluationArea.getText() == null ? "" : evaluationArea.getText().trim();
+            result[0] = new InterviewPlanInput(date, time, location, evaluation);
+            errorLabel.setManaged(false);
+            errorLabel.setVisible(false);
+        });
+
+        dialog.setResultConverter(buttonType -> buttonType == planType ? result[0] : null);
+        return dialog.showAndWait();
+    }
+
+    private VBox buildDialogField(String labelText, javafx.scene.Node control) {
+        Label label = new Label(labelText);
+        VBox field = new VBox(6, label, control);
+        field.getStyleClass().add("field");
+        return field;
     }
 
     private int getCurrentRhId() {
@@ -423,6 +681,7 @@ public class FrmCandidatures {
         }
 
         renderCandidates();
+        refreshStatistics();
     }
 
     private String statusLabelFromCode(int code) {
@@ -447,6 +706,28 @@ public class FrmCandidatures {
             parts.add(candidature.getLettre_Recomendation());
         }
         return String.join(" ", parts);
+    }
+
+    private boolean matchesExperienceFilter(int years, String selectedExperience) {
+        if (selectedExperience == null || selectedExperience.equals("Toutes les experiences")) {
+            return true;
+        }
+
+        if (years < 0) {
+            return false;
+        }
+
+        if (selectedExperience.equals("0-1 ans")) {
+            return years <= 1;
+        }
+        if (selectedExperience.equals("2-4 ans")) {
+            return years >= 2 && years <= 4;
+        }
+        if (selectedExperience.equals("5+ ans")) {
+            return years >= 5;
+        }
+
+        return true;
     }
 
     private String statusClass(String status) {
@@ -521,6 +802,7 @@ public class FrmCandidatures {
         private final String name;
         private final String email;
         private final String experience;
+        private final int requiredExperienceYears;
         private String status;
         private final String skills;
         private final CandidateProfile profile;
@@ -531,6 +813,7 @@ public class FrmCandidatures {
                 String name,
                 String email,
                 String experience,
+                int requiredExperienceYears,
                 String status,
                 String skills,
                 CandidateProfile profile
@@ -540,6 +823,7 @@ public class FrmCandidatures {
             this.name = name;
             this.email = email;
             this.experience = experience;
+            this.requiredExperienceYears = requiredExperienceYears;
             this.status = status;
             this.skills = skills;
             this.profile = profile;
@@ -547,6 +831,20 @@ public class FrmCandidatures {
 
         private String searchText() {
             return offerTitle + " " + name + " " + email + " " + skills;
+        }
+    }
+
+    private static final class InterviewPlanInput {
+        private final LocalDate date;
+        private final LocalTime time;
+        private final String location;
+        private final String evaluation;
+
+        private InterviewPlanInput(LocalDate date, LocalTime time, String location, String evaluation) {
+            this.date = date;
+            this.time = time;
+            this.location = location;
+            this.evaluation = evaluation;
         }
     }
 }
