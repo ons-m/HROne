@@ -1,5 +1,8 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Models.Entreprise;
+import com.recruitx.hrone.Models.Utilisateur;
+import com.recruitx.hrone.Controllers.Session;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -225,5 +228,14 @@ public class FrmMain {
     public void hideSidebar() {
         sidebar.setVisible(false);
         sidebar.setManaged(false);
+    }
+
+    public void setCurrentUser(Utilisateur currentUser, Entreprise currEntreprise) {
+        if(currentUser == null || currEntreprise == null){
+
+        }
+
+        Session.setCurrentUser(currentUser);
+        Session.setCurrentEntreprise(currEntreprise);
     }
 }

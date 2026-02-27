@@ -1,6 +1,8 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
+import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -59,26 +61,27 @@ public class FrmLogin implements NavigationAware{
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle incorrect !");
                 return;
             }
-
-            // Connecter l'utilisateur
-            // Session.setLoggedUser(loggedUser);
-
-//            // Redirection selon rôle
-//            switch (role) {
-//                case "AGENT RH" -> {
-//                    if (mainController != null) {
-//                        mainController.loadView(FrmMain.ViewType.GESTION_EMPLOYEE);
-//                    }
-//                }
-//            }
-
             mainController.showSidebar();
             mainController.loadView(FrmMain.ViewType.COMMUNAUTE);
-            //mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser.getId()));
+            mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser));
 
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Email ou mot de passe incorrect !");
+            return;
         }
+    }
+
+    private Entreprise GetUserEntreprise(Utilisateur user){
+        Entreprise currEntreprise;
+
+        EntrepriseRepository entrepriseRepository = new EntrepriseRepository();
+        currEntreprise = entrepriseRepository.getById(user.getIdEntreprise());
+
+        if(currEntreprise == null){
+           showAlert(Alert.AlertType.ERROR, "Erreur", "Entreprise introuvable pour l'utilisateur !");
+        }
+
+        return currEntreprise;
     }
 
     @FXML
