@@ -47,6 +47,42 @@ public final class DBHelper {
         }
     }
 
+    public static int ExecuteScalarThreadSafe(String sql) {
+
+        long startTime = System.currentTimeMillis();
+
+        // IMPORTANT: create a fresh connection (not the singleton)
+        try (Connection conn = DBConnection.getNewConnction();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            int result = 0;
+
+            if (rs.next()) {
+                result = rs.getInt(1);   // Direct primitive extraction (no Object casting)
+            }
+
+            CError.Log_Sql(
+                    sql,
+                    System.currentTimeMillis() - startTime,
+                    null
+            );
+
+            return result;
+
+        } catch (SQLException ex) {
+
+            CError.Log_Sql(
+                    sql,
+                    System.currentTimeMillis() - startTime,
+                    ex
+            );
+
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
     /* ==========================================
        2. ExecuteQuery (INSERT / UPDATE / DELETE)
        ========================================== */

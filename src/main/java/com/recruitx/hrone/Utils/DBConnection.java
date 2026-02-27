@@ -74,4 +74,30 @@ public final class DBConnection {
         }
     }
 
+    public static Connection getNewConnction() throws SQLException {
+        //Collect Parameters from config.ini
+        String DatabaseName = Global.LireParamParNom("DatabaseName");
+        String MysqlPort = Global.LireParamParNom("MysqlPort");
+        String DatabaseServer = Global.LireParamParNom("DatabaseServer");
+
+        //Check if all the configuration parameters are present
+        if(DatabaseServer == null || DatabaseServer.isEmpty()
+                || MysqlPort == null || MysqlPort.isEmpty()
+                || DatabaseName == null || DatabaseName.isEmpty()) {
+
+            SQLException ex =
+                    new SQLException("Database configuration parameters are missing.");
+
+            CError.log(LogType.ERROR, "Failed to create DB connection", ex);
+            throw ex;
+        }
+
+        String URL = "jdbc:mysql://" + DatabaseServer + ":" + MysqlPort + "/" + DatabaseName
+                + "?useSSL=false"
+                + "&allowPublicKeyRetrieval=true"
+                + "&serverTimezone=UTC";
+
+        //Connect to the database
+        return  DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 }

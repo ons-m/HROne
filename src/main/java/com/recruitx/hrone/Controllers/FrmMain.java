@@ -155,6 +155,7 @@ public class FrmMain {
             //interaface Evenement Cote Employee
             case EVENEMENTS ->
                     "/com/recruitx/hrone/View/FrmEvenement.fxml";
+            //Interface Formation Cote HR
             case FORMATIONS ->
                     "/com/recruitx/hrone/View/FrmFormationDashboard.fxml";
             //Interface Candidature Cote Candidat
@@ -163,10 +164,12 @@ public class FrmMain {
             //Interface Liste Offre Cote Candidat
             case OFFRES ->
                     "/com/recruitx/hrone/View/FrmCandidat.fxml";
+            //Interface Formation Cote Employee
             case TRAINING ->
                     "/com/recruitx/hrone/View/FrmFormation.fxml";
+            //Inteface Communauté Cote Employee
             case COMMUNAUTE ->
-                    "/com/recruitx/hrone/View/FrmCommunaute.fxml";
+                    "/com/recruitx/hrone/View/FrmBlog.fxml";
             //Interface Evenement Cote HR
             case EVENTS ->
                     "/com/recruitx/hrone/View/FrmEventsDashboard.fxml";
@@ -176,10 +179,13 @@ public class FrmMain {
             //Interface Activites Cote HR
             case ACTIVITES ->
                     "/com/recruitx/hrone/View/FrmActivites.fxml";
+            //Interface SignUp Candidat
             case SIGNUPCANDIDAT ->
                     "/com/recruitx/hrone/View/FrmSignUpCandiat.fxml";
+            //Interface SignUp Entreprise
             case SIGNUPENTREPRISE ->
                     "/com/recruitx/hrone/View/FrmSignUpEntreprise.fxml";
+            //Interface Login
             case LOGIN ->
                     "/com/recruitx/hrone/View/FrmLogin.fxml";
         };
