@@ -22,8 +22,10 @@ public class FormationRepository {
     }
     // CREATE
     public boolean create(Formation formation) {
-        String sql = "INSERT INTO formation (Titre, Description, Num_Ordre_Creation, ID_Entreprise, Image) VALUES (?, ?, ?, ?, ?)";
-        System.out.println("--------------------------------------------");
+        String sql = "INSERT INTO formation " +
+                "(Titre, Description, Num_Ordre_Creation, ID_Entreprise, Image, " +
+                "Mode, NombrePlaces, PlacesRestantes, Date_Debut, Date_Fin, Niveau) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, formation.getTitre());
@@ -31,19 +33,19 @@ public class FormationRepository {
             stmt.setInt(3, formation.getNumOrdreCreation());
             stmt.setInt(4, formation.getIdEntreprise());
             stmt.setString(5, formation.getImage());
-            System.out.println("--------------------------------------------"+ formation);
-            int rows = stmt.executeUpdate();
-            System.out.println("--------------------------------------------");
+            stmt.setString(6, formation.getMode() != null ? formation.getMode() : "presentiel"); // ✅
+            stmt.setInt(7, formation.getNombrePlaces());     // ✅
+            stmt.setInt(8, formation.getPlacesRestantes());  // ✅
+            stmt.setLong(9, formation.getDateDebut());       // ✅
+            stmt.setLong(10, formation.getDateFin());
+            stmt.setString(11, formation.getNiveau() != null ? formation.getNiveau() : "Débutant");
 
+
+            int rows = stmt.executeUpdate();
             if (rows > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
-                System.out.println("--------------------------------------------");
-
                 if (rs.next()) {
-                    System.out.println("--------------------------------------------");
-
                     formation.setIdFormation(rs.getInt(1));
-
                 }
                 return true;
             }
@@ -52,7 +54,6 @@ public class FormationRepository {
         }
         return false;
     }
-
     // READ ALL
     public List<Formation> readAll() {
         List<Formation> formations = new ArrayList<>();
@@ -108,7 +109,12 @@ public class FormationRepository {
 
     // UPDATE
     public boolean update(Formation formation) {
-        String sql = "UPDATE formation SET Titre = ?, Description = ?, Num_Ordre_Creation = ?, ID_Entreprise = ?, Image = ? WHERE ID_Formation = ?";
+        String sql = "UPDATE formation SET " +
+                "Titre = ?, Description = ?, Num_Ordre_Creation = ?, " +
+                "ID_Entreprise = ?, Image = ?, " +
+                "Mode = ?, NombrePlaces = ?, PlacesRestantes = ?, " +
+                "Date_Debut = ?, Date_Fin = ?, Niveau = ? " +
+                "WHERE ID_Formation = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, formation.getTitre());
@@ -116,30 +122,62 @@ public class FormationRepository {
             stmt.setInt(3, formation.getNumOrdreCreation());
             stmt.setInt(4, formation.getIdEntreprise());
             stmt.setString(5, formation.getImage());
-            stmt.setInt(6, formation.getIdFormation());
+            stmt.setString(6, formation.getMode() != null ? formation.getMode() : "presentiel"); // ✅
+            stmt.setInt(7, formation.getNombrePlaces());     // ✅
+            stmt.setInt(8, formation.getPlacesRestantes());  // ✅
+            stmt.setLong(9, formation.getDateDebut());       // ✅
+            stmt.setLong(10, formation.getDateFin());        // ✅
+            stmt.setInt(11, formation.getIdFormation());
+            stmt.setString(11, formation.getNiveau() != null ? formation.getNiveau() : "Débutant");
+            stmt.setInt(12, formation.getIdFormation());
 
-            int rows = stmt.executeUpdate();
-            return rows > 0;
+
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("❌ Erreur update formation: " + e.getMessage());
         }
         return false;
     }
-
     // DELETE
+// ✅ DELETE avec suppression cascade des participations
     public boolean delete(int id) {
-        String sql = "DELETE FROM formation WHERE ID_Formation = ?";
+        String sqlParticipations = "DELETE FROM participation_formation WHERE ID_Formation = ?";
+        String sqlFormation = "DELETE FROM formation WHERE ID_Formation = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            int rows = stmt.executeUpdate();
-            return rows > 0;
+        try {
+            // ✅ Étape 1 — Supprimer participations liées
+            PreparedStatement ps1 = connection.prepareStatement(sqlParticipations);
+            ps1.setInt(1, id);
+            int nbParticipations = ps1.executeUpdate();
+            System.out.println("✅ " + nbParticipations + " participation(s) supprimée(s)");
+
+            // ✅ Étape 2 — Supprimer la formation
+            PreparedStatement ps2 = connection.prepareStatement(sqlFormation);
+            ps2.setInt(1, id);
+            boolean ok = ps2.executeUpdate() > 0;
+
+            if (ok) System.out.println("✅ Formation " + id + " supprimée");
+            return ok;
+
         } catch (SQLException e) {
-            System.err.println("❌ Erreur delete formation: " + e.getMessage());
+            System.err.println("❌ Erreur suppression: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
+    // ✅ Compter participants d'une formation
+    public int getNombreParticipants(int idFormation) {
+        String sql = "SELECT COUNT(*) FROM participation_formation WHERE ID_Formation = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idFormation);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur comptage: " + e.getMessage());
+        }
+        return 0;
+    }
     // RECHERCHE
     public List<Formation> search(String keyword) {
         List<Formation> formations = new ArrayList<>();
@@ -203,6 +241,7 @@ public class FormationRepository {
         formation.setNumOrdreCreation(rs.getInt("Num_Ordre_Creation"));
         formation.setIdEntreprise(rs.getInt("ID_Entreprise"));
         formation.setImage(rs.getString("Image"));
+        formation.setNiveau(rs.getString("Niveau"));
         // Nouveaux champs
         try {
             formation.setMode(rs.getString("Mode"));
@@ -276,4 +315,5 @@ public class FormationRepository {
 
         return nomEntreprise;
     }
+
 }

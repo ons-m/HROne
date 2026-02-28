@@ -123,6 +123,10 @@
                                         <Label text="Date de fin" />
                                         <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" />
                                     </VBox>
+                                <VBox styleClass="field">
+                                    <Label text="Niveau de formation" />
+                                    <ComboBox fx:id="niveauComboBox" promptText="Sélectionner le niveau" maxWidth="Infinity" />
+                                </VBox>
                                 </HBox>
                                 <VBox styleClass="field full">
                                     <Label text="Cours / modules" />
@@ -143,14 +147,9 @@
 
                         <!-- Preview Card -->
                         <VBox styleClass="card formation-preview-card">
-
-                            <Label styleClass="section-title"
-                                   text="Apercu de la formation"/>
-
+                        <Label styleClass="section-title" text="Apercu de la formation" />
                             <VBox styleClass="preview-image">
-                                <ImageView fx:id="previewImageView"
-                                           fitHeight="200"
-                                           preserveRatio="true">
+                            <ImageView fx:id="previewImageView" fitHeight="200" preserveRatio="true">
                                     <image>
                                         <Image url="@../Assets/logo.png"/>
                                     </image>
@@ -158,40 +157,25 @@
                             </VBox>
 
                             <VBox styleClass="preview-content">
-                                <Label fx:id="previewTitleLabel"
-                                       styleClass="preview-title"
-                                       text="Titre de formation"/>
-
-                                <Label fx:id="previewDescriptionLabel"
-                                       styleClass="muted"
-                                       text="La description apparaitra ici pour presenter la formation aux candidats."
-                                       wrapText="true"/>
+                            <Label fx:id="previewTitleLabel" styleClass="preview-title" text="Titre de formation" />
+                            <Label fx:id="previewDescriptionLabel" styleClass="muted" text="La description apparaitra ici pour presenter la formation aux candidats." wrapText="true" />
                             </VBox>
 
                             <VBox styleClass="preview-courses">
                                 <HBox styleClass="preview-courses-header">
-                                    <Label text="Modules inclus"/>
-                                    <Label fx:id="previewCoursesCountLabel"
-                                           styleClass="muted"
-                                           text="0 module"/>
+                                <Label text="Modules inclus" />
+                                <Label fx:id="previewCoursesCountLabel" styleClass="muted" text="0 module" />
                                 </HBox>
-
-                                <Label styleClass="muted"
-                                       text="Ajoutez vos cours pour les voir dans l'apercu."/>
-
-                                <VBox fx:id="previewCoursesListContainer"
-                                      styleClass="preview-courses-list"/>
+                            <Label styleClass="muted" text="Ajoutez vos cours pour les voir dans l'apercu." />
+                            <VBox fx:id="previewCoursesListContainer" styleClass="preview-courses-list" />
                             </VBox>
                         </VBox>
 
                         <!-- Published Formations -->
                         <VBox styleClass="card">
-                            <Label styleClass="section-title"
-                                   text="Formations publiees"/>
-                            <Label styleClass="muted"
-                                   text="Gerez les formations disponibles et mettez-les a jour."/>
-                            <VBox fx:id="formationList"
-                                  styleClass="resource-list"/>
+                        <Label styleClass="section-title" text="Formations publiees" />
+                        <Label styleClass="muted" text="Gerez les formations disponibles et mettez-les a jour." />
+                        <VBox fx:id="formationList" styleClass="resource-list" />
                         </VBox>
 
                     </VBox>

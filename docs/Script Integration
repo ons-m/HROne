@@ -105,3 +105,9 @@ INSERT INTO PROFIL(ID_PROFIL,NOM_PROFIL) VALUES
 (1,'Candidat'),
 (2,'RH'),
 (3,'Employee');
+
+
+=============== KHALED ========================
+
+ALTER TABLE outils_de_travail ADD COLUMN Nom_Outil VARCHAR(255);
+ALTER TABLE employee ADD COLUMN SALAIRE INT DEFAULT 0;

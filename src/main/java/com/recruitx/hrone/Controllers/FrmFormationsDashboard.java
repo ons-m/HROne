@@ -1,8 +1,12 @@
 package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Repository.FormationRepository;
+import com.recruitx.hrone.Repository.FormationParticipationRepository;
 import com.recruitx.hrone.Models.Formation;
 import com.recruitx.hrone.Utils.COrdre;
+import com.recruitx.hrone.API.*;
+
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,6 +65,7 @@ public class FrmFormationsDashboard {
     @FXML private VBox placesContainer;
     @FXML private DatePicker dateDebutPicker;
     @FXML private DatePicker dateFinPicker;
+    @FXML private ComboBox<String> niveauComboBox;
 
     // Data storage (in-memory for courses)
     private List<String> currentCourses = new ArrayList<>();
@@ -75,6 +80,8 @@ public class FrmFormationsDashboard {
         // ✅ Initialiser le ComboBox mode ICI
         modeComboBox.getItems().addAll("presentiel", "en_ligne");
         modeComboBox.setValue("presentiel");
+        niveauComboBox.getItems().addAll("Débutant", "Intermédiaire", "Avancé");
+        niveauComboBox.setValue("Débutant");
 
         // ✅ Afficher/cacher places selon le mode sélectionné
         modeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -285,16 +292,29 @@ public class FrmFormationsDashboard {
             showStatus("La description doit contenir au moins 20 caractères.", true);
             return;
         }
-        // ✅ Récupérer les places - remplacez le bloc existant
-        int nombrePlaces = 30;
-        if ("en_ligne".equals(mode)) {
-            nombrePlaces = 999;
-        } else {
+        if (imageUrl.isEmpty()) {
+            showStatus("L'URL de l'image est obligatoire.", true);
+            return;
+        }
+        if (!isLocalFile(imageUrl) && !isValidUrl(imageUrl)) {
+            showStatus("L'image n'est pas valide.", true);
+            return;
+        }
+
+        // ── ✅ Mode ──
+        String modeSelectionne = modeComboBox.getValue(); // ✅ depuis ComboBox directement
+        if (modeSelectionne == null || modeSelectionne.isEmpty()) {
+            showStatus("Veuillez sélectionner un mode de formation.", true);
+            return;
+        }
+
+        // ── ✅ Nombre de places ──
             String placesText = nombrePlacesField.getText().trim();
             if (placesText.isEmpty()) {
-                showStatus("Le nombre de places est obligatoire supérieur à 0.", true);
+            showStatus("Le nombre de places est obligatoire.", true);
                 return;
             }
+        int nombrePlaces;
             try {
                 nombrePlaces = Integer.parseInt(placesText);
                 if (nombrePlaces <= 0) {
@@ -302,53 +322,40 @@ public class FrmFormationsDashboard {
                     return;
                 }
             } catch (NumberFormatException e) {
-                showStatus("Le nombre de places doit être un nombre valide.", true);
+            showStatus("Le nombre de places doit être un nombre valide (ex: 30).", true);
                 return;
             }
 
-        }
-
-
-        // ✅ Valider date début
+        // ── ✅ Dates ──
         if (dateDebutPicker.getValue() == null) {
             showStatus("La date de début est obligatoire.", true);
             return;
         }
-
-// ✅ Valider date fin
         if (dateFinPicker.getValue() == null) {
             showStatus("La date de fin est obligatoire.", true);
             return;
         }
-
-// ✅ Vérifier que date fin > date début
         if (dateFinPicker.getValue().isBefore(dateDebutPicker.getValue()) ||
                 dateFinPicker.getValue().isEqual(dateDebutPicker.getValue())) {
             showStatus("La date de fin doit être après la date de début.", true);
             return;
         }
 
-        if (imageUrl.isEmpty()) {
-            showStatus("L'URL de l'image est obligatoire.", true);
-            return;
-        }
+        long dateDebut = COrdre.GetNumOrdreFromDate(dateDebutPicker.getValue().atStartOfDay());
+        long dateFin = COrdre.GetNumOrdreFromDate(dateFinPicker.getValue().atStartOfDay());
 
-        // Accept both local files (file:/) and URLs (http/https)
-        if (!isLocalFile(imageUrl) && !isValidUrl(imageUrl)) {
-            showStatus("L'image n'est pas valide. Utilisez une URL (http/https) ou sélectionnez un fichier local.", true);
-            return;
-        }
-        
-
+        // ── Modules ──
         if (currentCourses.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Aucun module");
             alert.setHeaderText("Vous n'avez ajouté aucun module à cette formation.");
             alert.setContentText("Voulez-vous continuer quand même ?");
-
-            if (alert.showAndWait().get() != ButtonType.OK) {
-                return;
+            if (alert.showAndWait().get() != ButtonType.OK) return;
             }
+        String niveau = niveauComboBox.getValue();
+        if (niveau == null || niveau.isEmpty()) {
+            showStatus("Veuillez sélectionner un niveau.", true);
+            return;
         }
 
         try {
@@ -360,6 +367,12 @@ public class FrmFormationsDashboard {
                 editingFormation.setTitre(title);
                 editingFormation.setDescription(fullDescription);
                 editingFormation.setImage(imageUrl);
+                editingFormation.setMode(modeSelectionne);        // ✅
+                editingFormation.setNombrePlaces(nombrePlaces);   // ✅
+                editingFormation.setPlacesRestantes(nombrePlaces);// ✅
+                editingFormation.setDateDebut(dateDebut);         // ✅
+                editingFormation.setDateFin(dateFin);             // ✅
+                editingFormation.setNiveau(niveau); // ✅
 
                 boolean success = formationDAO.update(editingFormation);
 
@@ -384,11 +397,19 @@ public class FrmFormationsDashboard {
                         currentEntrepriseId,
                         imageUrl
                 );
-                System.out.println("orderNumber  ======"+orderNumber);
+                formation.setMode(modeSelectionne);        // ✅
+                formation.setNombrePlaces(nombrePlaces);   // ✅
+                formation.setPlacesRestantes(nombrePlaces);// ✅
+                formation.setDateDebut(dateDebut);         // ✅
+                formation.setDateFin(dateFin);             // ✅
+                formation.setNiveau(niveau); // ✅
+
+                // ✅ LOG pour vérifier
+                System.out.println("✅ Mode: " + formation.getMode());
+                System.out.println("✅ Places: " + formation.getNombrePlaces());
+                System.out.println("✅ PlacesRestantes: " + formation.getPlacesRestantes());
 
                 boolean success = formationDAO.create(formation);
-                System.out.println("orderNumber  ======"+orderNumber);
-
                 if (success) {
                     showStatus("Formation publiée avec succès !", false);
                     formStatusLabel.getStyleClass().add("status-success");
@@ -405,8 +426,8 @@ public class FrmFormationsDashboard {
             showStatus("Erreur: " + e.getMessage(), true);
             e.printStackTrace();
         }
-    }
 
+    }
     private String buildDescriptionWithCourses(String baseDescription) {
         if (currentCourses.isEmpty()) {
             return baseDescription;
@@ -481,10 +502,7 @@ public class FrmFormationsDashboard {
 
         // Count modules from description
         int moduleCount = countModulesInDescription(formation.getDescription());
-
-        Label metaLabel = new Label(
-                moduleCount + " modules • Ordre: " + formation.getNumOrdreCreation()
-        );
+        Label metaLabel = new Label(moduleCount + " modules • Ordre: " + formation.getNumOrdreCreation());
         metaLabel.getStyleClass().add("resource-meta");
 
         // Display only base description (without modules list)
@@ -497,6 +515,10 @@ public class FrmFormationsDashboard {
         actionsBox.setSpacing(8);
         actionsBox.setAlignment(Pos.CENTER_RIGHT);
 
+        Button participantsButton = new Button("Participants");
+        participantsButton.getStyleClass().addAll("btn", "btn-ghost", "btn-small");
+        participantsButton.setOnAction(e -> voirParticipants(formation));
+
         Button editButton = new Button("Modifier");
         editButton.getStyleClass().addAll("btn", "btn-ghost", "btn-small");
         editButton.setOnAction(e -> editFormation(formation));
@@ -505,7 +527,8 @@ public class FrmFormationsDashboard {
         deleteButton.getStyleClass().addAll("btn", "btn-danger", "btn-small");
         deleteButton.setOnAction(e -> deleteFormation(formation));
 
-        actionsBox.getChildren().addAll(editButton, deleteButton);
+        // ✅ Une seule ligne addAll
+        actionsBox.getChildren().addAll(participantsButton, editButton, deleteButton);
 
         formationCard.getChildren().addAll(titleLabel, metaLabel, descLabel, actionsBox);
         formationList.getChildren().add(formationCard);
@@ -580,18 +603,29 @@ public class FrmFormationsDashboard {
         publishButton.setText("Mettre à jour la formation");
         showStatus("Formation chargée pour modification.", false);
         titleField.requestFocus();
+        niveauComboBox.setValue(
+                formation.getNiveau() != null ? formation.getNiveau() : "Débutant"
+        );
     }
     private void deleteFormation(Formation formation) {
+        // ✅ Compter participants
+        int nbParticipants = formationDAO.getNombreParticipants(formation.getIdFormation());
+
+        // ✅ Message adapté
+        String message = nbParticipants > 0
+                ? "⚠️ Cette formation contient " + nbParticipants + " participant(s).\n\n"
+                + "La suppression effacera aussi toutes les participations.\nConfirmer ?"
+                : "Voulez-vous supprimer :\n\"" + formation.getTitre() + "\" ?";
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Supprimer la formation");
-        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer cette formation ?");
-        alert.setContentText(formation.getTitre());
+        alert.setHeaderText(formation.getTitre());
+        alert.setContentText(message);
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             boolean success = formationDAO.delete(formation.getIdFormation());
-
             if (success) {
-                showStatus("Formation supprimée.", false);
+                showStatus("✅ Formation supprimée avec " + nbParticipants + " participation(s).", false);
                 loadPublishedFormations();
             } else {
                 showStatus("Erreur lors de la suppression.", true);
@@ -610,7 +644,7 @@ public class FrmFormationsDashboard {
 
         // ✅ Reset nouveaux champs
         modeComboBox.setValue("presentiel");
-        nombrePlacesField.setText("30");
+        nombrePlacesField.clear(); // ✅ vide au lieu de 30
         dateDebutPicker.setValue(null);
         dateFinPicker.setValue(null);
         placesContainer.setVisible(true);
@@ -622,6 +656,7 @@ public class FrmFormationsDashboard {
         publishButton.setText("Publier la formation");
         formStatusLabel.setText("");
         formStatusLabel.getStyleClass().removeAll("status-success", "status-error");
+        niveauComboBox.setValue("Débutant");
     }
     private void showStatus(String message, boolean isError) {
         formStatusLabel.setText(message);
@@ -704,13 +739,89 @@ public class FrmFormationsDashboard {
     @FXML
     void navigateToCandidatures(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/recruitx/hrone/formation/FrmFormation.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/com/recruitx/hrone/formation/formation.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void voirParticipants(Formation formation) {
+        FormationParticipationRepository participationDAO = new FormationParticipationRepository();
+        List<String[]> participants = participationDAO.getParticipantsByFormation(formation.getIdFormation());
+
+        if (participants.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Participants");
+            alert.setHeaderText("Aucun participant inscrit pour : " + formation.getTitre());
+            alert.showAndWait();
+            return;
+        }
+
+        // Construire la fenêtre participants
+        Stage stage = new Stage();
+        stage.setTitle("Participants - " + formation.getTitre());
+
+        VBox root = new VBox(10);
+        root.setPadding(new javafx.geometry.Insets(20));
+
+        Label titre = new Label("Participants de : " + formation.getTitre());
+        titre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        root.getChildren().add(titre);
+
+        for (String[] p : participants) {
+            // p[0] = idParticipant, p[1] = nom, p[2] = statut
+            HBox row = new HBox(10);
+            row.setAlignment(Pos.CENTER_LEFT);
+
+            Label nomLabel = new Label(p[1]);
+            nomLabel.setMinWidth(200);
+
+            Label statutLabel = new Label(p[2]);
+            statutLabel.setStyle("acheve".equals(p[2])
+                    ? "-fx-text-fill: green; -fx-font-weight: bold;"
+                    : "-fx-text-fill: orange;");
+
+            if (!"acheve".equals(p[2])) {
+                Button acheverBtn = new Button("✓ Marquer achevé");
+                acheverBtn.getStyleClass().addAll("btn", "btn-small");
+                acheverBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                acheverBtn.setOnAction(e -> {
+                    boolean ok = participationDAO.marquerAcheve(
+                            formation.getIdFormation(),
+                            Integer.parseInt(p[0])
+                    );
+                    if (ok) {
+                        statutLabel.setText("acheve");
+                        statutLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        acheverBtn.setDisable(true);
+                        acheverBtn.setText("✓ Certificat généré !");
+
+                        // ✅ Récupérer email pour affichage
+                        String emailCandidat = participationDAO.getEmailById(
+                                Integer.parseInt(p[0]));
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Succès");
+                        alert.setHeaderText("✅ Certificat généré pour " + p[1]);
+                        alert.setContentText(
+                                "📄 PDF sauvegardé dans docs/certificats/\n" +
+                                        "📧 Certificat envoyé à : " +
+                                        (emailCandidat != null ? emailCandidat : "email introuvable"));
+                        alert.showAndWait();
+                    }
+                });
+                row.getChildren().addAll(nomLabel, statutLabel, acheverBtn);
+            } else {
+                row.getChildren().addAll(nomLabel, statutLabel);
+            }
+
+            root.getChildren().add(row);
+        }
+
+        stage.setScene(new Scene(new javafx.scene.control.ScrollPane(root), 500, 400));
+        stage.show();
     }
 
 }

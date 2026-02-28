@@ -43,7 +43,7 @@
                     <HBox styleClass="hero-meta">
                         <VBox styleClass="meta-item">
                             <Label text="Mise a jour" styleClass="meta-label" />
-                            <Label text="10 fevrier 2026" styleClass="meta-value" />
+                            <Label fx:id="miseAJourLabel" text="10 fevrier 2026" />
                         </VBox>
                         <VBox styleClass="meta-item">
                             <Label text="Sessions ouvertes" styleClass="meta-label" />
@@ -84,8 +84,8 @@
                         </HBox>
                     </VBox>
                     <HBox styleClass="hero-card-footer">
-                        <Button text="Voir le programme" styleClass="ghost" />
-                        <Button text="Participer" styleClass="primary" />
+                        <Button fx:id="voirProgrammeBtn" text="Voir le programme" styleClass="ghost" />
+                        <Button fx:id="participerBtn" text="Participer" styleClass="primary" />
                     </HBox>
                 </VBox>
             </HBox>

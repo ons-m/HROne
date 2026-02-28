@@ -59,6 +59,11 @@ public class Formation {
     public long getDateFin() { return dateFin; }
     public void setDateFin(long dateFin) { this.dateFin = dateFin; }
 
+    private String niveau;
+
+    public String getNiveau() { return niveau; }
+    public void setNiveau(String niveau) { this.niveau = niveau; }
+
     public boolean isEnLigne() { return "en_ligne".equals(mode); }
     public boolean isPresentiel() { return "presentiel".equals(mode); }
 
