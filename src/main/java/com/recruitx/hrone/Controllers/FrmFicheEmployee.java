@@ -4,8 +4,10 @@ import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EmployeRepository;
 import com.recruitx.hrone.Models.Employe;
 import com.recruitx.hrone.Utils.COrdre;
+import com.recruitx.hrone.Utils.ActionLogger;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class FrmFicheEmployee {
 
@@ -119,7 +121,7 @@ public class FrmFicheEmployee {
             // Required defaults (adjust as needed)
             user.setIdProfil(3); // EMPLOYEE role
             user.setIdEntreprise(Session.getCurrentEntreprise().getIdEntreprise());
-            user.setMotPasse("TEMP_PASSWORD"); // You should hash a generated password
+            user.setMotPasse(BCrypt.hashpw("MDP", BCrypt.gensalt(12)));
             user.setNumOrdreSignIn((int)COrdre.GetNumOrdreNow());
 
             // ---------- EMPLOYEE ----------
@@ -135,6 +137,7 @@ public class FrmFicheEmployee {
             boolean success = EmployeRepository.Ajouter(e);
 
             if (success) {
+                ActionLogger.log("Ajouter Employe", "Ajout employé (MAC: " + mac + ")");
                 FrmParent.hideModal();
             } else {
                 showError("Erreur lors de l'enregistrement.");
@@ -161,6 +164,7 @@ public class FrmFicheEmployee {
 
             boolean success = EmployeRepository.Modifier(e);
             if (success) {
+                ActionLogger.log("Modifier Employe", "Modification employé ID=" + editingId);
                 FrmParent.hideModal();
             } else {
                 showError("Erreur lors de l'enregistrement.");

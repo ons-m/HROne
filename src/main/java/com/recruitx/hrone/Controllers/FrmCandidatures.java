@@ -3,6 +3,7 @@ package com.recruitx.hrone.Controllers;
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 import com.recruitx.hrone.Utils.CError;
+import com.recruitx.hrone.Utils.ActionLogger;
 import com.recruitx.hrone.Utils.COrdre;
 import com.recruitx.hrone.Utils.DBHelper;
 import com.recruitx.hrone.Utils.LogType;
@@ -492,6 +493,8 @@ public class FrmCandidatures {
         alert.setContentText("Entretien planifie le " + interviewDateTime.format(INTERVIEW_INPUT_FORMAT) + " a " + interviewInput.location);
         alert.showAndWait();
 
+        ActionLogger.log("Planifier Entretien", "Entretien candidat ID=" + candidate.candidature.getID_Candidat());
+
         refreshStatistics();
     }
 
@@ -678,6 +681,14 @@ public class FrmCandidatures {
             alert.setContentText("Impossible de mettre a jour le statut.");
             alert.showAndWait();
             return;
+        }
+
+        if (statusCode == 2) {
+            ActionLogger.log("Accepter Candidat", "Candidature ID=" + candidate.candidature.getID_Candidature());
+        } else if (statusCode == 3) {
+            ActionLogger.log("Rejeter Candidat", "Candidature ID=" + candidate.candidature.getID_Candidature());
+        } else {
+            ActionLogger.log("Modifier Candidature", "Mise à jour statut candidature ID=" + candidate.candidature.getID_Candidature());
         }
 
         renderCandidates();

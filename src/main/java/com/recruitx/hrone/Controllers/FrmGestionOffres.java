@@ -287,8 +287,10 @@ public class FrmGestionOffres {
        ========================= */
 
         boolean success;
+        boolean isEditMode = editingOfferId > 0;
+        int updatedOfferId = (int) editingOfferId;
 
-        if (editingOfferId > 0) {
+        if (isEditMode) {
             success = OfferRepository.Modifier(offerData);
             editingOfferId = -1;
         } else {
@@ -310,6 +312,12 @@ public class FrmGestionOffres {
         List<Offer> data = OfferRepository.AvoirListe();
         if (data != null) {
             offers.setAll(data);
+        }
+
+        if (isEditMode) {
+            ActionLogger.log("Modifier Offre", "Modification offre ID=" + updatedOfferId + " - " + offerData.getTitre());
+        } else {
+            ActionLogger.log("Ajouter Offre", "Ajout offre: " + offerData.getTitre());
         }
 
         clearForm();
@@ -467,6 +475,7 @@ public class FrmGestionOffres {
             if (response == ButtonType.OK) {
                 boolean success = OfferRepository.Supprimer(offerId);
                 if (success) {
+                    ActionLogger.log("Supprimer Offre", "Suppression offre ID=" + offerId);
                     offers.removeIf(o -> o.getID_Offre() == offerId);
                     renderOffers();
                 } else {

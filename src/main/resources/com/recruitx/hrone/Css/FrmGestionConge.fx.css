@@ -32,4 +32,68 @@
 
 .content-text {
     -fx-font-size: 14px;
+    -fx-text-fill: #6b7280;
+}
+
+.section-header {
+    -fx-alignment: center-left;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.btn-ghost {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #111827;
+    -fx-background-radius: 8;
+    -fx-padding: 8 14 8 14;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: #e5e7eb;
+}
+
+.data-table .column-header-background {
+    -fx-background-color: #f3f4f6;
+}
+
+.data-table .column-header,
+.data-table .filler {
+    -fx-size: 40;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+}
+
+.data-table .table-row-cell {
+    -fx-cell-size: 38;
+}
+
+.btn-approve {
+    -fx-background-color: #059669;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-approve:hover {
+    -fx-background-color: #047857;
+}
+
+.btn-reject {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-reject:hover {
+    -fx-background-color: #b91c1c;
+}
+
+.status-success {
+    -fx-text-fill: #047857;
+}
+
+.status-error {
+    -fx-text-fill: #b91c1c;
 }

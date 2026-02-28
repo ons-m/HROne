@@ -4,6 +4,7 @@ import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
+import com.recruitx.hrone.Utils.ActionLogger;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -53,6 +54,7 @@ public class FrmLogin implements NavigationAware{
 
         mainController.showSidebar();
         mainController.setCurrentUser(loggedUser,GetUserEntreprise(loggedUser));
+        ActionLogger.log("Connexion", "Connexion réussie: " + loggedUser.getEmail());
         mainController.setVisisiblityByRole();
         switch(loggedUser.getIdProfil()){
             case 1 -> mainController.loadView(FrmMain.ViewType.OFFRES);

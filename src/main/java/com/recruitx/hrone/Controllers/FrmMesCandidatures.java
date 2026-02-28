@@ -4,6 +4,7 @@ import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 
 import com.recruitx.hrone.Utils.CError;
+import com.recruitx.hrone.Utils.ActionLogger;
 import com.recruitx.hrone.Utils.DBHelper;
 import com.recruitx.hrone.Utils.LogType;
 
@@ -313,6 +314,8 @@ public class FrmMesCandidatures implements NavigationAware {
             return;
         }
 
+        ActionLogger.log("Modifier Candidature", "Mise à jour candidature ID=" + item.candidature.getID_Candidature());
+
         render();
     }
 
@@ -327,6 +330,7 @@ public class FrmMesCandidatures implements NavigationAware {
         }
 
         applications.remove(item);
+        ActionLogger.log("Supprimer Candidature", "Suppression candidature ID=" + item.candidature.getID_Candidature());
         render();
     }
 

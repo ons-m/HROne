@@ -2,6 +2,7 @@ package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Models.Outil;
 import com.recruitx.hrone.Repository.OutilRepository;
+import com.recruitx.hrone.Utils.ActionLogger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -75,6 +76,7 @@ public class FrmGestionOutil {
             boolean success = OutilRepository.Ajouter(outil);
 
             if (success) {
+                ActionLogger.log("Ajouter Outil", "Ajout outil: " + nom);
                 clearForm();
                 loadData();
                 hideModal();
@@ -86,6 +88,7 @@ public class FrmGestionOutil {
             boolean success = OutilRepository.Modifier(outil);
 
             if (success) {
+                ActionLogger.log("Modifier Outil", "Modification outil ID=" + editingId + " -> " + nom);
                 clearForm();
                 loadData();
                 hideModal();
@@ -152,6 +155,7 @@ public class FrmGestionOutil {
                 boolean success = OutilRepository.Supprimer(id);
 
                 if (success) {
+                    ActionLogger.log("Supprimer Outil", "Suppression outil ID=" + id);
                     loadData(); // safest option
                 } else {
                     System.out.println("Delete failed.");

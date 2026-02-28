@@ -3,6 +3,7 @@ package com.recruitx.hrone.Controllers;
 import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Controllers.Session;
+import com.recruitx.hrone.Utils.ActionLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -149,6 +150,10 @@ public class FrmMain {
 
             if (clickedButton != null) {
                 setActiveButton(clickedButton);
+            }
+
+            if (Session.isLoggedIn() && type != ViewType.LOGIN) {
+                ActionLogger.log("Navigation", "Ouverture page: " + type.name());
             }
 
         } catch (Exception e) {

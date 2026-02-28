@@ -4,6 +4,7 @@ import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
+import com.recruitx.hrone.Utils.ActionLogger;
 import com.recruitx.hrone.Utils.COrdre;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -126,6 +127,7 @@ public class FrmUserDashboard {
             user.setFirstLogin(1);
 
             utilisateurRepository.create(user);
+            ActionLogger.log("Ajouter Utilisateur", "Ajout utilisateur: " + user.getEmail());
 
             clearUserForm();
             refreshUsers();
@@ -156,6 +158,7 @@ public class FrmUserDashboard {
             entreprise.setReference(reference);
 
             entrepriseRepository.create(entreprise);
+            ActionLogger.log("Ajouter Entreprise", "Ajout entreprise: " + entreprise.getNomEntreprise());
 
             clearCompanyForm();
             refreshCompanies();
@@ -253,6 +256,7 @@ public class FrmUserDashboard {
         if (choice.isPresent() && choice.get() == ButtonType.OK) {
             try {
                 utilisateurRepository.delete(user.getIdUtilisateur());
+                ActionLogger.log("Supprimer Utilisateur", "Suppression utilisateur: " + user.getEmail());
                 refreshUsers();
                 setStatus(userFormStatus, "Utilisateur supprimé avec succès.", true);
             } catch (Exception ex) {
@@ -271,6 +275,7 @@ public class FrmUserDashboard {
         if (choice.isPresent() && choice.get() == ButtonType.OK) {
             try {
                 entrepriseRepository.delete(entreprise.getIdEntreprise());
+                ActionLogger.log("Supprimer Entreprise", "Suppression entreprise: " + entreprise.getNomEntreprise());
                 refreshCompanies();
                 refreshUsers();
                 setStatus(companyFormStatus, "Entreprise supprimée avec succès.", true);
@@ -333,6 +338,7 @@ public class FrmUserDashboard {
 
         try {
             entrepriseRepository.update(updated);
+            ActionLogger.log("Modifier Entreprise", "Modification entreprise: " + updated.getNomEntreprise());
             refreshCompanies();
             refreshUsers();
             setStatus(companyFormStatus, "Entreprise modifiée avec succès.", true);
@@ -468,6 +474,7 @@ public class FrmUserDashboard {
 
         try {
             utilisateurRepository.update(updated);
+            ActionLogger.log("Modifier Utilisateur", "Modification utilisateur: " + updated.getEmail());
             refreshUsers();
             setStatus(userFormStatus, "Utilisateur modifié avec succès.", true);
         } catch (Exception ex) {

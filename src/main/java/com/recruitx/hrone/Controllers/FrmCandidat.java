@@ -12,6 +12,7 @@ import java.io.File;
 
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
+import com.recruitx.hrone.Utils.ActionLogger;
 import com.recruitx.hrone.Utils.DBHelper;
 
 import javafx.fxml.FXML;
@@ -110,6 +111,7 @@ public class FrmCandidat implements NavigationAware {
         boolean success = CandidatureRepository.Ajouter(c);
 
         if (success) {
+            ActionLogger.log("Appliquer à Offre", "Candidature envoyée pour l'offre ID=" + c.getID_Offre());
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Candidature envoyee");
             alert.setContentText("Votre candidature a ete envoyee avec succes.");

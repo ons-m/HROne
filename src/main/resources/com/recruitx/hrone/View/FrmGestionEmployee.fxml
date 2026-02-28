@@ -93,7 +93,9 @@
             </content>
         </ScrollPane>
 
+<!--    <fx:include source="FrmAssignTools.fxml" fx:id="FrmAssignToolsDialog" managed="false" visible="false" StackPane.alignment="CENTER"/>-->
     <fx:include source="FrmFicheEmployee.fxml" fx:id="FrmFicheEmployee" managed="false" visible="false" StackPane.alignment="CENTER"/>
+
 
 </StackPane>
 

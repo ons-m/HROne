@@ -1251,15 +1251,16 @@ public class FrmBlog {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()) {
-                VBox postCard = buildPostCard(rs);
-                feedContainer.getChildren().add(postCard);
-                postCards.add(postCard);
+            if(rs != null){
+                while (rs.next()) {
+                    VBox postCard = buildPostCard(rs);
+                    feedContainer.getChildren().add(postCard);
+                    postCards.add(postCard);
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Erreur de chargement: " + e.getMessage(), "error");
+            //showError("Erreur de chargement: " + e.getMessage(), "error");
         }
     }
 
