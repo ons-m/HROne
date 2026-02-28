@@ -16,7 +16,7 @@
 
         <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
             <content>
-                <VBox styleClass="main">
+                <VBox fx:id="mainContent" styleClass="main">
                     <HBox styleClass="topbar">
                         <VBox styleClass="user-info">
                             <Label text="Agent RH" styleClass="user-name" />
@@ -84,6 +84,7 @@
                                 <TableColumn fx:id="soldColumn" text="Sold conge" prefWidth="100" />
                                 <TableColumn fx:id="remainingColumn" text="Sold de conge restant" prefWidth="150" />
                                 <TableColumn fx:id="hoursColumn" text="Nbr d'heure de travail" prefWidth="150" />
+                                <TableColumn fx:id="sailaireColumn" text="Sailaire" prefWidth="100" />
                                 <TableColumn fx:id="actionsColumn" text="" prefWidth="80" />
                             </columns>
                         </TableView>

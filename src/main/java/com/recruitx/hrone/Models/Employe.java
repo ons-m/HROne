@@ -2,31 +2,31 @@ package com.recruitx.hrone.Models;
 
 public class Employe {
     private int ID_Employe;
-    private int ID_User;
+    private Utilisateur user;
     private int Solde_Conger;
     private int Nbr_Heure_De_Travail;
     private String Mac_Machine;
     private int Salaire;
 
-    public Employe(int ID_Employe, int ID_User, int Solde_Conger, int Nbr_Heure_De_Travail, String Mac_Machine,int salaire) {
+    public Employe(int ID_Employe, Utilisateur user, int Solde_Conger, int Nbr_Heure_De_Travail, String Mac_Machine,int salaire) {
         this.ID_Employe = ID_Employe;
-        this.ID_User = ID_User;
+        this.user = user;
         setSolde_Conger(Solde_Conger);
         setNbr_Heure_De_Travail(Nbr_Heure_De_Travail);
         this.Mac_Machine = Mac_Machine;
         this.Salaire=salaire;
     }
-    public Employe(int ID_Employe, int ID_User) {
+    public Employe(int ID_Employe, Utilisateur user) {
         this.ID_Employe = ID_Employe;
-        this.ID_User = ID_User;
+        this.user = user;
     }
     public Employe(){}
 
     public int getID_Employe() {
         return ID_Employe;
     }
-    public int getID_User() {
-        return ID_User;
+    public Utilisateur getUser() {
+        return user;
     }
     public int getSolde_Conger() {
         return Solde_Conger;
@@ -39,6 +39,7 @@ public class Employe {
     }
     public int getSaliare() {return Salaire;}
 
+    public void setID_Employe(int ID_Employe) { this.ID_Employe = ID_Employe; }
     public void setSolde_Conger(int solde_Conger) {
         if(solde_Conger < 0) {
             solde_Conger = 0;
@@ -56,13 +57,14 @@ public class Employe {
     public void setMac_Machine(String mac_Machine) {
         this.Mac_Machine = mac_Machine;
     }
-
+    public void setUser(Utilisateur user) {this.user = user;}
     public void setSalaire(int salaire) {this.Salaire = salaire; }
+
+
     @Override
     public String toString() {
         return "Employe : " +
                 "ID_Employe : " + ID_Employe +
-                "ID_USER : " + ID_User +
                 "Conge : " + Solde_Conger +
                 "Heure : " + Nbr_Heure_De_Travail +
                 "MAC : " + Mac_Machine;

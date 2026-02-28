@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -26,12 +27,13 @@ public class FrmGestionEmployee {
     @FXML private TableColumn<EmployeeRow, String> soldColumn;
     @FXML private TableColumn<EmployeeRow, String> remainingColumn;
     @FXML private TableColumn<EmployeeRow, String> hoursColumn;
+    @FXML private TableColumn<EmployeeRow, String> sailaireColumn;
 
     @FXML private TableColumn<EmployeeRow, String> actionsColumn;
     @FXML private Node FrmFicheEmployee;
     @FXML private FrmFicheEmployee FrmFicheEmployeeController;
 
-    @FXML private HBox mainContent;
+    @FXML private VBox mainContent;
 
 
     @FXML private void initialize() {
@@ -47,6 +49,7 @@ public class FrmGestionEmployee {
         soldColumn.setCellValueFactory(data -> data.getValue().soldProperty());
         remainingColumn.setCellValueFactory(data -> data.getValue().remainingProperty());
         hoursColumn.setCellValueFactory(data -> data.getValue().hoursProperty());
+        sailaireColumn.setCellValueFactory(data -> data.getValue().salaireProperty());
         actionsColumn.setCellFactory(column -> createActionsCell());
 
         RefreshTable();
@@ -151,16 +154,22 @@ public class FrmGestionEmployee {
         private final StringProperty sold = new SimpleStringProperty();
         private final StringProperty remaining = new SimpleStringProperty();
         private final StringProperty hours = new SimpleStringProperty();
+        private final StringProperty salaire = new SimpleStringProperty();
         private final int id;
 
         public EmployeeRow(Employe e){
-            this.name.set("User1");
-            this.email.set("email@static.com");
-            this.birth.set("-");
+            this.name.set(e.getUser().getNomUtilisateur());
+            this.email.set(e.getUser().getEmail());
+            this.birth.set(
+                    e.getUser().getDateNaissance() != null
+                            ? e.getUser().getDateNaissance().toString()
+                            : "-"
+            );
             this.sold.set(String.valueOf(e.getSolde_Conger()));
             this.remaining.set(String.valueOf(e.getSolde_Conger()));
             this.hours.set(String.valueOf(e.getNbr_Heure_De_Travail()));
             this.id = e.getID_Employe();
+            this.salaire.set(String.valueOf(e.getSaliare()));
         }
 
         public BooleanProperty selectedProperty() {
@@ -190,6 +199,8 @@ public class FrmGestionEmployee {
         public StringProperty hoursProperty() {
             return hours;
         }
+
+        public StringProperty salaireProperty() { return salaire ;}
 
         public int getId () {return id;}
     }

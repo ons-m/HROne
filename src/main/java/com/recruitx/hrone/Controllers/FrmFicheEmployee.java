@@ -1,7 +1,9 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EmployeRepository;
 import com.recruitx.hrone.Models.Employe;
+import com.recruitx.hrone.Utils.COrdre;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -37,13 +39,14 @@ public class FrmFicheEmployee {
 
         Employe e = EmployeRepository.AvoirEntite(editingId);
 
-        if (e != null) {
 
+        if (e != null) {
             // ---- STATIC utilisateur fields ----
-            nameField.setText("User1");
-            emailField.setText("email@static.com");
-            maleRadio.setSelected(true); // or false depending on your static choice
-            birthDatePicker.setValue(java.time.LocalDate.of(1990,1,1));
+            nameField.setText(e.getUser().getNomUtilisateur());
+            emailField.setText(e.getUser().getEmail());
+            maleRadio.setSelected(e.getUser().getGender() == 'H');
+            femaleRadio.setSelected(e.getUser().getGender() == 'F');
+            birthDatePicker.setValue(e.getUser().getDateNaissance().toLocalDate());
 
             // ---- Real EMPLOYEE fields ----
             soldField.setText(String.valueOf(e.getSolde_Conger()));
@@ -95,16 +98,34 @@ public class FrmFicheEmployee {
             return;
         }
 
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        char gender = maleRadio.isSelected() ? 'H' : 'F';
+        java.sql.Date birth = java.sql.Date.valueOf(birthDatePicker.getValue());
+
         int solde = Integer.parseInt(soldField.getText().trim());
         int hours = Integer.parseInt(hoursField.getText().trim());
         int salaire = Integer.parseInt(salaryField.getText().trim());
         String mac = macField.getText().trim();
 
         if (currentMode == Mode.ADD) {
+            // ---------- USER ----------
+            Utilisateur user = new Utilisateur();
+            user.setNomUtilisateur(name);
+            user.setEmail(email);
+            user.setGender(gender);
+            user.setDateNaissance(birth);
 
+            // Required defaults (adjust as needed)
+            user.setIdProfil(3); // EMPLOYEE role
+            user.setIdEntreprise(Session.getCurrentEntreprise().getIdEntreprise());
+            user.setMotPasse("TEMP_PASSWORD"); // You should hash a generated password
+            user.setNumOrdreSignIn((int)COrdre.GetNumOrdreNow());
+
+            // ---------- EMPLOYEE ----------
             Employe e = new Employe(
-                    0,              // ID_EMPLOYE (auto)
-                    1,              // ID_USER (temporary static)
+                    0,
+                    user,
                     solde,
                     hours,
                     mac,
@@ -120,14 +141,23 @@ public class FrmFicheEmployee {
             }
         } else {
 
-            Employe e = new Employe(
-                    editingId,
-                    1,
-                    solde,
-                    hours,
-                    mac,
-                    salaire
-            );
+            Employe e = EmployeRepository.AvoirEntite(editingId);
+            if (e == null) {
+                showError("Employé introuvable.");
+                return;
+            }
+
+            // Update USER fields
+            e.getUser().setNomUtilisateur(name);
+            e.getUser().setEmail(email);
+            e.getUser().setGender(gender);
+            e.getUser().setDateNaissance(birth);
+
+            // Update EMPLOYEE fields
+            e.setSolde_Conger(solde);
+            e.setNbr_Heure_De_Travail(hours);
+            e.setMac_Machine(mac);
+            e.setSalaire(salaire);
 
             boolean success = EmployeRepository.Modifier(e);
             if (success) {

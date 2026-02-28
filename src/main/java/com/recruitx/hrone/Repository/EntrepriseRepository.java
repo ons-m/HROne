@@ -1,5 +1,6 @@
 package com.recruitx.hrone.Repository;
 
+import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Utils.DBConnection;
 
 import java.sql.*;
@@ -104,10 +105,11 @@ public class EntrepriseRepository {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                e = new com.recruitx.hrone.Models.Entreprise(
+                e = new Entreprise(
                         rs.getString("Nom_Entreprise"),
                         rs.getString("Reference")
                 );
+                e.setIdEntreprise(id);
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
