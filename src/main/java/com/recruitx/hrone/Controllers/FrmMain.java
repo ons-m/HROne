@@ -283,6 +283,7 @@ public class FrmMain {
                 showSideBarButton(btnEvenements);
                 showSideBarButton(btnGestionConge);
                 showSideBarButton(btnCommunaute);
+                showSideBarButton(btntracabilite);
             }
 
             // =========================

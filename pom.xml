@@ -32,7 +32,7 @@
             <version>0.4</version>
         </dependency>
 
-        <!-- JSON Processing (POUR LES APIs) - AJOUTEZ CECI ! -->
+        <!-- JSON Processing (POUR LES APIs) -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

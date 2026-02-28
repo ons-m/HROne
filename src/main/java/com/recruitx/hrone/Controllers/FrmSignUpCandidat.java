@@ -2,17 +2,17 @@ package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
-import com.recruitx.hrone.Repository.EntrepriseRepository;
+import com.recruitx.hrone.Models.DisifyResult;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
 import com.recruitx.hrone.Utils.COrdre;
+import com.recruitx.hrone.API.DisifyService;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.time.LocalDate;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class FrmSignUpCandidat implements NavigationAware{
@@ -83,6 +83,31 @@ public class FrmSignUpCandidat implements NavigationAware{
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Le numéro de téléphone et le CIN doivent contenir exactement 8 chiffres !");
             return;
+        }
+
+        // ===== DISIFY VALIDATION =====
+        DisifyResult disify = DisifyService.validateEmail(email);
+
+        // If API failed, we allow registration (fail-open strategy)
+        if (!disify.isApiFailed()) {
+
+            if (!disify.isFormatValid()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Format d'email invalide.");
+                return;
+            }
+
+            if (disify.isDisposable()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Les emails temporaires ne sont pas autorisés.");
+                return;
+            }
+
+            if (!disify.isDnsValid()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Le domaine de l'email est invalide.");
+                return;
+            }
         }
 
         // ===== CHECK UNIQUENESS =====

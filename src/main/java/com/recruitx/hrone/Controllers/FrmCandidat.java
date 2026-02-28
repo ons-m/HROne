@@ -69,7 +69,7 @@ public class FrmCandidat implements NavigationAware {
     private void onApply() {
 
         List<String> errors = new ArrayList<>();
-        final int currentCandidateId = 1; // TEMP – utilisateur connecte
+        final int currentCandidateId = Session.getCurrentUser().getIdUtilisateur();
 
         if (selectedOffer.getValue() == null) {
             errors.add("Veuillez selectionner une offre.");
@@ -101,7 +101,7 @@ public class FrmCandidat implements NavigationAware {
         }
 
         Candidature c = new Candidature();
-        c.setID_Candidat(currentCandidateId); // TEMP – utilisateur connecte
+        c.setID_Candidat(currentCandidateId);
         c.setID_Offre(selectedOffer.getValue().getID_Offre());
         c.setLettre_Motivation(lettreMotivation.getText().trim());
         c.setPortfolio(portfolio.getText());
