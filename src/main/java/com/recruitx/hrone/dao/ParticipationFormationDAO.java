@@ -117,20 +117,7 @@ public class ParticipationFormationDAO {
     }
 
     private String getLogoEntreprise(int idFormation) {
-        String sql = "SELECT e.Logo FROM entreprise e " +
-                "JOIN formation f ON f.ID_Entreprise = e.ID_Entreprise " +
-                "WHERE f.ID_Formation = ?";
-        try {
-            PreparedStatement ps = getConn().prepareStatement(sql);
-            ps.setInt(1, idFormation);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getString("Logo");
-        } catch (SQLException e) {
-            System.err.println("Erreur logo: " + e.getMessage());
-        }
-        return null;
-    }
-
+        return null;}
     private void sauvegarderCheminCertificat(int idFormation, int idParticipant,
                                              String chemin) {
         // ✅ Générer bytes PDF pour stockage DB
