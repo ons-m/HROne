@@ -62,7 +62,7 @@ public class FormationsDashboardController {
     @FXML private VBox placesContainer;
     @FXML private DatePicker dateDebutPicker;
     @FXML private DatePicker dateFinPicker;
-
+    @FXML private ComboBox<String> niveauComboBox;
     // Data storage (in-memory for courses)
     private List<String> currentCourses = new ArrayList<>();
     private Formation editingFormation = null;
@@ -76,6 +76,8 @@ public class FormationsDashboardController {
         // ✅ Initialiser le ComboBox mode ICI
         modeComboBox.getItems().addAll("presentiel", "en_ligne");
         modeComboBox.setValue("presentiel");
+        niveauComboBox.getItems().addAll("Débutant", "Intermédiaire", "Avancé");
+        niveauComboBox.setValue("Débutant");
 
 // ✅ Toujours afficher le champ places pour les 2 modes
         modeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -337,6 +339,11 @@ public class FormationsDashboardController {
             alert.setContentText("Voulez-vous continuer quand même ?");
             if (alert.showAndWait().get() != ButtonType.OK) return;
         }
+        String niveau = niveauComboBox.getValue();
+        if (niveau == null || niveau.isEmpty()) {
+            showStatus("Veuillez sélectionner un niveau.", true);
+            return;
+        }
 
         try {
             String fullDescription = buildDescriptionWithCourses(description);
@@ -351,6 +358,7 @@ public class FormationsDashboardController {
                 editingFormation.setPlacesRestantes(nombrePlaces);// ✅
                 editingFormation.setDateDebut(dateDebut);         // ✅
                 editingFormation.setDateFin(dateFin);             // ✅
+                editingFormation.setNiveau(niveau); // ✅
 
                 boolean success = formationDAO.update(editingFormation);
                 if (success) {
@@ -378,6 +386,7 @@ public class FormationsDashboardController {
                 formation.setPlacesRestantes(nombrePlaces);// ✅
                 formation.setDateDebut(dateDebut);         // ✅
                 formation.setDateFin(dateFin);             // ✅
+                formation.setNiveau(niveau); // ✅
 
                 // ✅ LOG pour vérifier
                 System.out.println("✅ Mode: " + formation.getMode());
@@ -401,6 +410,7 @@ public class FormationsDashboardController {
             showStatus("Erreur: " + e.getMessage(), true);
             e.printStackTrace();
         }
+
     }
     private String buildDescriptionWithCourses(String baseDescription) {
         if (currentCourses.isEmpty()) {
@@ -574,25 +584,35 @@ public class FormationsDashboardController {
         publishButton.setText("Mettre à jour la formation");
         showStatus("Formation chargée pour modification.", false);
         titleField.requestFocus();
+        niveauComboBox.setValue(
+                formation.getNiveau() != null ? formation.getNiveau() : "Débutant"
+        );
     }
     private void deleteFormation(Formation formation) {
+        // ✅ Compter participants
+        int nbParticipants = formationDAO.getNombreParticipants(formation.getIdFormation());
+
+        // ✅ Message adapté
+        String message = nbParticipants > 0
+                ? "⚠️ Cette formation contient " + nbParticipants + " participant(s).\n\n"
+                + "La suppression effacera aussi toutes les participations.\nConfirmer ?"
+                : "Voulez-vous supprimer :\n\"" + formation.getTitre() + "\" ?";
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Supprimer la formation");
-        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer cette formation ?");
-        alert.setContentText(formation.getTitre());
+        alert.setHeaderText(formation.getTitre());
+        alert.setContentText(message);
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             boolean success = formationDAO.delete(formation.getIdFormation());
-
             if (success) {
-                showStatus("Formation supprimée.", false);
+                showStatus("✅ Formation supprimée avec " + nbParticipants + " participation(s).", false);
                 loadPublishedFormations();
             } else {
-                showStatus("Erreur lors de la suppression.", true);
+                showStatus("❌ Erreur lors de la suppression.", true);
             }
         }
     }
-
     private void resetForm() {
         titleField.clear();
         descriptionField.clear();
@@ -616,6 +636,7 @@ public class FormationsDashboardController {
         publishButton.setText("Publier la formation");
         formStatusLabel.setText("");
         formStatusLabel.getStyleClass().removeAll("status-success", "status-error");
+        niveauComboBox.setValue("Débutant");
     }
     private void showStatus(String message, boolean isError) {
         formStatusLabel.setText(message);
@@ -757,11 +778,17 @@ public class FormationsDashboardController {
                         acheverBtn.setDisable(true);
                         acheverBtn.setText("✓ Certificat généré !");
 
-                        // Notification
+                        // ✅ Récupérer email pour affichage
+                        String emailCandidat = participationDAO.getEmailById(
+                                Integer.parseInt(p[0]));
+
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Succès");
-                        alert.setHeaderText("Certificat généré pour " + p[1]);
-                        alert.setContentText("Le certificat PDF a été sauvegardé dans docs/certificats/");
+                        alert.setHeaderText("✅ Certificat généré pour " + p[1]);
+                        alert.setContentText(
+                                "📄 PDF sauvegardé dans docs/certificats/\n" +
+                                        "📧 Certificat envoyé à : " +
+                                        (emailCandidat != null ? emailCandidat : "email introuvable"));
                         alert.showAndWait();
                     }
                 });

@@ -112,6 +112,10 @@
                                     <Label text="Date de fin" />
                                     <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" />
                                 </VBox>
+                                <VBox styleClass="field">
+                                    <Label text="Niveau de formation" />
+                                    <ComboBox fx:id="niveauComboBox" promptText="Sélectionner le niveau" maxWidth="Infinity" />
+                                </VBox>
                             </HBox>
                             <VBox styleClass="field full">
                                 <Label text="Cours / modules" />
