@@ -2,6 +2,10 @@
   -fx-background: transparent;
 }
 
+.main-scroll > .viewport {
+  -fx-background-color: transparent;
+}
+
 .candidate-app {
   -fx-background-color: #f4f6fb;
   -fx-padding: 24 32 40 32;
@@ -51,7 +55,12 @@
 }
 
 .hero-search-row {
+  -fx-alignment: center-left;
   -fx-spacing: 10;
+}
+
+.hero-search-row .combo-box {
+  -fx-pref-width: 180;
 }
 
 .content {
@@ -73,6 +82,7 @@
 }
 
 .offers-grid {
+  -fx-padding: 2 0 0 0;
   -fx-spacing: 12;
 }
 
@@ -125,6 +135,8 @@
   -fx-background-radius: 20;
   -fx-padding: 18;
   -fx-spacing: 12;
+  -fx-min-width: 360;
+  -fx-pref-width: 380;
 }
 
 .apply-form {
@@ -144,6 +156,14 @@
   -fx-text-fill: #64748b;
 }
 
+.external-status {
+  -fx-background-color: #f8fafc;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-padding: 8 10;
+}
+
 .text-field,
 .text-area,
 .combo-box-base {
@@ -152,6 +172,12 @@
   -fx-border-radius: 12;
   -fx-background-radius: 12;
   -fx-padding: 8 10;
+}
+
+.text-field:focused,
+.text-area:focused,
+.combo-box-base:focused {
+  -fx-border-color: #93c5fd;
 }
 
 .btn {
@@ -165,11 +191,19 @@
   -fx-text-fill: white;
 }
 
+.btn-primary:hover {
+  -fx-background-color: #1d4ed8;
+}
+
 .btn-ghost {
   -fx-background-color: transparent;
   -fx-border-color: #e2e8f0;
   -fx-border-radius: 10;
   -fx-text-fill: #0f172a;
+}
+
+.btn-ghost:hover {
+  -fx-background-color: #f8fafc;
 }
 
 .btn-favorite {

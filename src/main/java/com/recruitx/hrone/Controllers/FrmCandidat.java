@@ -1,5 +1,6 @@
 package com.recruitx.hrone.Controllers;
 
+import java.awt.Desktop;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -7,14 +8,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.io.File;
+import java.net.URI;
 
+import com.recruitx.hrone.API.ArbeitnowJobService;
+import com.recruitx.hrone.API.ArbeitnowJobService.ExternalJobOffer;
+import com.recruitx.hrone.API.ArbeitnowJobService.SearchResult;
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 import com.recruitx.hrone.Utils.ActionLogger;
 import com.recruitx.hrone.Utils.DBHelper;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -36,6 +43,7 @@ public class FrmCandidat implements NavigationAware {
     @FXML private CheckBox showFavoritesOnly;
     @FXML private VBox offersGrid;
     @FXML private Label offerCount;
+    @FXML private Label externalOffersStatus;
     @FXML private ComboBox<Offer> selectedOffer;
 
     @FXML private TextField fullName;
@@ -52,6 +60,7 @@ public class FrmCandidat implements NavigationAware {
     private Map<String, String> contratLabelsByCode = new HashMap<>();
     private Map<String, String> niveauLabelsByCode = new HashMap<>();
     private final Set<Integer> favoriteOfferIds = new HashSet<>();
+    private List<ExternalJobOffer> externalOffers = new ArrayList<>();
 
     @Override
     public void setMainController(FrmMain mainController) {
@@ -165,6 +174,7 @@ public class FrmCandidat implements NavigationAware {
         showFavoritesOnly.selectedProperty().addListener((obs, o, n) -> filterOffers());
 
         filterOffers();
+        loadExternalOffersAsync();
     }
 
     @FXML
@@ -185,6 +195,40 @@ public class FrmCandidat implements NavigationAware {
     @FXML
     private void onSearch() {
         filterOffers();
+        loadExternalOffersAsync();
+    }
+
+    private void loadExternalOffersAsync() {
+        String query = offerSearch == null ? "" : offerSearch.getText();
+        setExternalStatus("Chargement des offres Europe (Arbeitnow)...");
+
+        CompletableFuture
+                .supplyAsync(() -> ArbeitnowJobService.fetchOffers(query))
+                .thenAccept(result -> Platform.runLater(() -> {
+                    SearchResult safeResult = result == null
+                            ? SearchResult.failure(new ArrayList<>(), "Reponse vide")
+                            : result;
+
+                    externalOffers = safeResult.getOffers();
+
+                    if (!safeResult.isSuccess()) {
+                        setExternalStatus("Offres externes indisponibles: " + safeResult.getMessage());
+                    } else if (externalOffers.isEmpty()) {
+                        setExternalStatus("Aucune offre externe trouvee.");
+                    } else {
+                        setExternalStatus("Offres externes chargees: " + externalOffers.size());
+                    }
+
+                    filterOffers();
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        externalOffers = new ArrayList<>();
+                        setExternalStatus("Erreur externe: " + ex.getMessage());
+                        filterOffers();
+                    });
+                    return null;
+                });
     }
 
     private void filterOffers() {
@@ -219,8 +263,23 @@ public class FrmCandidat implements NavigationAware {
             }
         }
 
-        renderOffers(filtered);
-        offerCount.setText(filtered.size() + " offre" + (filtered.size() > 1 ? "s" : ""));
+        List<ExternalJobOffer> visibleExternal = favoritesOnly ? new ArrayList<>() : externalOffers;
+
+        renderOffers(filtered, visibleExternal);
+        int total = filtered.size() + visibleExternal.size();
+        offerCount.setText(total + " offre" + (total > 1 ? "s" : ""));
+    }
+
+    private void setExternalStatus(String message) {
+        if (externalOffersStatus == null) {
+            return;
+        }
+
+        String text = message == null ? "" : message.trim();
+        externalOffersStatus.setText(text);
+        boolean hasText = !text.isBlank();
+        externalOffersStatus.setManaged(hasText);
+        externalOffersStatus.setVisible(hasText);
     }
 
     private String buildSearchText(Offer offer) {
@@ -281,11 +340,66 @@ public class FrmCandidat implements NavigationAware {
         }
     }
 
-    private void renderOffers(List<Offer> list) {
+    private void renderOffers(List<Offer> list, List<ExternalJobOffer> externalList) {
         offersGrid.getChildren().clear();
+
         for (Offer offer : list) {
             offersGrid.getChildren().add(buildOfferCard(offer));
         }
+
+        if (externalList == null || externalList.isEmpty()) {
+            return;
+        }
+
+        for (ExternalJobOffer offer : externalList) {
+            offersGrid.getChildren().add(buildExternalOfferCard(offer));
+        }
+    }
+
+    private VBox buildExternalOfferCard(ExternalJobOffer offer) {
+        VBox card = new VBox();
+        card.getStyleClass().add("offer-card");
+
+        HBox header = new HBox();
+        header.getStyleClass().add("offer-card-header");
+
+        Label title = new Label(orDefault(offer.getTitle()));
+        title.getStyleClass().add("offer-title");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+        Label tag = new Label("Externe EU");
+        tag.getStyleClass().add("tag");
+
+        header.getChildren().addAll(title, spacer, tag);
+
+        Label meta = new Label(
+                orDefault(offer.getCompany()) + " • " +
+                        orDefault(offer.getLocation()) + " • " +
+                        orDefault(offer.getEmploymentType())
+        );
+        meta.getStyleClass().add("offer-meta");
+
+        Label desc = new Label(compactText(offer.getDescription(), 260));
+        desc.getStyleClass().add("offer-desc");
+        desc.setWrapText(true);
+
+        HBox footer = new HBox();
+        footer.getStyleClass().add("offer-footer");
+
+        Button detailsBtn = new Button("Voir details");
+        detailsBtn.getStyleClass().addAll("btn", "btn-ghost");
+        detailsBtn.setOnAction(e -> showExternalOfferDetails(offer));
+
+        Button applyBtn = new Button("Postuler sur site");
+        applyBtn.getStyleClass().addAll("btn", "btn-primary");
+        applyBtn.setOnAction(e -> openExternalUrl(offer.getApplyUrl()));
+
+        footer.getChildren().addAll(detailsBtn, applyBtn);
+
+        card.getChildren().addAll(header, meta, desc, footer);
+        return card;
     }
 
     private VBox buildOfferCard(Offer offer) {
@@ -361,6 +475,75 @@ public class FrmCandidat implements NavigationAware {
                 lettreMotivation.requestFocus();
             }
         });
+    }
+
+    private void showExternalOfferDetails(ExternalJobOffer offer) {
+        Alert details = new Alert(Alert.AlertType.INFORMATION);
+        details.setTitle("Details de l'offre externe");
+        details.setHeaderText(orDefault(offer.getTitle()));
+        details.initModality(Modality.APPLICATION_MODAL);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Societe: ").append(orDefault(offer.getCompany())).append("\n");
+        builder.append("Localisation: ").append(orDefault(offer.getLocation())).append("\n");
+        builder.append("Type: ").append(orDefault(offer.getEmploymentType())).append("\n");
+        builder.append("Source: ").append(orDefault(offer.getSourceWebsite())).append("\n\n");
+        builder.append("Description:\n").append(orDefault(offer.getDescription())).append("\n\n");
+        builder.append("Lien de candidature:\n").append(orDefault(offer.getApplyUrl()));
+
+        TextArea content = new TextArea(builder.toString());
+        content.setWrapText(true);
+        content.setEditable(false);
+        content.setPrefRowCount(18);
+        details.getDialogPane().setContent(content);
+
+        ButtonType applyNow = new ButtonType("Postuler sur le site", ButtonBar.ButtonData.OK_DONE);
+        details.getButtonTypes().setAll(applyNow, ButtonType.CLOSE);
+
+        details.showAndWait().ifPresent(type -> {
+            if (type == applyNow) {
+                openExternalUrl(offer.getApplyUrl());
+            }
+        });
+    }
+
+    private void openExternalUrl(String url) {
+        if (url == null || url.isBlank()) {
+            showError("Lien indisponible", "Aucun lien de candidature n'est disponible pour cette offre.");
+            return;
+        }
+
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(URI.create(url));
+                return;
+            }
+        } catch (Exception ex) {
+            showError("Impossible d'ouvrir le lien", "Le navigateur n'a pas pu ouvrir ce lien: " + url);
+            return;
+        }
+
+        showError("Desktop non supporte", "Ouverture du navigateur non supportee sur cet environnement.");
+    }
+
+    private void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private String compactText(String value, int maxLength) {
+        String normalized = orDefault(value)
+                .replaceAll("<[^>]*>", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+
+        if (normalized.length() <= maxLength) {
+            return normalized;
+        }
+
+        return normalized.substring(0, Math.max(0, maxLength - 3)) + "...";
     }
 
     private void toggleFavorite(Offer offer) {

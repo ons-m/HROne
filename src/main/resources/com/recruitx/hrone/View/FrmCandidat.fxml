@@ -78,6 +78,8 @@
                             <Label fx:id="offerCount" styleClass="count" text="0 offre" />
                         </HBox>
 
+                        <Label fx:id="externalOffersStatus" managed="false" styleClass="muted external-status" text="" visible="false" wrapText="true" />
+
                         <VBox fx:id="offersGrid" styleClass="offers-grid" />
                     </VBox>
 
@@ -103,7 +105,7 @@
                             </VBox>
 
                             <VBox styleClass="field">
-                                <Label text="Lien du portfolio" textFill="#050000" />
+                                <Label text="Lien du portfolio" />
                                 <TextField fx:id="portfolio" promptText="https://" />
                             </VBox>
 
@@ -117,7 +119,7 @@
 
                             <VBox styleClass="field">
                                 <Label text="Lettre de motivation" />
-                                <TextArea fx:id="lettreMotivation" prefRowCount="4" promptText="Expliquez brievement votre motivation..." />
+                                <TextArea fx:id="lettreMotivation" prefRowCount="4" promptText="Expliquez brièvement votre motivation..." />
                             </VBox>
 
                             <VBox styleClass="field">

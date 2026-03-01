@@ -46,8 +46,6 @@ public class FrmMesCandidatures implements NavigationAware {
     private final Map<Integer, String> statusByCode = new HashMap<>();
     private final Map<Integer, CandidateInfo> candidatesById = new HashMap<>();
 
-    private static final int CURRENT_USER_ID = 1;
-
     private FrmMain mainController;
 
     @Override
@@ -141,12 +139,15 @@ public class FrmMesCandidatures implements NavigationAware {
             candidatures = new ArrayList<>();
         }
 
+        Utilisateur currentUser = Session.getCurrentUser();
+        int currentUserId = currentUser != null ? currentUser.getIdUtilisateur() : -1;
+
         CError.log(LogType.INFO, "loadApplications: candidatures=" + candidatures.size());
 
         applications.clear();
         for (Candidature candidature : candidatures) {
             CandidateInfo candidateInfo = candidatesById.get(candidature.getID_Candidat());
-            if (candidateInfo == null || candidateInfo.userId != CURRENT_USER_ID) {
+            if (candidateInfo == null || candidateInfo.userId != currentUserId) {
                 CError.log(
                         LogType.INFO,
                         "loadApplications: skip candidature=" + candidature.getID_Candidature() +
