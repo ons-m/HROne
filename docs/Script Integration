@@ -111,3 +111,73 @@ INSERT INTO PROFIL(ID_PROFIL,NOM_PROFIL) VALUES
 
 ALTER TABLE outils_de_travail ADD COLUMN Nom_Outil VARCHAR(255);
 ALTER TABLE employee ADD COLUMN SALAIRE INT DEFAULT 0;
+
+
+=============== CYRINE ========================
+
+ALTER TABLE participation_evenement
+ADD COLUMN nom_complet VARCHAR(255),
+ADD COLUMN email VARCHAR(255),
+ADD COLUMN description TEXT;
+
+ALTER TABLE evenement
+ADD COLUMN est_payant BOOLEAN DEFAULT FALSE,
+ADD COLUMN prix DOUBLE DEFAULT 0.0;
+
+ALTER TABLE participation_evenement
+ADD COLUMN mode_paiement VARCHAR(50) DEFAULT 'Gratuit';
+ALTER TABLE activite ADD COLUMN ID_Evenement INT;
+-- 1. Ajout de la capacité aux événements
+ALTER TABLE evenement ADD COLUMN nbMax INT DEFAULT 50;
+-- 2. Création de la table de liste d'attente
+CREATE TABLE IF NOT EXISTS liste_attente (
+ID_Attente INT AUTO_INCREMENT PRIMARY KEY,
+ID_Evenement INT,
+ID_Activite INT,
+nom_complet VARCHAR(255),
+email VARCHAR(255),
+date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (ID_Evenement) REFERENCES evenement(ID_Evenement) ON DELETE CASCADE
+);
+
+
+
+=============== AMINE =========================
+
+DROP TABLE IF EXISTS detail_formation;
+DROP TABLE IF EXISTS certification;
+DROP TABLE IF EXISTS formation;
+DROP TABLE IF EXISTS participation_formation;
+
+CREATE TABLE `participation_formation` (
+  `ID_Formation` int(11) NOT NULL,
+  `ID_Participant` int(11) NOT NULL,
+  `Num_Ordre_Participation` bigint(20) NOT NULL,
+  `Statut` varchar(20) DEFAULT 'inscrit',
+  `Certificat` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `formation` (
+  `ID_Formation` int(11) NOT NULL,
+  `Titre` varchar(255) NOT NULL,
+  `Description` text DEFAULT NULL,
+  `Num_Ordre_Creation` int(11) NOT NULL,
+  `ID_Entreprise` int(11) NOT NULL,
+  `Image` varchar(255) DEFAULT NULL,
+  `Mode` varchar(20) DEFAULT 'presentiel',
+  `NombrePlaces` int(11) DEFAULT 30,
+  `PlacesRestantes` int(11) DEFAULT 30,
+  `Date_Debut` bigint(20) DEFAULT 0,
+  `Date_Fin` bigint(20) DEFAULT 0,
+  `Niveau` varchar(20) DEFAULT 'Débutant'
+);
+
+CREATE TABLE `certification` (
+  `ID_Certif` int(11) NOT NULL,
+  `ID_Formation` int(11) NOT NULL,
+  `ID_Participant` int(11) NOT NULL,
+  `Description_Certif` varchar(255) DEFAULT NULL,
+  `Fichier_PDF` longblob DEFAULT NULL
+);
+
+

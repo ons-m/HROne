@@ -118,35 +118,32 @@ public class FormationParticipationRepository {
     }
 
     private String getLogoEntreprise(int idFormation) {
-        String sql = "SELECT e.Logo FROM entreprise e " +
-                "JOIN formation f ON f.ID_Entreprise = e.ID_Entreprise " +
-                "WHERE f.ID_Formation = ?";
+        return null;}
+    private void sauvegarderCheminCertificat(int idFormation, int idParticipant,
+                                             String chemin) {
+        // ✅ Générer bytes PDF pour stockage DB
+        String niveau = getNiveauFormation(idFormation);
+        String nomCandidat = getNomCandidat(idParticipant);
+        String titreFormation = getTitreFormation(idFormation);
+
+        byte[] pdfBytes = CertificatGenerator.genererBytes(
+                nomCandidat, titreFormation, niveau, null);
+
+        String sql = "INSERT INTO certification " +
+                "(ID_Formation, ID_Participant, Description_Certif, Fichier_PDF) " +
+                "VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement ps = getConn().prepareStatement(sql);
             ps.setInt(1, idFormation);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getString("Logo");
-        } catch (SQLException e) {
-            System.err.println("Erreur logo: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private void sauvegarderCheminCertificat(int idFormation, int idParticipant, String chemin) {
-        String sql = "UPDATE participation_formation SET Certificat = ? " +
-                "WHERE ID_Formation = ? AND ID_Participant = ?";
-        try {
-            PreparedStatement ps = getConn().prepareStatement(sql);
-            ps.setString(1, chemin);
-            ps.setInt(2, idFormation);
-            ps.setInt(3, idParticipant);
+            ps.setInt(2, idParticipant);
+            ps.setString(3, chemin);                           // ✅ chemin fichier
+            ps.setBytes(4, pdfBytes);                         // ✅ PDF en binaire DB
             ps.executeUpdate();
+            System.out.println("✅ Certificat sauvegardé en DB (binaire)");
         } catch (SQLException e) {
-            System.err.println("Erreur sauvegarde certificat: " + e.getMessage());
+            System.err.println("❌ Erreur sauvegarde certificat: " + e.getMessage());
         }
-    }
-
-    // ✅ Marquer comme achevée
+    }    // ✅ Marquer comme achevée
     public boolean marquerAcheve(int idFormation, int idParticipant) {
         String sql = "UPDATE participation_formation SET Statut = 'acheve' " +
                 "WHERE ID_Formation = ? AND ID_Participant = ?";
