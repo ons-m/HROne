@@ -1,12 +1,15 @@
 package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.API.DisifyService;
+import com.recruitx.hrone.API.MailCheckService;
 import com.recruitx.hrone.Models.DisifyResult;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
 import com.recruitx.hrone.Utils.COrdre;
+
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -115,6 +118,17 @@ public class FrmSignUpEntreprise implements NavigationAware{
                         "Le domaine de l'email est invalide.");
                 return;
             }
+        }
+
+        // ==============MailCheck Verification ===================
+        MailCheckService mailService = new MailCheckService();
+
+        boolean isValid = mailService.verifyEmail(email);
+
+        if (!isValid) {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Invalid or disposable email address.");
+            return;
         }
 
         // ================= CHECK UNIQUENESS =================
