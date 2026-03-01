@@ -50,6 +50,11 @@
                             styleClass="nav-link"
                             onAction="#openTracabilite"/>
 
+                    <Button fx:id="btnActivityWatch"
+                            text="Activity Watch"
+                            styleClass="nav-link"
+                            onAction="#openActivityWatch"/>
+
                     <Button fx:id="btnParticipation"
                             text="Mes Participations"
                             styleClass="nav-link"

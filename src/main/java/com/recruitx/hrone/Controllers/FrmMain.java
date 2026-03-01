@@ -29,12 +29,12 @@ public class FrmMain {
     @FXML private Button btnCommunaute;
     @FXML private Button GestionOffres;
     @FXML private Button btnEvents;
-    @FXML private Button btnGererMesOffres;
     @FXML private Button btnOutils;
     @FXML private Button btntracabilite;
     @FXML private Button btnGestionConge;
     @FXML private Button btnDemandeConge;
     @FXML private Button btnParticipation;
+    @FXML private Button btnActivityWatch;
 
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
@@ -61,7 +61,8 @@ public class FrmMain {
         GESTION_CONGE,
         DEMANDE_CONGE,
         CHATBOT,
-        PARTICIPATIONS
+        PARTICIPATIONS,
+        ACTIVITY_WATCH
     }
 
 
@@ -123,7 +124,7 @@ public class FrmMain {
 
     @FXML private void openParticipations() {loadView(ViewType.PARTICIPATIONS);}
 
-
+    @FXML private void openActivityWatch() {loadView(ViewType.ACTIVITY_WATCH);}
     /* ================================
        Core Loader (With Cache + Highlight)
        ================================ */
@@ -231,6 +232,9 @@ public class FrmMain {
             //Interface Participations Evenement Cote Employee
             case PARTICIPATIONS ->
                 "/com/recruitx/hrone/View/FrmParticipations.fxml";
+            //Inteface Activity Watch Cote Employee
+            case ACTIVITY_WATCH ->
+                "/com/recruitx/hrone/View/FrmActivityWatch.fxml";
         };
     }
 
@@ -306,6 +310,7 @@ public class FrmMain {
                 showSideBarButton(btnDemandeConge);
                 showSideBarButton(btnCommunaute);
                 showSideBarButton(btnParticipation);
+                showSideBarButton(btnActivityWatch);
             }
 
         }
@@ -340,6 +345,6 @@ public class FrmMain {
         hideSideBarButton(btnGestionConge);
         hideSideBarButton(btnDemandeConge);
         hideSideBarButton(btnParticipation);
-
+        hideSideBarButton(btnActivityWatch);
     }
 }

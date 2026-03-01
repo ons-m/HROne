@@ -18,5 +18,6 @@ public class Application extends javafx.application.Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
     }
 }

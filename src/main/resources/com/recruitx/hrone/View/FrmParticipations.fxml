@@ -11,51 +11,9 @@
 <ScrollPane fitToWidth="true" pannable="true" stylesheets="@../Css/FrmEventsDashboard.fx.css" fx:controller="com.recruitx.hrone.Controllers.FrmParticipation" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1">
   <content>
     <HBox styleClass="dashboard">
-      <VBox styleClass="sidebar">
-        <HBox styleClass="brand">
-          <ImageView fitHeight="52" fitWidth="52" preserveRatio="true" styleClass="brand-logo">
-            <image>
-            </image>
-          </ImageView>
-          <VBox>
-            <Label text="HR One" styleClass="brand-name" />
-            <Label text="Espace RH" styleClass="brand-sub" />
-          </VBox>
-        </HBox>
-
-        <VBox styleClass="nav">
-          <VBox styleClass="nav-group">
-            <HBox styleClass="nav-link nav-link-group">
-              <Label text="Recrutement" />
-              <Label text="▾" styleClass="chevron" />
-            </HBox>
-            <VBox styleClass="nav-submenu">
-              <Button text="Gestion d’offre d’emploi" styleClass="nav-sublink" />
-              <Button text="Candidatures" styleClass="nav-sublink" />
-              <Button text="Entretiens" styleClass="nav-sublink" />
-              <Button text="Statistiques" styleClass="nav-sublink" />
-            </VBox>
-          </VBox>
-          <VBox styleClass="nav-group">
-            <HBox styleClass="nav-link nav-link-group">
-              <Label text="Gestion administrative" />
-              <Label text="▾" styleClass="chevron" />
-            </HBox>
-            <VBox styleClass="nav-submenu">
-              <Button text="Gerer mes employees" styleClass="nav-sublink" />
-              <Button text="Gerer les outils" styleClass="nav-sublink" />
-            </VBox>
-          </VBox>
-          <Button text="Evenements" styleClass="nav-link active" />
-          <Button text="Formations" styleClass="nav-link" />
-          <Button text="Utilisateurs" styleClass="nav-link" />
-          <Button text="Parametres" styleClass="nav-link" />
-        </VBox>
-      </VBox>
 
       <VBox styleClass="main" HBox.hgrow="ALWAYS">
         <HBox styleClass="topbar">
-          <Button text="Retour aux évènements" styleClass="btn btn-ghost" onAction="#goBack" />
           <Region HBox.hgrow="ALWAYS" />
           <HBox styleClass="user">
             <VBox styleClass="user-info">
