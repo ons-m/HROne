@@ -164,11 +164,13 @@ public class OfferRepository {
                             "WHERE ID_OFFRE = " + ID_Offre;
 
             ResultSet rs = DBHelper.ExecuteDataReader(sql);
-            while (rs.next()) {
-                list.add(rs.getString("Code_Type_Competence"));
+            if(rs != null) {
+                while (rs.next()) {
+                    list.add(rs.getString("Code_Type_Competence"));
+                }
+                rs.close();
             }
-            rs.close();
-            rs.getStatement().close();
+
 
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur Charger Competences Offre " + ID_Offre, ex);
@@ -185,11 +187,13 @@ public class OfferRepository {
                             "WHERE ID_OFFRE = " + ID_Offre;
 
             ResultSet rs = DBHelper.ExecuteDataReader(sql);
-            while (rs.next()) {
-                list.add(rs.getString("CODE_TYPE_LANGUE"));
+            if(rs != null) {
+                while (rs.next()) {
+                    list.add(rs.getString("CODE_TYPE_LANGUE"));
+                }
+                rs.close();
             }
-            rs.close();
-            rs.getStatement().close();
+
 
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur Charger Langues Offre " + ID_Offre, ex);
@@ -206,11 +210,13 @@ public class OfferRepository {
                             "WHERE ID_OFFRE = " + ID_Offre;
 
             ResultSet rs = DBHelper.ExecuteDataReader(sql);
-            while (rs.next()) {
-                list.add(rs.getString("CODE_TYPE_BACKGROUND_ETUDE"));
+            if(rs != null) {
+                while (rs.next()) {
+                    list.add(rs.getString("CODE_TYPE_BACKGROUND_ETUDE"));
+                }
+                rs.close();
             }
-            rs.close();
-            rs.getStatement().close();
+
 
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur Charger Backgrounds Offre " + ID_Offre, ex);
@@ -310,7 +316,6 @@ public class OfferRepository {
                     ));
                 }
                 rs.close();
-                rs.getStatement().close();
             }
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur chargement competences", ex);
@@ -332,7 +337,6 @@ public class OfferRepository {
                     ));
                 }
                 rs.close();
-                rs.getStatement().close();
             }
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur chargement langues", ex);
@@ -355,7 +359,6 @@ public class OfferRepository {
                     ));
                 }
                 rs.close();
-                rs.getStatement().close();
             }
         } catch (Exception ex) {
             CError.log(LogType.ERROR, "Erreur chargement backgrounds", ex);
@@ -381,7 +384,6 @@ public class OfferRepository {
                     ));
                 }
                 rs.close();
-                rs.getStatement().close();
             }
 
         } catch (Exception ex) {
@@ -408,7 +410,6 @@ public class OfferRepository {
                     ));
                 }
                 rs.close();
-                rs.getStatement().close();
             }
 
         } catch (Exception ex) {

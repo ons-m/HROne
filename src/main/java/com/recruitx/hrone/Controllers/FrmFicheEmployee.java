@@ -1,5 +1,6 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.API.EmailService;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Repository.EmployeRepository;
 import com.recruitx.hrone.Models.Employe;
@@ -8,6 +9,8 @@ import com.recruitx.hrone.Utils.ActionLogger;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.security.SecureRandom;
 
 public class FrmFicheEmployee {
 
@@ -111,6 +114,8 @@ public class FrmFicheEmployee {
         String mac = macField.getText().trim();
 
         if (currentMode == Mode.ADD) {
+            String temporaryPassword = generateTemporaryPassword(12);
+
             // ---------- USER ----------
             Utilisateur user = new Utilisateur();
             user.setNomUtilisateur(name);
@@ -121,8 +126,9 @@ public class FrmFicheEmployee {
             // Required defaults (adjust as needed)
             user.setIdProfil(3); // EMPLOYEE role
             user.setIdEntreprise(Session.getCurrentEntreprise().getIdEntreprise());
-            user.setMotPasse(BCrypt.hashpw("MDP", BCrypt.gensalt(12)));
+            user.setMotPasse(BCrypt.hashpw(temporaryPassword, BCrypt.gensalt(12)));
             user.setNumOrdreSignIn((int)COrdre.GetNumOrdreNow());
+            user.setFirstLogin(1);
 
             // ---------- EMPLOYEE ----------
             Employe e = new Employe(
@@ -138,6 +144,12 @@ public class FrmFicheEmployee {
 
             if (success) {
                 ActionLogger.log("Ajouter Employe", "Ajout employé (MAC: " + mac + ")");
+                EmailService.sendEmployeeCredentialsEmail(
+                        email,
+                        name,
+                        user.getNomUtilisateur(),
+                        temporaryPassword
+                );
                 FrmParent.hideModal();
             } else {
                 showError("Erreur lors de l'enregistrement.");
@@ -246,5 +258,17 @@ public class FrmFicheEmployee {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private String generateTemporaryPassword(int length) {
+        final String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%!";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+
+        return password.toString();
     }
 }

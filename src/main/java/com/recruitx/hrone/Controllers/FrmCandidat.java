@@ -100,8 +100,10 @@ public class FrmCandidat implements NavigationAware {
             return;
         }
 
+        int cID = CandidatRepository.GetIDCandidatFromIDUser(currentCandidateId);
+
         Candidature c = new Candidature();
-        c.setID_Candidat(currentCandidateId);
+        c.setID_Candidat(cID);
         c.setID_Offre(selectedOffer.getValue().getID_Offre());
         c.setLettre_Motivation(lettreMotivation.getText().trim());
         c.setPortfolio(portfolio.getText());
@@ -484,7 +486,7 @@ public class FrmCandidat implements NavigationAware {
             String safePath = cvPath.replace("'", "''");
             String sql =
                     "UPDATE CONDIDAT SET CV = '" + safePath + "' WHERE ID_CONDIDAT = " + candidateId;
-            return DBHelper.ExecuteQuery(sql) > 0;
+            return DBHelper.ExecuteQuery(sql) >= 0;
         } catch (Exception ex) {
             return false;
         }

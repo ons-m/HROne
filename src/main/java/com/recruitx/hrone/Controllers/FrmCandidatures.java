@@ -1,5 +1,6 @@
 package com.recruitx.hrone.Controllers;
 
+import com.recruitx.hrone.API.EmailService;
 import com.recruitx.hrone.Models.*;
 import com.recruitx.hrone.Repository.*;
 import com.recruitx.hrone.Utils.CError;
@@ -685,6 +686,13 @@ public class FrmCandidatures {
 
         if (statusCode == 2) {
             ActionLogger.log("Accepter Candidat", "Candidature ID=" + candidate.candidature.getID_Candidature());
+            if (candidate.email != null && !candidate.email.isBlank()) {
+                EmailService.sendJobApprovalEmail(
+                        candidate.email,
+                        candidate.name,
+                        candidate.offerTitle
+                );
+            }
         } else if (statusCode == 3) {
             ActionLogger.log("Rejeter Candidat", "Candidature ID=" + candidate.candidature.getID_Candidature());
         } else {

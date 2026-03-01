@@ -3,6 +3,9 @@ package com.recruitx.hrone.Controllers;
 import com.recruitx.hrone.Models.Entreprise;
 import com.recruitx.hrone.Models.Utilisateur;
 import com.recruitx.hrone.Models.DisifyResult;
+import com.recruitx.hrone.Repository.CandidatRepository;
+import com.recruitx.hrone.Repository.CandidatureRepository;
+import com.recruitx.hrone.Repository.EntrepriseRepository;
 import com.recruitx.hrone.Repository.UtilisateurRepository;
 import com.recruitx.hrone.Utils.COrdre;
 import com.recruitx.hrone.API.DisifyService;
@@ -13,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class FrmSignUpCandidat implements NavigationAware{
@@ -142,6 +146,13 @@ public class FrmSignUpCandidat implements NavigationAware{
             u.setFirstLogin(0);
 
             utilisateurCRUD.create(u);
+
+            Utilisateur newUser = new Utilisateur();
+            newUser = utilisateurCRUD.findByEmail(email);
+            int id = newUser.getIdUtilisateur();
+            // Ajouter Candidat
+            CandidatRepository.Ajouter(id);
+
 
             showAlert(Alert.AlertType.INFORMATION,
                     "Succès",
