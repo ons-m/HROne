@@ -148,6 +148,50 @@ public class EmailService {
         }
     }
 
+
+    public static void sendEventApplicationEmail(
+            String toEmail,
+            String participantName,
+            String eventTitle,
+            String eventDate,
+            String eventLocation) {
+
+        Properties props = getSmtpProperties(FROM_EMAIL);
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(FROM_EMAIL, FROM_PASSWORD);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(toEmail));
+            message.setSubject("📅 Confirmation d'inscription — " + eventTitle);
+
+            message.setContent(
+                    buildEventApplicationHtml(
+                            participantName,
+                            eventTitle,
+                            eventDate,
+                            eventLocation
+                    ),
+                    "text/html; charset=UTF-8"
+            );
+
+            Transport.send(message);
+            System.out.println("✅ Email confirmation événement envoyé à : " + toEmail);
+
+        } catch (MessagingException e) {
+            System.err.println("❌ Erreur email événement: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
     public static void sendJobApprovalEmail(
             String toEmail,
             String candidateName,
@@ -177,6 +221,36 @@ public class EmailService {
             System.err.println("❌ Erreur email approbation candidature: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static String buildEventApplicationHtml(
+            String name,
+            String eventTitle,
+            String eventDate,
+            String eventLocation) {
+
+        String safeName = name != null ? name : "Participant";
+        String safeTitle = eventTitle != null ? eventTitle : "Événement";
+        String safeDate = eventDate != null ? eventDate : "";
+        String safeLocation = eventLocation != null ? eventLocation : "";
+
+        return "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>" +
+                "<div style='font-family:Arial,sans-serif;max-width:620px;margin:auto;background:#f4f6f8;padding:20px'>" +
+                "<div style='background:linear-gradient(135deg,#2c3e50,#8e44ad);color:white;padding:28px;border-radius:12px 12px 0 0;text-align:center'>" +
+                "<h2 style='margin:0'>📅 Confirmation d'inscription</h2>" +
+                "<p style='margin:6px 0 0;opacity:0.9'>Votre participation a été enregistrée</p>" +
+                "</div>" +
+                "<div style='background:white;padding:26px;border-radius:0 0 12px 12px'>" +
+                "<p style='margin:0 0 14px;color:#2c3e50'>Bonjour <strong>" + safeName + "</strong>,</p>" +
+                "<p style='margin:0 0 18px;color:#555'>Vous êtes inscrit(e) à l'événement suivant :</p>" +
+                "<div style='border:1px solid #e2e8f0;border-radius:10px;padding:14px;background:#f8fafc'>" +
+                "<p style='margin:0 0 8px'><strong>📌 Événement :</strong> " + safeTitle + "</p>" +
+                "<p style='margin:0 0 8px'><strong>📅 Date :</strong> " + safeDate + "</p>" +
+                "<p style='margin:0'><strong>📍 Lieu :</strong> " + safeLocation + "</p>" +
+                "</div>" +
+                "<p style='margin:18px 0 0;color:#555'>Nous vous attendons le jour de l'événement.</p>" +
+                "<p style='margin:24px 0 0;color:#888;font-size:12px'>HROne — Système de gestion RH</p>" +
+                "</div></div></body></html>";
     }
 
     private static String buildEmailHtml(
@@ -261,7 +335,7 @@ public class EmailService {
 
         String safeName = employeeName != null ? employeeName : "Employé";
         String safeUsername = username != null ? username : "";
-        String safePassword = plainPassword != null ? plainPassword : "";
+        String safePassword = "MDP";
 
         return "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>" +
                 "<div style='font-family:Arial,sans-serif;max-width:620px;margin:auto;background:#f4f6f8;padding:20px'>" +

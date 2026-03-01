@@ -1,6 +1,7 @@
 package com.recruitx.hrone.Controllers;
 
 import com.mysql.cj.exceptions.CJConnectionFeatureNotAvailableException;
+import com.recruitx.hrone.API.EmailService;
 import com.recruitx.hrone.Models.Evenement;
 import com.recruitx.hrone.Models.ParticipationEvenement;
 import com.recruitx.hrone.Models.ListeAttente;
@@ -10,6 +11,7 @@ import com.recruitx.hrone.Repository.EvenementRepository;
 import com.recruitx.hrone.Repository.ParticipationEvenementRepository;
 import com.recruitx.hrone.Repository.ListeAttenteRepository;
 
+import com.recruitx.hrone.Utils.COrdre;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -23,6 +25,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class FrmEvenements implements NavigationAware {
@@ -278,6 +283,16 @@ public class FrmEvenements implements NavigationAware {
 
                 pes.add(pe);
                 showSuccess("✅ Inscription réussie !");
+                String EventTitle = selectedEv.getTitre();
+                LocalDateTime eventDate =
+                        COrdre.GetDateFromNumOrdre(selectedEv.getNumOrdreDebutEvenement());
+
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+                String formattedDate = eventDate.format(formatter);
+                String EvenLocation = selectedEv.getLocalisation();
+                EmailService.sendEventApplicationEmail(email, nom, EventTitle, formattedDate, EvenLocation);
             }
             clearFields();
         } catch (Exception e) {
