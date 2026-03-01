@@ -8,14 +8,11 @@ import java.util.List;
 
 public class EvenementRepository {
 
-    private Connection cnx;
+    public EvenementRepository() {
+    }
 
-    public EvenementRepository(){
-        try{
-            cnx = DBConnection.getInstance();
-        }catch(Exception e){
-
-        }
+    private Connection getConnection() throws SQLException {
+        return DBConnection.getInstance();
     }
 
     public void add(Evenement p) {
@@ -26,9 +23,8 @@ public class EvenementRepository {
             throw new IllegalArgumentException("Les numéros d'ordre doivent être positifs et valides.");
         }
 
-        String req = "INSERT INTO `evenement`(`Titre`, `Description`, `Num_Ordre_Creation`, `Num_Ordre_Debut_Evenement`, `Num_Ordre_Fin_Evenement`, `Localisation`, `Image`) VALUES (?,?,?,?,?,?,?)";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
+        String req = "INSERT INTO `evenement`(`Titre`, `Description`, `Num_Ordre_Creation`, `Num_Ordre_Debut_Evenement`, `Num_Ordre_Fin_Evenement`, `Localisation`, `Image`, `est_payant`, `prix`, `nbMax`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        try (Connection cnx = getConnection(); PreparedStatement ps = cnx.prepareStatement(req)) {
             ps.setString(1, p.getTitre());
             ps.setString(2, p.getDescription());
             ps.setInt(3, p.getNumOrdreCreation());
@@ -36,6 +32,9 @@ public class EvenementRepository {
             ps.setInt(5, p.getNumOrdreFinEvenement());
             ps.setString(6, p.getLocalisation());
             ps.setString(7, p.getImage());
+            ps.setBoolean(8, p.isEstPayant());
+            ps.setDouble(9, p.getPrix());
+            ps.setInt(10, p.getNbMax());
             ps.executeUpdate();
             System.out.println("Evenement Ajouté !");
         } catch (SQLException e) {
@@ -46,8 +45,7 @@ public class EvenementRepository {
 
     public void delete(int id) {
         String req = "DELETE FROM `evenement` WHERE ID_Evenement = ?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
+        try (Connection cnx = getConnection(); PreparedStatement ps = cnx.prepareStatement(req)) {
             ps.setInt(1, id);
             ps.executeUpdate();
             System.out.println("Evenement Supprimé !");
@@ -62,9 +60,8 @@ public class EvenementRepository {
             throw new IllegalArgumentException("Le titre ne peut pas être vide.");
         }
 
-        String req = "UPDATE `evenement` SET `Titre`=?,`Description`=?,`Num_Ordre_Creation`=?,`Num_Ordre_Debut_Evenement`=?,`Num_Ordre_Fin_Evenement`=?,`Localisation`=?,`Image`=? WHERE ID_Evenement = ?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
+        String req = "UPDATE `evenement` SET `Titre`=?,`Description`=?,`Num_Ordre_Creation`=?,`Num_Ordre_Debut_Evenement`=?,`Num_Ordre_Fin_Evenement`=?,`Localisation`=?,`Image`=?,`est_payant`=?,`prix`=?, `nbMax`=? WHERE ID_Evenement = ?";
+        try (Connection cnx = getConnection(); PreparedStatement ps = cnx.prepareStatement(req)) {
             ps.setString(1, p.getTitre());
             ps.setString(2, p.getDescription());
             ps.setInt(3, p.getNumOrdreCreation());
@@ -72,7 +69,10 @@ public class EvenementRepository {
             ps.setInt(5, p.getNumOrdreFinEvenement());
             ps.setString(6, p.getLocalisation());
             ps.setString(7, p.getImage());
-            ps.setInt(8, p.getIdEvenement());
+            ps.setBoolean(8, p.isEstPayant());
+            ps.setDouble(9, p.getPrix());
+            ps.setInt(10, p.getNbMax());
+            ps.setInt(11, p.getIdEvenement());
             ps.executeUpdate();
             System.out.println("Evenement Modifié !");
         } catch (SQLException e) {
@@ -82,11 +82,17 @@ public class EvenementRepository {
 
     public List<Evenement> getAll() {
         List<Evenement> list = new ArrayList<>();
-        String req = "SELECT * FROM `evenement`";
-        try {
+        String req = "SELECT * FROM `evenement` ORDER BY Num_Ordre_Debut_Evenement DESC";
+        try (Connection cnx = getConnection();
             Statement st = cnx.createStatement();
-            ResultSet rs = st.executeQuery(req);
+                ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
+                int nbM = 50;
+                try {
+                    nbM = rs.getInt("nbMax");
+                } catch (SQLException ignore) {
+                }
+
                 Evenement p = new Evenement(
                         rs.getInt("ID_Evenement"),
                         rs.getString("Titre"),
@@ -95,23 +101,32 @@ public class EvenementRepository {
                         rs.getInt("Num_Ordre_Debut_Evenement"),
                         rs.getInt("Num_Ordre_Fin_Evenement"),
                         rs.getString("Localisation"),
-                        rs.getString("Image"));
+                        rs.getString("Image"),
+                        rs.getBoolean("est_payant"),
+                        rs.getDouble("prix"),
+                        nbM);
                 list.add(p);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur SQL lors de la récupération : " + e.getMessage());
+            System.err.println("[EvenementService] Erreur SQL lors de la récupération : " + e.getMessage());
+            e.printStackTrace();
         }
+        System.out.println("[EvenementService] " + list.size() + " événements chargés.");
         return list;
     }
 
     public Evenement getOne(int id) {
         Evenement p = null;
         String req = "SELECT * FROM `evenement` WHERE ID_Evenement = ?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(req);
+        try (Connection cnx = getConnection(); PreparedStatement ps = cnx.prepareStatement(req)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                int nbM = 50;
+                try {
+                    nbM = rs.getInt("nbMax");
+                } catch (SQLException ignore) {
+                }
                 p = new Evenement(
                         rs.getInt("ID_Evenement"),
                         rs.getString("Titre"),
@@ -120,7 +135,10 @@ public class EvenementRepository {
                         rs.getInt("Num_Ordre_Debut_Evenement"),
                         rs.getInt("Num_Ordre_Fin_Evenement"),
                         rs.getString("Localisation"),
-                        rs.getString("Image"));
+                        rs.getString("Image"),
+                        rs.getBoolean("est_payant"),
+                        rs.getDouble("prix"),
+                        nbM);
             }
         } catch (SQLException e) {
             System.err.println("Erreur SQL lors de la récupération par ID : " + e.getMessage());

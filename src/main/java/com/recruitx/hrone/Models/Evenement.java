@@ -9,12 +9,16 @@ public class Evenement {
     private int numOrdreFinEvenement;
     private String localisation;
     private String image;
+    private boolean estPayant;
+    private double prix;
+    private int nbMax;
 
     public Evenement() {
     }
 
     public Evenement(int idEvenement, String titre, String description, int numOrdreCreation,
-            int numOrdreDebutEvenement, int numOrdreFinEvenement, String localisation, String image) {
+            int numOrdreDebutEvenement, int numOrdreFinEvenement, String localisation, String image,
+            boolean estPayant, double prix, int nbMax) {
         this.idEvenement = idEvenement;
         this.titre = titre;
         this.description = description;
@@ -23,6 +27,9 @@ public class Evenement {
         this.numOrdreFinEvenement = numOrdreFinEvenement;
         this.localisation = localisation;
         this.image = image;
+        this.estPayant = estPayant;
+        this.prix = prix;
+        this.nbMax = nbMax;
     }
 
     public Evenement(String titre, String description, int numOrdreCreation, int numOrdreDebutEvenement,
@@ -34,6 +41,30 @@ public class Evenement {
         this.numOrdreFinEvenement = numOrdreFinEvenement;
         this.localisation = localisation;
         this.image = image;
+    }
+
+    public boolean isEstPayant() {
+        return estPayant;
+    }
+
+    public void setEstPayant(boolean estPayant) {
+        this.estPayant = estPayant;
+    }
+
+    public double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(double prix) {
+        this.prix = prix;
+    }
+
+    public int getNbMax() {
+        return nbMax;
+    }
+
+    public void setNbMax(int nbMax) {
+        this.nbMax = nbMax;
     }
 
     public int getIdEvenement() {
@@ -111,6 +142,8 @@ public class Evenement {
                 ", numOrdreFinEvenement=" + numOrdreFinEvenement +
                 ", localisation='" + localisation + '\'' +
                 ", image='" + image + '\'' +
+                ", estPayant=" + estPayant +
+                ", prix=" + prix +
                 '}';
     }
 }

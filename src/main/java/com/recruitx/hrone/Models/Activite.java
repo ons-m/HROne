@@ -2,19 +2,22 @@ package com.recruitx.hrone.Models;
 
 public class Activite {
     private int idActivite;
+    private int idEvenement;
     private String titre;
     private String description;
 
     public Activite() {
     }
 
-    public Activite(int idActivite, String titre, String description) {
+    public Activite(int idActivite, int idEvenement, String titre, String description) {
         this.idActivite = idActivite;
+        this.idEvenement = idEvenement;
         this.titre = titre;
         this.description = description;
     }
 
-    public Activite(String titre, String description) {
+    public Activite(int idEvenement, String titre, String description) {
+        this.idEvenement = idEvenement;
         this.titre = titre;
         this.description = description;
     }
@@ -25,6 +28,14 @@ public class Activite {
 
     public void setIdActivite(int idActivite) {
         this.idActivite = idActivite;
+    }
+
+    public int getIdEvenement() {
+        return idEvenement;
+    }
+
+    public void setIdEvenement(int idEvenement) {
+        this.idEvenement = idEvenement;
     }
 
     public String getTitre() {
@@ -47,6 +58,7 @@ public class Activite {
     public String toString() {
         return "Activite{" +
                 "idActivite=" + idActivite +
+                ", idEvenement=" + idEvenement +
                 ", titre='" + titre + '\'' +
                 ", description='" + description + '\'' +
                 '}';

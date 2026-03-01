@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.RadioButton?>
 <ScrollPane fitToWidth="true" pannable="true" stylesheets="@../Css/FrmEvenements.fx.css"
             fx:controller="com.recruitx.hrone.Controllers.FrmEvenements" xmlns="http://javafx.com/javafx/20"
             xmlns:fx="http://javafx.com/fxml/1">
@@ -31,7 +32,7 @@
             </HBox>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox styleClass="top-actions">
-                <Button text="Mes participations" styleClass="ghost"/>
+                <Button fx:id="btnMesParticipations" text="Mes participations" styleClass="ghost" onAction="#goToParticipations"/>
                 <Button text="Contacter RH" styleClass="primary"/>
             </HBox>
         </HBox>
@@ -130,8 +131,25 @@
                         <ComboBox fx:id="eventSelect" promptText="Selectionner"/>
                     </VBox>
                     <VBox styleClass="field">
+                        <Label text="Activite choisie"/>
+                        <ComboBox fx:id="activiteSelect" promptText="Selectionner une activite"/>
+                    </VBox>
+                    <VBox styleClass="field">
                         <Label text="Message (optionnel)"/>
                         <TextArea fx:id="messageArea" prefRowCount="3" promptText="Besoin specifique ou question..."/>
+                    </VBox>
+
+                    <!-- Section Paiement Dynamique -->
+                    <VBox fx:id="paymentSection" spacing="10" style="-fx-padding: 10; -fx-background-color: #f8fafc; -fx-background-radius: 8;">
+                        <Label fx:id="priceLabel" text="Prix : Sélectionner un événement" style="-fx-font-weight: bold;"/>
+                        <VBox fx:id="paymentOptions" spacing="8" visible="false" managed="false">
+                            <Label text="Mode de paiement :"/>
+                            <HBox spacing="15">
+                                <RadioButton fx:id="radioSurPlace" text="Sur place" selected="true" />
+                                <RadioButton fx:id="radioCarte" text="Par carte" />
+                            </HBox>
+                            <TextField fx:id="cardNumField" promptText="Numéro de carte (16 chiffres)" visible="false" managed="false" />
+                        </VBox>
                     </VBox>
                     <CheckBox fx:id="consentUnknown" text="Je confirme ma participation a cet evenement."
                               styleClass="consent"/>
@@ -142,7 +160,7 @@
                     <Label text="Besoin d'aide ?" styleClass="section-title"/>
                     <Label text="Contactez l'equipe RH pour toute question logistique." styleClass="muted"
                            wrapText="true"/>
-                    <Button text="Envoyer un message" styleClass="ghost"/>
+                    <Button text="Lancer le Chatbot RH" styleClass="ghost" onAction="#openChatbot"/>
                 </VBox>
             </VBox>
         </HBox>

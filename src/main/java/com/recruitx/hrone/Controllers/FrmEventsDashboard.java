@@ -1,9 +1,12 @@
 package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Models.Evenement;
+import com.recruitx.hrone.Models.ListeAttente;
 import com.recruitx.hrone.Repository.EvenementRepository;
+import com.recruitx.hrone.Repository.ListeAttenteRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +15,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class FrmEventsDashboard implements NavigationAware{
 
@@ -29,14 +31,21 @@ public class FrmEventsDashboard implements NavigationAware{
     @FXML
     private TextField imageField;
     @FXML
+    private TextField nbMaxField;
+    @FXML
     private Label statusLabel;
     @FXML
+    private Label formTitleLabel;
+    @FXML
     private VBox eventList;
-
+    @FXML
+    private VBox waitlistContainer;
+	private CheckBox payantCheck;
+    private TextField prixField;
     private FrmMain mainController;
 
     private final EvenementRepository es = new EvenementRepository();
-    // Variable pour stocker l'événement en cours de modification (null si création)
+    private final ListeAttenteRepository las = new ListeAttenteRepository();
     private Evenement eventToEdit = null;
 
     @Override
@@ -46,175 +55,127 @@ public class FrmEventsDashboard implements NavigationAware{
 
     @FXML
     public void initialize() {
+        injectPaymentFields();
         refreshList();
+        refreshWaitlist();
+    }
+
+    private void injectPaymentFields() {
+        if (imageField != null && imageField.getParent() != null) {
+            VBox parent = (VBox) imageField.getParent().getParent();
+            payantCheck = new CheckBox("Événement Payant ?");
+            payantCheck.setStyle("-fx-font-weight: bold; -fx-padding: 10 0 0 0;");
+            prixField = new TextField();
+            prixField.setPromptText("Prix en DT");
+            prixField.setVisible(false);
+            prixField.setManaged(false);
+            payantCheck.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                prixField.setVisible(newVal);
+                prixField.setManaged(newVal);
+            });
+            parent.getChildren().add(parent.getChildren().indexOf(imageField.getParent()) + 1, payantCheck);
+            parent.getChildren().add(parent.getChildren().indexOf(payantCheck) + 1, prixField);
+        }
     }
 
     @FXML
     private void handlePublier() {
         try {
-            String titre = titreField.getText();
-            String description = descriptionArea.getText();
-            String localisation = localisationField.getText();
-            String image = imageField.getText();
-            LocalDate dateDebut = dateDebutPicker.getValue();
-            LocalDate dateFin = dateFinPicker.getValue();
+            String titre = titreField.getText().trim();
+            String localisation = localisationField.getText().trim();
+            LocalDate debut = dateDebutPicker.getValue();
+            LocalDate fin = dateFinPicker.getValue();
 
-            // --- Contrôle de Saisie ---
-            if (titre == null || titre.trim().isEmpty()) {
-                showError("Le titre est obligatoire.");
-                return;
-            }
-            if (localisation == null || localisation.trim().isEmpty()) {
-                showError("La localisation est obligatoire.");
-                return;
-            }
-            if (dateDebut == null || dateFin == null) {
-                showError("Les dates sont obligatoires.");
-                return;
-            }
-            if (dateDebut.isAfter(dateFin)) {
-                showError("La date de début doit être avant la date de fin.");
-                return;
-            }
-            if (dateDebut.isBefore(LocalDate.now())) {
-                showError("La date de début ne peut pas être dans le passé.");
+            if (titre.isEmpty() || localisation.isEmpty() || debut == null || fin == null) {
+                showError("Veuillez remplir les champs obligatoires.");
                 return;
             }
 
-            // --- Conversion Date -> Int (Epoch Day) ---
-            // Note: Si la DB a une table `Ordre` pré-remplie, ces IDs doivent y exister.
-            // On suppose ici une correspondance directe ou que l'utilisateur gère `Ordre`.
-            int numCreation = (int) LocalDate.now().toEpochDay();
-            int numDebut = (int) dateDebut.toEpochDay();
-            int numFin = (int) dateFin.toEpochDay();
+            double prix = 0.0;
+            if (payantCheck != null && payantCheck.isSelected()) {
+                try {
+                    prix = Double.parseDouble(prixField.getText().trim());
+                } catch (Exception ex) {
+                    showError("Prix invalide.");
+                return;
+            }
+            }
+
+            int nbMax = 50;
+            try {
+                if (nbMaxField != null && !nbMaxField.getText().trim().isEmpty()) {
+                    nbMax = Integer.parseInt(nbMaxField.getText().trim());
+            }
+            } catch (Exception ex) {
+            }
 
             if (eventToEdit == null) {
-                // Mode Création
-                Evenement ev = new Evenement(titre, description, numCreation, numDebut, numFin, localisation, image);
+                Evenement ev = new Evenement(0, titre, descriptionArea.getText().trim(),
+                        (int) (System.currentTimeMillis() / 1000), (int) debut.toEpochDay(), (int) fin.toEpochDay(),
+                        localisation, imageField.getText().trim(), payantCheck != null && payantCheck.isSelected(),
+                        prix, nbMax);
                 es.add(ev);
-                showSuccess("Événement publié avec succès !");
+                showSuccess("Événement créé !");
             } else {
-                // Mode Modification
                 eventToEdit.setTitre(titre);
-                eventToEdit.setDescription(description);
+                eventToEdit.setDescription(descriptionArea != null ? descriptionArea.getText().trim() : "");
                 eventToEdit.setLocalisation(localisation);
-                eventToEdit.setImage(image);
-                // On garde la date de création originale, ou on update ? Généralement on garde
-                // creation mais on update debut/fin.
-                eventToEdit.setNumOrdreDebutEvenement(numDebut);
-                eventToEdit.setNumOrdreFinEvenement(numFin);
-
+                eventToEdit.setNumOrdreDebutEvenement((int) debut.toEpochDay());
+                eventToEdit.setNumOrdreFinEvenement((int) fin.toEpochDay());
+                eventToEdit.setImage(imageField != null ? imageField.getText().trim() : "");
+                eventToEdit.setNbMax(nbMax);
+                eventToEdit.setEstPayant(payantCheck != null && payantCheck.isSelected());
+                eventToEdit.setPrix(prix);
                 es.update(eventToEdit);
-                showSuccess("Événement modifié avec succès !");
-                eventToEdit = null; // Reset mode
+                showSuccess("Événement mis à jour !");
+                eventToEdit = null;
+                if (formTitleLabel != null)
+                    formTitleLabel.setText("Créer un événement");
             }
-
             clearFields();
             refreshList();
-
+            refreshWaitlist();
         } catch (Exception e) {
-            showError("Erreur système : " + e.getMessage());
-            e.printStackTrace();
-        }
+            showError("Erreur : " + e.getMessage());
     }
-
-    private void clearFields() {
-        titreField.clear();
-        localisationField.clear();
-        descriptionArea.clear();
-        imageField.clear();
-        dateDebutPicker.setValue(null);
-        dateFinPicker.setValue(null);
-        eventToEdit = null;
-    }
-
-    private void showError(String msg) {
-        statusLabel.setText("Erreur : " + msg);
-        statusLabel.setStyle("-fx-text-fill: #dc2626;"); // Red 600
-    }
-
-    private void showSuccess(String msg) {
-        statusLabel.setText(msg);
-        statusLabel.setStyle("-fx-text-fill: #16a34a;"); // Green 600
     }
 
     private void refreshList() {
         if (eventList == null)
             return;
         eventList.getChildren().clear();
-        List<Evenement> events = es.getAll();
-
-        if (events.isEmpty()) {
-            Label placeholder = new Label("Aucun événement planifié.");
-            placeholder.setStyle("-fx-text-fill: #64748b; -fx-padding: 10;");
-            eventList.getChildren().add(placeholder);
-            return;
-        }
-
-        for (Evenement e : events) {
-            VBox card = createEventCard(e);
+        List<Evenement> list = es.getAll();
+        for (Evenement e : list) {
+            VBox card = new VBox(5);
+            card.getStyleClass().add("resource-item");
+            Label title = new Label(e.getTitre() + " (" + e.getLocalisation() + ")");
+            title.getStyleClass().add("resource-title");
+            HBox actions = new HBox(10);
+            Button btnEdit = new Button("Modifier");
+            btnEdit.setOnAction(ev -> loadEventForEdit(e));
+            Button btnDelete = new Button("Supprimer");
+            btnDelete.setOnAction(ev -> handleDelete(e));
+            actions.getChildren().addAll(btnEdit, btnDelete);
+            card.getChildren().addAll(title, actions);
             eventList.getChildren().add(card);
         }
     }
 
-    private VBox createEventCard(Evenement e) {
-        VBox card = new VBox();
+    private void refreshWaitlist() {
+        if (waitlistContainer == null)
+            return;
+        waitlistContainer.getChildren().clear();
+        List<Evenement> events = es.getAll();
+        for (Evenement ev : events) {
+            List<ListeAttente> wl = las.getWaitlistByEvent(ev.getIdEvenement());
+            for (ListeAttente item : wl) {
+                VBox card = new VBox(2);
         card.getStyleClass().add("resource-item");
-
-        Label lTitre = new Label(e.getTitre());
-        lTitre.getStyleClass().add("resource-title");
-
-        // Conversion Int -> Date pour affichage
-        LocalDate dDebut = LocalDate.ofEpochDay(e.getNumOrdreDebutEvenement());
-        LocalDate dFin = LocalDate.ofEpochDay(e.getNumOrdreFinEvenement());
-
-        Label lMeta = new Label(dDebut + " - " + dFin + " • " + e.getLocalisation());
-        lMeta.getStyleClass().add("resource-meta");
-
-        Label lDesc = new Label(e.getDescription());
-        lDesc.setWrapText(true);
-        lDesc.setStyle("-fx-text-fill: #334155;"); // Slate 700
-
-        // Boutons Actions
-        // HBox actions = new HBox(10); ...
-
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem editItem = new MenuItem("Modifier");
-        editItem.setOnAction(ev -> loadEventForEdit(e));
-
-        MenuItem deleteItem = new MenuItem("Supprimer");
-        deleteItem.setOnAction(ev -> confirmDelete(e));
-
-        MenuItem activiteItem = new MenuItem("Gestion Activités");
-        activiteItem.setOnAction(ev -> handleManageActivites());
-
-        contextMenu.getItems().addAll(editItem, deleteItem, activiteItem);
-        card.setOnContextMenuRequested(event -> contextMenu.show(card, event.getScreenX(), event.getScreenY()));
-
-        // Ou simple clic pour edit ? non.
-        // Ajoutons un bouton supprimer visible pour simplicité
-        Button btnSupprimer = new Button("Supprimer");
-        btnSupprimer.getStyleClass().add("btn-danger");
-        btnSupprimer.getStyleClass().add("btn-small");
-        btnSupprimer.setOnAction(ev -> confirmDelete(e));
-
-        Button btnModifier = new Button("Modifier");
-        btnModifier.setStyle(
-                "-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-background-radius: 8; -fx-padding: 5 10;");
-        btnModifier.setOnAction(ev -> loadEventForEdit(e));
-
-        ToolBar actions = new ToolBar();
-        actions.setStyle("-fx-background-color: transparent; -fx-padding: 5 0 0 0;");
-        actions.getItems().addAll(btnModifier, btnSupprimer);
-
-        card.getChildren().addAll(lTitre, lMeta, lDesc, actions);
-        return card;
+                card.setStyle("-fx-border-color: #f59e0b; -fx-border-width: 0 0 0 4;");
+                Label info = new Label(ev.getTitre() + " : " + item.getNomComplet());
+                card.getChildren().add(info);
+                waitlistContainer.getChildren().add(card);
     }
-
-    @FXML
-    private void handleManageActivites() {
-        if (mainController != null) {
-            mainController.loadView(FrmMain.ViewType.ACTIVITES);
         }
     }
 
@@ -222,28 +183,85 @@ public class FrmEventsDashboard implements NavigationAware{
         eventToEdit = e;
         titreField.setText(e.getTitre());
         localisationField.setText(e.getLocalisation());
-        descriptionArea.setText(e.getDescription());
-        imageField.setText(e.getImage());
-        dateDebutPicker.setValue(LocalDate.ofEpochDay(e.getNumOrdreDebutEvenement()));
-        dateFinPicker.setValue(LocalDate.ofEpochDay(e.getNumOrdreFinEvenement()));
-
+        if (nbMaxField != null)
+            nbMaxField.setText(String.valueOf(e.getNbMax()));
+        if (descriptionArea != null)
+            descriptionArea.setText(e.getDescription() != null ? e.getDescription() : "");
+        if (imageField != null)
+            imageField.setText(e.getImage() != null ? e.getImage() : "");
+        // Restore dates (stored as epoch days)
+        if (dateDebutPicker != null && e.getNumOrdreDebutEvenement() > 0)
+            dateDebutPicker.setValue(java.time.LocalDate.ofEpochDay(e.getNumOrdreDebutEvenement()));
+        if (dateFinPicker != null && e.getNumOrdreFinEvenement() > 0)
+            dateFinPicker.setValue(java.time.LocalDate.ofEpochDay(e.getNumOrdreFinEvenement()));
+        // Restore payment fields
+        if (payantCheck != null) {
+            payantCheck.setSelected(e.isEstPayant());
+            if (prixField != null && e.isEstPayant())
+                prixField.setText(String.valueOf(e.getPrix()));
+        }
+        // Update form title to signal edit mode
+        if (formTitleLabel != null)
+            formTitleLabel.setText("Modifier l'événement : " + e.getTitre());
         showSuccess("Mode édition : " + e.getTitre());
+        // Scroll form into view by requesting focus
+        titreField.requestFocus();
     }
 
-    private void confirmDelete(Evenement e) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText("Supprimer l'événement '" + e.getTitre() + "' ?");
-        alert.setContentText("Cette action est irréversible.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+    private void handleDelete(Evenement e) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer ?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(res -> {
+            if (res == ButtonType.YES) {
             es.delete(e.getIdEvenement());
             refreshList();
-            showSuccess("Événement supprimé.");
-            if (eventToEdit != null && eventToEdit.getIdEvenement() == e.getIdEvenement()) {
+                refreshWaitlist();
+            }
+        });
+    }
+
+    @FXML
+    private void handleReset() {
                 clearFields();
             }
+
+    private void clearFields() {
+        titreField.clear();
+        localisationField.clear();
+        if (nbMaxField != null)
+            nbMaxField.clear();
+        if (descriptionArea != null)
+            descriptionArea.clear();
+        if (imageField != null)
+            imageField.clear();
+        if (dateDebutPicker != null)
+            dateDebutPicker.setValue(null);
+        if (dateFinPicker != null)
+            dateFinPicker.setValue(null);
+        if (payantCheck != null) {
+            payantCheck.setSelected(false);
+        }
+        if (prixField != null) {
+            prixField.clear();
+        }
+        if (formTitleLabel != null)
+            formTitleLabel.setText("Créer un événement");
+        eventToEdit = null;
+    }
+
+    private void showError(String msg) {
+        if (statusLabel != null)
+            statusLabel.setText(msg);
+    }
+
+    private void showSuccess(String msg) {
+        if (statusLabel != null)
+            statusLabel.setText(msg);
+    }
+
+    @FXML
+    private void handleManageActivites() {
+        if (mainController != null) {
+            mainController.loadView(FrmMain.ViewType.ACTIVITES);
         }
     }
 }

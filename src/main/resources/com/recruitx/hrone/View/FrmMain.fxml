@@ -50,6 +50,11 @@
                             styleClass="nav-link"
                             onAction="#openTracabilite"/>
 
+                    <Button fx:id="btnParticipation"
+                            text="Mes Participations"
+                            styleClass="nav-link"
+                            onAction="#openParticipations"/>
+
                     <Button fx:id="btnGestionConge"
                             text="Gestion Des Congés"
                             styleClass="nav-link"

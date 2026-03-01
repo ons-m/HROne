@@ -1,21 +1,38 @@
 package com.recruitx.hrone.Controllers;
 
+import com.mysql.cj.exceptions.CJConnectionFeatureNotAvailableException;
 import com.recruitx.hrone.Models.Evenement;
+import com.recruitx.hrone.Models.ParticipationEvenement;
+import com.recruitx.hrone.Models.ListeAttente;
+import com.recruitx.hrone.Models.Activite;
+import com.recruitx.hrone.Repository.ActiviteRepository;
 import com.recruitx.hrone.Repository.EvenementRepository;
+import com.recruitx.hrone.Repository.ParticipationEvenementRepository;
+import com.recruitx.hrone.Repository.ListeAttenteRepository;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
-import java.time.LocalDate;
+import javafx.stage.Stage;
+import java.io.IOException;
 import java.util.List;
 
-public class FrmEvenements {
+public class FrmEvenements implements NavigationAware {
 
     @FXML
     private VBox eventsGrid;
     @FXML
     private ComboBox<Evenement> eventSelect;
+    @FXML
+    private ComboBox<Activite> activiteSelect;
     @FXML
     private TextField nomField;
     @FXML
@@ -25,139 +42,285 @@ public class FrmEvenements {
     @FXML
     private CheckBox consentUnknown;
     @FXML
-    private Label statusLabel; // Ensure this is in FXML or handle null
+    private Label statusLabel;
+
+    @FXML
+    private VBox paymentSection;
+    @FXML
+    private Label priceLabel;
+    @FXML
+    private VBox paymentOptions;
+    @FXML
+    private RadioButton radioSurPlace;
+    @FXML
+    private RadioButton radioCarte;
+    @FXML
+    private TextField cardNumField;
+    private ToggleGroup paymentGroup;
 
     private final EvenementRepository es = new EvenementRepository();
-    // private final ParticipationEvenementService pes = new
-    // ParticipationEvenementService(); // Uncomment when ready
+    private final ActiviteRepository as = new ActiviteRepository();
+    private final ParticipationEvenementRepository pes = new ParticipationEvenementRepository();
+    private final ListeAttenteRepository las = new ListeAttenteRepository();
+
+    private FrmMain mainController;
+
+    @Override
+    public void setMainController(FrmMain mainController) {
+        this.mainController = mainController;
+    }
 
     @FXML
     public void initialize() {
         refreshEvents();
         setupComboBox();
+        setupPaymentLogic();
+    }
+
+    private void setupPaymentLogic() {
+        paymentGroup = new ToggleGroup();
+        if (radioSurPlace != null)
+            radioSurPlace.setToggleGroup(paymentGroup);
+        if (radioCarte != null) {
+            radioCarte.setToggleGroup(paymentGroup);
+            radioCarte.selectedProperty().addListener((obs, oldV, newV) -> {
+                if (cardNumField != null) {
+                    cardNumField.setVisible(newV);
+                    cardNumField.setManaged(newV);
+                }
+            });
+        }
     }
 
     private void setupComboBox() {
-        if (eventSelect == null)
-            return;
-        List<Evenement> events = es.getAll();
-        eventSelect.getItems().addAll(events);
-
-        eventSelect.setConverter(new StringConverter<Evenement>() {
+        if (eventSelect != null) {
+            eventSelect.setCellFactory(param -> new ListCell<Evenement>() {
+                @Override
+                protected void updateItem(Evenement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTitre());
+                }
+            });
+            eventSelect.setButtonCell(new ListCell<Evenement>() {
+                @Override
+                protected void updateItem(Evenement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTitre());
+                }
+            });
+            eventSelect.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    filterActivitesByEvent(newVal.getIdEvenement());
+                    updatePaymentDisplay(newVal);
+                }
+            });
+        }
+        if (activiteSelect != null) {
+            activiteSelect.setCellFactory(param -> new ListCell<Activite>() {
             @Override
-            public String toString(Evenement object) {
-                return object != null ? object.getTitre() : "";
+                protected void updateItem(Activite item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTitre());
             }
-
+            });
+            activiteSelect.setButtonCell(new ListCell<Activite>() {
             @Override
-            public Evenement fromString(String string) {
-                return eventSelect.getItems().stream()
-                        .filter(ap -> ap.getTitre().equals(string))
-                        .findFirst().orElse(null);
+                protected void updateItem(Activite item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTitre());
             }
         });
     }
+    }
 
-    private void refreshEvents() {
-        if (eventsGrid == null)
+    private void updatePaymentDisplay(Evenement e) {
+        if (priceLabel == null)
             return;
-        eventsGrid.getChildren().clear();
-        List<Evenement> events = es.getAll();
-
-        if (events.isEmpty()) {
-            Label placeholder = new Label("Aucun événement disponible pour le moment.");
-            placeholder.setStyle("-fx-text-fill: #64748b; -fx-padding: 20;");
-            eventsGrid.getChildren().add(placeholder);
-        }
-
-        for (Evenement e : events) {
-            VBox card = createEventCard(e);
-            eventsGrid.getChildren().add(card);
+        if (e.isEstPayant()) {
+            priceLabel.setText("Prix : " + e.getPrix() + " DT");
+            paymentOptions.setVisible(true);
+            paymentOptions.setManaged(true);
+        } else {
+            priceLabel.setText("Prix : Gratuit");
+            paymentOptions.setVisible(false);
+            paymentOptions.setManaged(false);
         }
     }
 
-    private VBox createEventCard(Evenement e) {
+    private void filterActivitesByEvent(int idEvenement) {
+        if (activiteSelect == null)
+            return;
+        activiteSelect.getItems().clear();
+        List<Activite> all = as.getAll();
+        for (Activite a : all) {
+            if (a.getIdEvenement() == idEvenement) {
+                activiteSelect.getItems().add(a);
+            }
+        }
+        }
+
+    private void refreshEvents() {
+        if (eventSelect != null) {
+            List<Evenement> list = es.getAll();
+            System.out.println("[EvenementsController] Chargement de " + list.size()
+                    + " événements dans la ComboBox et la Grille.");
+            eventSelect.getItems().setAll(list);
+
+            if (eventsGrid != null) {
+                eventsGrid.getChildren().clear();
+                for (Evenement ev : list) {
+                    eventsGrid.getChildren().add(createEventCard(ev));
+                }
+            }
+        } else {
+            System.err.println("[EvenementsController] eventSelect est NULL !");
+        }
+    }
+
+    private Node createEventCard(Evenement ev) {
         VBox card = new VBox();
         card.getStyleClass().add("event-card");
 
-        Label lTitre = new Label(e.getTitre());
-        lTitre.getStyleClass().add("card-title");
+        Label title = new Label(ev.getTitre());
+        title.getStyleClass().add("card-title");
 
-        Label lDesc = new Label(e.getDescription());
-        lDesc.getStyleClass().add("muted");
-        lDesc.setWrapText(true);
+        Label desc = new Label(ev.getDescription());
+        desc.setWrapText(true);
+        desc.getStyleClass().add("muted");
 
-        HBox details = new HBox(15);
-        details.getStyleClass().add("event-details");
+        HBox footer = new HBox();
+        footer.setSpacing(10);
+        footer.setAlignment(Pos.CENTER_LEFT);
 
-        // Convert Num_Ordre to Date for display
-        LocalDate dateDebut = LocalDate.ofEpochDay(e.getNumOrdreDebutEvenement());
-        Label lDate = new Label(dateDebut.toString());
-        Label lLieu = new Label(e.getLocalisation());
-        // Label lType = new Label("Présentiel"); // Static for now
+        Label loc = new Label("📍 " + ev.getLocalisation());
+        loc.getStyleClass().add("kicker");
 
-        details.getChildren().addAll(lDate, lLieu);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnParticiper = new Button("Participer");
-        btnParticiper.getStyleClass().add("ghost");
-        btnParticiper.setOnAction(ev -> {
-            if (eventSelect != null) {
-                eventSelect.setValue(e);
-                if (nomField != null)
-                    nomField.requestFocus();
-            }
+        Button btnSelect = new Button("Sélectionner");
+        btnSelect.getStyleClass().add("ghost");
+        btnSelect.setOnAction(e -> {
+            eventSelect.setValue(ev);
+            statusLabel.setText("Événement '" + ev.getTitre() + "' sélectionné.");
         });
 
-        card.getChildren().addAll(lTitre, lDesc, details, btnParticiper);
+        footer.getChildren().addAll(loc, spacer, btnSelect);
+        card.getChildren().addAll(title, desc, footer);
+
         return card;
     }
 
     @FXML
     private void handleParticiper() {
-        if (statusLabel != null)
-            statusLabel.setVisible(true);
-
         try {
+            // 1. Validations
             if (consentUnknown != null && !consentUnknown.isSelected()) {
                 showError("Veuillez accepter les conditions.");
                 return;
             }
-            if (eventSelect != null && eventSelect.getValue() == null) {
+            Evenement selectedEv = eventSelect.getValue();
+            if (selectedEv == null) {
                 showError("Veuillez sélectionner un événement.");
                 return;
             }
-            if (nomField != null && nomField.getText().isEmpty()) {
-                showError("Nom obligatoire.");
+            Activite selectedAct = activiteSelect.getValue();
+            if (selectedAct == null) {
+                showError("Veuillez sélectionner une activité.");
+                return;
+            }
+            String nom = nomField != null ? nomField.getText().trim() : "";
+            String email = emailField != null ? emailField.getText().trim() : "";
+            if (nom.isEmpty() || email.isEmpty()) {
+                showError("Veuillez renseigner votre nom et email.");
                 return;
             }
 
-            // --- Logic to create Participation ---
-            // int idEvent = eventSelect.getValue().getIdEvenement();
-            // ParticipationEvenement pe = new ParticipationEvenement(...)
-            // pes.add(pe);
+            int idEvent = selectedEv.getIdEvenement();
+            int idActivite = selectedAct.getIdActivite();
 
-            showSuccess("Participation enregistrée (Simulation) !");
+            if (pes.existsDuplicate(email, idEvent, idActivite)) {
+                showError("Vous êtes déjà inscrit à cette activité.");
+                return;
+            }
 
+            String modePaiement = "Gratuit";
+            if (selectedEv.isEstPayant()) {
+                if (radioCarte != null && radioCarte.isSelected()) {
+                    String cardNum = cardNumField != null ? cardNumField.getText().trim() : "";
+                    if (!cardNum.matches("\\d{16}")) {
+                        showError("Numéro de carte invalide (16 chiffres).");
+                        return;
+                    }
+                    modePaiement = "En ligne (Carte)";
+                } else {
+                    modePaiement = "Sur place";
+                }
+            }
+
+            // 2. Inscription
+            int currentParticipants = pes.getCountForEvent(idEvent);
+            if (currentParticipants >= selectedEv.getNbMax()) {
+                las.addToWaitlist(new ListeAttente(idEvent, idActivite, nom, email));
+                showSuccess("Événement complet ! Ajouté à la liste d'attente.");
+            } else {
+                ParticipationEvenement pe = new ParticipationEvenement();
+                pe.setIdEvenement(idEvent);
+                pe.setIdActivite(idActivite);
+                // Utilisation de l'ID 1 (Administrateur/Défaut) pour satisfaire la contrainte
+                // utilisateur
+                pe.setIdParticipant(Session.getCurrentUser().getIdUtilisateur());
+                pe.setNomComplet(nom);
+                pe.setEmail(email);
+                pe.setDescription(messageArea != null ? messageArea.getText().trim() : "");
+                pe.setModePaiement(modePaiement);
+                pe.setNumOrdreParticipation(1);
+
+                pes.add(pe);
+                showSuccess("✅ Inscription réussie !");
+            }
+            clearFields();
         } catch (Exception e) {
             showError("Erreur : " + e.getMessage());
         }
     }
 
+    @FXML
+    private void goToParticipations() {
+        if (mainController != null) {
+            mainController.loadView(FrmMain.ViewType.PARTICIPATIONS);
+        }
+    }
+
+    @FXML
+    private void openChatbot(javafx.event.ActionEvent event) {
+        if (mainController != null) {
+            mainController.loadView(FrmMain.ViewType.CHATBOT);
+        }
+    }
+
+    private void clearFields() {
+        if (nomField != null)
+            nomField.clear();
+        if (emailField != null)
+            emailField.clear();
+        if (messageArea != null)
+            messageArea.clear();
+    }
+
     private void showError(String msg) {
-        if (statusLabel == null)
-            return;
+        if (statusLabel != null) {
         statusLabel.setText(msg);
-        statusLabel.getStyleClass().removeAll("status-success");
-        statusLabel.getStyleClass().add("status-error");
         statusLabel.setVisible(true);
+            statusLabel.setStyle("-fx-text-fill: #e11d48;");
+        }
     }
 
     private void showSuccess(String msg) {
-        if (statusLabel == null)
-            return;
+        if (statusLabel != null) {
         statusLabel.setText(msg);
-        statusLabel.getStyleClass().removeAll("status-error");
-        statusLabel.getStyleClass().add("status-success");
         statusLabel.setVisible(true);
+            statusLabel.setStyle("-fx-text-fill: #059669;");
+        }
     }
 }

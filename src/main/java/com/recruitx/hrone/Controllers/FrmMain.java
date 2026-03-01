@@ -34,6 +34,7 @@ public class FrmMain {
     @FXML private Button btntracabilite;
     @FXML private Button btnGestionConge;
     @FXML private Button btnDemandeConge;
+    @FXML private Button btnParticipation;
 
 
     private final Map<ViewType, Parent> viewCache = new HashMap<>();
@@ -58,7 +59,9 @@ public class FrmMain {
         SIGNUPENTREPRISE,
         TRACABILITE,
         GESTION_CONGE,
-        DEMANDE_CONGE
+        DEMANDE_CONGE,
+        CHATBOT,
+        PARTICIPATIONS
     }
 
 
@@ -117,6 +120,8 @@ public class FrmMain {
     @FXML private void opengGestionConge() {loadView(ViewType.GESTION_CONGE, btnGestionConge);}
 
     @FXML private void openDemangeConge() {loadView(ViewType.DEMANDE_CONGE, btnDemandeConge);}
+
+    @FXML private void openParticipations() {loadView(ViewType.PARTICIPATIONS);}
 
 
     /* ================================
@@ -220,6 +225,12 @@ public class FrmMain {
             //Interface Demande Conge Cote Employee
             case DEMANDE_CONGE ->
                     "/com/recruitx/hrone/View/FrmDemandeConge.fxml";
+            //Interface ChatBot Cote Employee
+            case CHATBOT ->
+                "/com/recruitx/hrone/View/FrmChatbot.fxml";
+            //Interface Participations Evenement Cote Employee
+            case PARTICIPATIONS ->
+                "/com/recruitx/hrone/View/FrmParticipations.fxml";
         };
     }
 
@@ -294,6 +305,7 @@ public class FrmMain {
                 showSideBarButton(btnEvents);
                 showSideBarButton(btnDemandeConge);
                 showSideBarButton(btnCommunaute);
+                showSideBarButton(btnParticipation);
             }
 
         }
@@ -327,6 +339,7 @@ public class FrmMain {
         hideSideBarButton(btntracabilite);
         hideSideBarButton(btnGestionConge);
         hideSideBarButton(btnDemandeConge);
+        hideSideBarButton(btnParticipation);
 
     }
 }

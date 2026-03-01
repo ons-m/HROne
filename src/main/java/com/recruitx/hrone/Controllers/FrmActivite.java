@@ -1,6 +1,10 @@
 package com.recruitx.hrone.Controllers;
 
 import com.recruitx.hrone.Repository.ActiviteRepository;
+import com.recruitx.hrone.Models.Evenement;
+import com.recruitx.hrone.Models.Activite;
+import com.recruitx.hrone.Repository.EvenementRepository;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,8 +26,14 @@ public class FrmActivite implements NavigationAware{
     @FXML
     private Label statusLabel;
     @FXML
+    private ComboBox<Evenement> eventSelect;
+    @FXML
     private VBox activiteList;
 
+    private final ActiviteRepository as = new ActiviteRepository();
+    private final EvenementRepository es = new EvenementRepository();
+    private Activite activiteToEdit = null;
+    
     private FrmMain mainController;
 
     @Override
@@ -31,32 +41,54 @@ public class FrmActivite implements NavigationAware{
         this.mainController = mainController;
     }
 
-    private final ActiviteRepository as = new ActiviteRepository();
-    private com.recruitx.hrone.Models.Activite activiteToEdit = null;
-
-    @FXML
+	@FXML
     public void initialize() {
+        setupEventComboBox();
         refreshList();
     }
 
+    private void setupEventComboBox() {
+        if (eventSelect != null) {
+            List<Evenement> events = es.getAll();
+            eventSelect.getItems().addAll(events);
+
+            eventSelect.setConverter(new javafx.util.StringConverter<Evenement>() {
+                @Override
+                public String toString(Evenement object) {
+                    return object != null ? object.getTitre() : "";
+                }
+
+                @Override
+                public Evenement fromString(String string) {
+                    return eventSelect.getItems().stream()
+                            .filter(ev -> ev.getTitre().equals(string))
+                            .findFirst().orElse(null);
+                }
+            });
+        }
+    }
+    
     @FXML
     private void handlePublier() {
         try {
             String titre = titreField.getText();
             String description = descriptionArea.getText();
 
-            if (titre == null || titre.trim().isEmpty()) {
-                showError("Le titre est obligatoire.");
+            if (eventSelect.getValue() == null) {
+                showError("Veuillez sélectionner un événement.");
                 return;
             }
 
+            int idEvenement = eventSelect.getValue().getIdEvenement();
+
             if (activiteToEdit == null) {
                 // Mode Création
-                com.recruitx.hrone.Models.Activite a = new com.recruitx.hrone.Models.Activite(titre, description);
+                Activite a = new Activite(idEvenement, titre, description);
                 as.add(a);
                 showSuccess("Activité ajoutée avec succès !");
             } else {
                 // Mode Modification
+                activiteToEdit.setIdEvenement(idEvenement);
                 activiteToEdit.setTitre(titre);
                 activiteToEdit.setDescription(description);
 
@@ -89,6 +121,8 @@ public class FrmActivite implements NavigationAware{
     private void clearFields() {
         titreField.clear();
         descriptionArea.clear();
+        if (eventSelect != null)
+            eventSelect.setValue(null);
         activiteToEdit = null;
     }
 
@@ -106,7 +140,7 @@ public class FrmActivite implements NavigationAware{
         if (activiteList == null)
             return;
         activiteList.getChildren().clear();
-        List<com.recruitx.hrone.Models.Activite> activites = as.getAll();
+        List<Activite> activites = as.getAll();
 
         if (activites.isEmpty()) {
             Label placeholder = new Label("Aucune activité planifiée.");
@@ -115,18 +149,23 @@ public class FrmActivite implements NavigationAware{
             return;
         }
 
-        for (com.recruitx.hrone.Models.Activite a : activites) {
+        for (Activite a : activites) {
             VBox card = createActiviteCard(a);
             activiteList.getChildren().add(card);
         }
     }
 
-    private VBox createActiviteCard(com.recruitx.hrone.Models.Activite a) {
+    private VBox createActiviteCard(Activite a) {
         VBox card = new VBox();
         card.getStyleClass().add("resource-item");
 
         Label lTitre = new Label(a.getTitre());
         lTitre.getStyleClass().add("resource-title");
+
+        Evenement ev = es.getOne(a.getIdEvenement());
+        String evName = (ev != null) ? ev.getTitre() : "Événement inconnu";
+        Label lEv = new Label("Lié à : " + evName);
+        lEv.getStyleClass().add("resource-meta");
 
         Label lDesc = new Label(a.getDescription());
         lDesc.setWrapText(true);
@@ -134,29 +173,35 @@ public class FrmActivite implements NavigationAware{
 
         Button btnSupprimer = new Button("Supprimer");
         btnSupprimer.getStyleClass().addAll("btn-danger", "btn-small");
-        btnSupprimer.setOnAction(ev -> confirmDelete(a));
+        btnSupprimer.setOnAction(evAction -> confirmDelete(a));
 
         Button btnModifier = new Button("Modifier");
         btnModifier.setStyle(
                 "-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-background-radius: 8; -fx-padding: 5 10;");
-        btnModifier.setOnAction(ev -> loadActiviteForEdit(a));
+        btnModifier.setOnAction(evAction -> loadActiviteForEdit(a));
 
         ToolBar actions = new ToolBar();
         actions.setStyle("-fx-background-color: transparent; -fx-padding: 5 0 0 0;");
         actions.getItems().addAll(btnModifier, btnSupprimer);
 
-        card.getChildren().addAll(lTitre, lDesc, actions);
+        card.getChildren().addAll(lTitre, lEv, lDesc, actions);
         return card;
     }
 
-    private void loadActiviteForEdit(com.recruitx.hrone.Models.Activite a) {
+    private void loadActiviteForEdit(Activite a) {
         activiteToEdit = a;
         titreField.setText(a.getTitre());
         descriptionArea.setText(a.getDescription());
+
+        // Retrouver l'événement lié
+        Evenement ev = es.getOne(a.getIdEvenement());
+        if (ev != null)
+            eventSelect.setValue(ev);
+
         showSuccess("Mode édition : " + a.getTitre());
     }
 
-    private void confirmDelete(com.recruitx.hrone.Models.Activite a) {
+    private void confirmDelete(Activite a) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Supprimer l'activité '" + a.getTitre() + "' ?");
