@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/20"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recruitx.hrone.Controllers.FrmGestionConge"
+      stylesheets="@../Css/FrmGestionConge.fx.css"
+      spacing="24"
+      styleClass="page-root">
+
+    <!-- Top Bar -->
+    <HBox styleClass="topbar">
+        <VBox>
+                     <Label text="Gestion des demandes de congé"
+                   styleClass="page-title"/>
+                     <Label text="Traitez les demandes des employés: approuver ou refuser."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="lblCurrentUser"
+               styleClass="user-label"/>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox styleClass="content-container" spacing="16">
+              <HBox styleClass="section-header">
+                     <Label text="Demandes" styleClass="section-title"/>
+                     <Region HBox.hgrow="ALWAYS"/>
+                     <Button text="Actualiser" onAction="#handleRefresh" styleClass="btn-ghost"/>
+              </HBox>
+
+              <TableView fx:id="demandesTable" styleClass="data-table" VBox.vgrow="ALWAYS">
+                     <columns>
+                            <TableColumn fx:id="idColumn" text="#" prefWidth="70"/>
+                            <TableColumn fx:id="employeColumn" text="Employé" prefWidth="220"/>
+                            <TableColumn fx:id="joursColumn" text="Jours" prefWidth="90"/>
+                            <TableColumn fx:id="debutColumn" text="Début" prefWidth="120"/>
+                            <TableColumn fx:id="finColumn" text="Fin" prefWidth="120"/>
+                            <TableColumn fx:id="statusColumn" text="Statut" prefWidth="140"/>
+                            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="220"/>
+                     </columns>
+              </TableView>
+
+              <Label fx:id="lblStatus" styleClass="content-text" text=""/>
+    </VBox>
+
+</VBox>

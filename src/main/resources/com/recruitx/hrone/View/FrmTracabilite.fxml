@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/20"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recruitx.hrone.Controllers.FrmTracabilite"
+      stylesheets="@../Css/FrmTracabilite.fx.css"
+      spacing="24"
+      styleClass="page-root">
+
+    <!-- Top Bar -->
+    <HBox styleClass="topbar">
+        <VBox>
+                     <Label text="Historique des actions"
+                   styleClass="page-title"/>
+                     <Label text="Suivi de toutes les actions réalisées par les utilisateurs dans le logiciel."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="lblCurrentUser"
+               styleClass="user-label"/>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox styleClass="content-container" spacing="16">
+              <HBox styleClass="section-header">
+                     <Label text="Journal global des actions" styleClass="section-title"/>
+                     <Region HBox.hgrow="ALWAYS"/>
+                     <Label fx:id="lblTotalActions" styleClass="count-badge"/>
+              </HBox>
+
+              <TableView fx:id="actionsTable" styleClass="history-table" VBox.vgrow="ALWAYS">
+                     <columns>
+                            <TableColumn fx:id="dateColumn" text="Date / Heure" prefWidth="180"/>
+                            <TableColumn fx:id="userColumn" text="Utilisateur" prefWidth="200"/>
+                            <TableColumn fx:id="actionColumn" text="Action" prefWidth="230"/>
+                            <TableColumn fx:id="commentColumn" text="Commentaire" prefWidth="420"/>
+                     </columns>
+              </TableView>
+
+              <Label fx:id="lblStatus"
+                        text=""
+                        styleClass="content-text"/>
+    </VBox>
+
+</VBox>

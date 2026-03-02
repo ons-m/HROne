@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ToolBar?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ComboBox?>
+<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmActivite"
+           xmlns="http://javafx.com/javafx/20"
+           xmlns:fx="http://javafx.com/fxml/1"
+           stylesheets="@../Css/FrmEventsDashboard.fx.css">
+
+    <ScrollPane fitToWidth="true"
+                pannable="true">
+
+        <content>
+            <VBox styleClass="main">
+
+                <!-- Topbar -->
+                <HBox styleClass="topbar">
+          <Button text="← Retour aux Événements" styleClass="btn btn-ghost" onAction="#handleBack" />
+          <Region HBox.hgrow="ALWAYS" />
+                    <HBox styleClass="user">
+                        <VBox styleClass="user-info">
+              <Label text="Agent RH" styleClass="user-name" />
+              <Label text="Activités" styleClass="user-role" />
+                        </VBox>
+            <Label text="AR" styleClass="avatar" />
+                    </HBox>
+                </HBox>
+
+                <!-- Main Content -->
+                <VBox styleClass="grid formation-builder">
+
+                    <!-- Create Activity Card -->
+                    <VBox styleClass="card">
+            <Label text="Créer une activité" styleClass="section-title" />
+            <Label text="Ajoutez une activité interne avec son titre et sa description." styleClass="muted" />
+
+                        <VBox styleClass="formation-form">
+
+                            <VBox styleClass="field full">
+                <Label text="Événement rattaché" />
+                <ComboBox fx:id="eventSelect" promptText="Choisir l'événement parent" maxWidth="Infinity" />
+              </VBox>
+              <VBox styleClass="field full">
+                <Label text="Titre" />
+                <TextField fx:id="titreField" promptText="Ex: Séance de Yoga" />
+                            </VBox>
+
+                            <VBox styleClass="field full">
+                <Label text="Description" />
+                <TextArea fx:id="descriptionArea" prefRowCount="6" promptText="Présentez l’objectif de l’activité." />
+                            </VBox>
+              <Label fx:id="statusLabel" text="" styleClass="form-status" />
+                            <HBox styleClass="form-actions">
+                <Button text="Réinitialiser" styleClass="btn btn-ghost" onAction="#handleReset" /> 
+                <Button text="Publier l’activité" styleClass="btn btn-primary" onAction="#handlePublier" />
+                            </HBox>
+
+                        </VBox>
+                    </VBox>
+
+                    <!-- Activity List Card -->
+                    <VBox styleClass="card">
+            <Label text="Activités planifiées" styleClass="section-title" />
+            <Label text="Modifiez ou supprimez les activités publiées." styleClass="muted" />
+            <VBox fx:id="activiteList" styleClass="resource-list" />
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </content>
+
+    </ScrollPane>
+
+</StackPane>

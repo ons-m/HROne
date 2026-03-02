@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fitToWidth="true" pannable="true" style="-fx-background: transparent; -fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.Controllers.FrmBlog" >
+    <content>
+        <VBox spacing="25" style="-fx-background-color: linear-gradient(to bottom, #0a1929, #1a3a5f, #0a2a4a);">
+            <padding>
+                <Insets top="25" right="30" bottom="25" left="30"/>
+            </padding>
+
+            <!-- HEADER avec sélecteur de langue -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: linear-gradient(to right, #051524, #0a1f33, #051524); -fx-padding: 15 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.8), 20, 0, 0, 5);">
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Circle radius="28" style="-fx-fill: linear-gradient(to bottom right, #1a3f6f, #0a1f35); -fx-stroke: #4a9eff; -fx-stroke-width: 3;" />
+                    <VBox>
+                        <Label fx:id="appTitleLabel" text="HR One" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;">
+                            <font>
+                                <Font name="System Bold" size="28"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="appSubtitleLabel" text="Forum des employés" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    </VBox>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15" alignment="CENTER">
+                    <!-- Sélecteur de langue - simplifié -->
+                    <ComboBox fx:id="languageCombo" style="-fx-background-color: #1a3f6f; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 5;" prefWidth="140" />
+
+                    <!-- Bouton WhatsApp -->
+                    <Button fx:id="whatsappBtn" text="📱 WhatsApp" style="-fx-background-color: linear-gradient(to right, #25D366, #128C7E); -fx-text-fill: white; -fx-padding: 12 20; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
+
+                    <Button text="🔔" style="-fx-background-color: #1a3f6f; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 25; -fx-font-size: 16px; -fx-cursor: hand;" />
+                    <Button text="👤 Admin" style="-fx-background-color: #2a5f9f; -fx-text-fill: white; -fx-padding: 10 25; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
+                </HBox>
+            </HBox>
+
+            <!-- BANNER HERO AVEC MÉTÉO -->
+            <HBox spacing="20">
+                <!-- Hero principal -->
+                <VBox spacing="20" style="-fx-background-color: linear-gradient(to bottom right, #0a1a2f, #1a3f5f, #0a2a4a); -fx-padding: 40; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.6), 25, 0, 0, 8);" HBox.hgrow="ALWAYS">
+                    <VBox spacing="10">
+                        <Label fx:id="heroTitleLabel" text="✨ Partagez vos idées ✨" style="-fx-font-size: 38px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Text fx:id="heroSubtitleLabel" text="Postez des suggestions, posez des questions et animez la conversation." style="-fx-fill: rgba(255,255,255,0.9); -fx-font-size: 16px;" wrappingWidth="500" />
+                    </VBox>
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <TextField fx:id="searchField" promptText="🔍 Rechercher par mots-clés ou tags..." style="-fx-background-color: white; -fx-padding: 15 20; -fx-background-radius: 30; -fx-font-size: 15px;" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="searchButton" text="🔍 Rechercher" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4a7a, #0a2a4a); -fx-text-fill: white; -fx-padding: 12 25; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
+                    </HBox>
+                </VBox>
+
+                <!-- Widget Météo -->
+                <VBox spacing="15" style="-fx-background-color: linear-gradient(to bottom, #0a1f35, #03101d); -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5); -fx-border-color: #2a4a7a; -fx-border-width: 1; -fx-border-radius: 20;" prefWidth="220">
+                    <Label text="☀️ Météo" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label fx:id="weatherCityLabel" text="Tunis" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    <Label fx:id="weatherTempLabel" text="22°C" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;" />
+                    <Label fx:id="weatherDescLabel" text="Ensoleillé" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    <Button fx:id="refreshWeatherBtn" text="🔄 Actualiser" style="-fx-background-color: #1a3f6f; -fx-text-fill: white; -fx-padding: 8; -fx-background-radius: 15; -fx-cursor: hand;" />
+                </VBox>
+            </HBox>
+
+            <!-- STATISTIQUES DE SENTIMENT -->
+            <HBox spacing="15" style="-fx-background-color: linear-gradient(to bottom right, #0a1a30, #1a3f5f); -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,50,100,0.5), 15, 0, 0, 5);">
+                <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="😊 Positifs" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    <Label fx:id="positiveStatsLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                </VBox>
+                <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="😐 Neutres" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    <Label fx:id="neutralStatsLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                </VBox>
+                <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="😔 Négatifs" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                    <Label fx:id="negativeStatsLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                </VBox>
+            </HBox>
+
+            <!-- FILTRES PAR TAGS - CORRIGÉ (pas de &) -->
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: rgba(10,30,50,0.5); -fx-padding: 15; -fx-background-radius: 15;">
+                <Label text="🏷️ Filtres:" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                <Button fx:id="tagAllBtn" text="Tous" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+                <Button fx:id="tagSportBtn" text="#Sport" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+                <Button fx:id="tagCuisineBtn" text="#Cuisine" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+                <Button fx:id="tagTechBtn" text="#Tech" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+                <Button fx:id="tagRHBtn" text="#RH" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+                <Button fx:id="tagCultureBtn" text="#Culture" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#filterByTag" />
+            </HBox>
+
+            <!-- CONTENU PRINCIPAL -->
+            <HBox spacing="25">
+                <!-- Feed des posts -->
+                <VBox fx:id="feedContainer" spacing="20" HBox.hgrow="ALWAYS" />
+
+                <!-- Sidebar -->
+                <VBox fx:id="sidePanel" prefWidth="400" spacing="20">
+
+                    <!-- SECTION : APIs -->
+                    <VBox style="-fx-background-color: linear-gradient(to bottom, #0a1a30, #031526); -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5); -fx-border-color: #2a5a8a; -fx-border-width: 1; -fx-border-radius: 20;" spacing="15">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Circle radius="15" style="-fx-fill: #2a5f9f;" />
+                            <Label text="⚡ Outils &amp; APIs" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        </HBox>
+
+                        <GridPane hgap="10" vgap="10">
+                            <Button fx:id="weatherBtn" text="☀️ Météo" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="adviceBtn" text="💡 Conseil" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="quoteBtn" text="📝 Citation" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="jokeBtn" text="😂 Blague" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="animalBtn" text="🐕 Animal" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="translateBtn" text="🌐 Traduire" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="emailBtn" text="📧 Email" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="newsletterBtn" text="📰 Newsletter" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" />
+                            <Button fx:id="sentimentBtn" text="📊 Analyser" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4f7a); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 15; -fx-cursor: hand;" maxWidth="Infinity" GridPane.columnSpan="2" />
+                        </GridPane>
+                    </VBox>
+
+                    <!-- CHATBOT INTELLIGENT -->
+                    <VBox style="-fx-background-color: linear-gradient(to bottom, #0a1a30, #031526); -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5); -fx-border-color: #2a5a8a; -fx-border-width: 1; -fx-border-radius: 20;" spacing="15">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Circle radius="15" style="-fx-fill: #2a5f9f;" />
+                            <Label text="🤖 Assistant IA" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                            <Label text="● En ligne" style="-fx-text-fill: #2ecc71; -fx-font-size: 12px; -fx-background-color: #1a3f6f; -fx-padding: 3 10; -fx-background-radius: 15;" />
+                        </HBox>
+
+                        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" prefHeight="250">
+                            <VBox fx:id="chatContainer" spacing="10" style="-fx-background-color: #0a1f35; -fx-padding: 15; -fx-background-radius: 15;" />
+                        </ScrollPane>
+
+                        <HBox spacing="10">
+                            <TextField fx:id="chatInputField" promptText="Posez votre question..." HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 25;" />
+                            <Button fx:id="sendChatBtn" text="📤 Envoyer" style="-fx-background-color: linear-gradient(to right, #0a2a4a, #1a4a7a, #0a2a4a); -fx-text-fill: white; -fx-padding: 12 25; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
+                        </HBox>
+
+                        <!-- Suggestions rapides -->
+                        <FlowPane hgap="8" vgap="8">
+                            <Button text="❓ Aide" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                            <Button text="📊 Statistiques" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                            <Button text="🏷️ Tags" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                            <Button text="📝 Comment poster" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                            <Button text="🌍 Météo" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                            <Button text="😂 Blague" style="-fx-background-color: linear-gradient(to right, #1a3a5f, #2a4f7a); -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 25; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" onAction="#chatSuggestion" />
+                        </FlowPane>
+                    </VBox>
+
+                    <!-- TAGS POPULAIRES -->
+                    <VBox style="-fx-background-color: linear-gradient(to bottom, #0a1a30, #031526); -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,20,40,0.7), 15, 0, 0, 5); -fx-border-color: #2a5a8a; -fx-border-width: 1; -fx-border-radius: 20;" spacing="15">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Circle radius="15" style="-fx-fill: #2a5f9f;" />
+                            <Label text="🏷️ Tags populaires" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        </HBox>
+                        <FlowPane fx:id="popularTagsContainer" hgap="10" vgap="10">
+                            <!-- Les tags seront ajoutés dynamiquement -->
+                        </FlowPane>
+                    </VBox>
+
+                    <!-- STATISTIQUES -->
+                    <VBox style="-fx-background-color: linear-gradient(to bottom right, #0a1a30, #1a3f5f); -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,50,100,0.5), 15, 0, 0, 5);" spacing="15">
+                        <Label text="📊 Statistiques" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <GridPane hgap="15" vgap="12">
+                            <Label text="Membres:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                            <Label fx:id="membersStatsLabel" text="1,234" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                            <Label text="Posts:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                            <Label fx:id="postsStatsLabel" text="456" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                            <Label text="Commentaires:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill: #aac9ff; -fx-font-size: 14px;" />
+                            <Label fx:id="commentsStatsLabel" text="2,891" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                        </GridPane>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- FOOTER -->
+            <HBox alignment="CENTER" spacing="20" style="-fx-background-color: linear-gradient(to right, #051e2f, #0a2a4a, #051e2f); -fx-padding: 20 25; -fx-background-radius: 15;">
+                <Label text="© 2026 HR One - Forum des employés" style="-fx-text-fill: #aac9ff;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="À propos" style="-fx-text-fill: white; -fx-cursor: hand;" />
+                <Label text="•" style="-fx-text-fill: #4a6fa5;" />
+                <Label text="Confidentialité" style="-fx-text-fill: white; -fx-cursor: hand;" />
+                <Label text="•" style="-fx-text-fill: #4a6fa5;" />
+                <Label text="Contact" style="-fx-text-fill: white; -fx-cursor: hand;" />
+                <Label text="•" style="-fx-text-fill: #4a6fa5;" />
+                <Label fx:id="whatsappFooterLabel" text="📱 21690044054" style="-fx-text-fill: #25D366; -fx-cursor: hand;" />
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

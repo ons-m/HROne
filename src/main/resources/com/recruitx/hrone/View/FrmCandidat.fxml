@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane stylesheets="@../Css/FrmCandidat.fx.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.recruitx.hrone.Controllers.FrmCandidat">
+
+    <ScrollPane fitToWidth="true" pannable="true" styleClass="main-scroll">
+
+        <content>
+            <VBox styleClass="candidate-app">
+
+                <!-- Header -->
+                <HBox styleClass="candidate-header">
+
+                    <HBox styleClass="brand">
+                        <ImageView fitHeight="52" fitWidth="52" preserveRatio="true">
+                            <image>
+                                <Image url="@../Assets/logo.png" />
+                            </image>
+                        </ImageView>
+
+                        <VBox>
+                            <Label styleClass="brand-name" text="HR One" />
+                            <Label styleClass="brand-sub" text="Portail Candidat" />
+                        </VBox>
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <HBox styleClass="header-actions">
+                        <Button onAction="#onShowMyApplications" styleClass="btn btn-ghost" text="Mes candidatures" />
+                        <Button styleClass="btn btn-primary" text="Creer un profil" />
+                    </HBox>
+
+                </HBox>
+
+                <!-- Hero Section -->
+                <VBox styleClass="hero">
+                    <VBox>
+                        <Label styleClass="hero-title" text="Trouvez l'offre qui vous correspond" />
+                        <Label styleClass="muted" text="Parcourez les offres actives, filtrez par localisation et postulez en quelques clics." />
+                    </VBox>
+
+                    <VBox styleClass="hero-search">
+                        <HBox styleClass="hero-search-row">
+                            <TextField fx:id="offerSearch" promptText="Rechercher un poste, une competence..." HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="offerLocation" promptText="Toutes les villes" />
+                            <ComboBox fx:id="offerContractType" promptText="Type de contrat" />
+                        <Button onAction="#onSearch" styleClass="btn btn-primary" text="Rechercher" />
+                    </HBox>
+
+                        <HBox styleClass="hero-search-row">
+                            <TextField fx:id="salaryMin" promptText="Salaire min" HBox.hgrow="ALWAYS" />
+                            <TextField fx:id="salaryMax" promptText="Salaire max" HBox.hgrow="ALWAYS" />
+                            <CheckBox fx:id="showFavoritesOnly" text="Show favorites only" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Main Content -->
+                <HBox styleClass="content">
+
+                    <VBox styleClass="offers" HBox.hgrow="ALWAYS">
+                        <HBox styleClass="offers-header">
+                            <Label styleClass="section-title" text="Offres disponibles" />
+                            <Label fx:id="offerCount" styleClass="count" text="0 offre" />
+                        </HBox>
+
+                        <Label fx:id="externalOffersStatus" managed="false" styleClass="muted external-status" text="" visible="false" wrapText="true" />
+
+                        <VBox fx:id="offersGrid" styleClass="offers-grid" />
+                    </VBox>
+
+                    <VBox styleClass="apply-panel">
+                        <Label styleClass="section-title" text="Postuler rapidement" />
+                        <Label styleClass="muted" text="Selectionnez une offre et envoyez votre candidature." />
+
+                        <VBox styleClass="apply-form">
+
+                            <VBox styleClass="field">
+                                <Label text="Offre selectionnee" />
+                                <ComboBox fx:id="selectedOffer" promptText="Choisir une offre" />
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Nom complet" />
+                                <TextField fx:id="fullName" promptText="Votre nom" />
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Email" />
+                                <TextField fx:id="email" promptText="email@exemple.com" />
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Lien du portfolio" />
+                                <TextField fx:id="portfolio" promptText="https://" />
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="CV" />
+                                <HBox spacing="8">
+                                    <TextField fx:id="cv" promptText="Chemin local du fichier CV" HBox.hgrow="ALWAYS" />
+                                    <Button onAction="#onBrowseCvFile" styleClass="btn btn-ghost" text="Choisir fichier" />
+                                </HBox>
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Lettre de motivation" />
+                                <TextArea fx:id="lettreMotivation" prefRowCount="4" promptText="Expliquez brièvement votre motivation..." />
+                            </VBox>
+
+                            <VBox styleClass="field">
+                                <Label text="Lettre de recommandation" />
+                                <TextField fx:id="lettreRecommandation" promptText="Lien vers la lettre" />
+                            </VBox>
+
+                            <Button onAction="#onApply" styleClass="btn btn-primary" text="Envoyer ma candidature" />
+                        </VBox>
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+        </content>
+
+    </ScrollPane>
+
+</StackPane>

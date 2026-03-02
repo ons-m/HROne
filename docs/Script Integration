@@ -1,0 +1,183 @@
+================== ONS =========================
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS reaction;
+DROP TABLE IF EXISTS type_reaction;
+DROP TABLE IF EXISTS commentaire;
+DROP TABLE IF EXISTS post;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(255),
+    tag VARCHAR(50) DEFAULT 'General',
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    parent_comment_id INT NULL,
+    content TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+CREATE TABLE IF NOT EXISTS post_votes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('up', 'down') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_post_vote (post_id, user_id));
+
+
+CREATE TABLE IF NOT EXISTS comment_votes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    comment_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('up', 'down') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_comment_vote (comment_id, user_id));
+
+CREATE TABLE IF NOT EXISTS newsletter_emails (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+
+=============== AYMEN ========================
+
+ALTER TABLE utilisateur ADD COLUMN firstLogin INT DEFAULT 0;
+
+INSERT INTO type_action (Code_Type_Action, Description_Action) VALUES
+('ACT001', 'Ajouter Utilisateur'),
+('ACT002', 'Modifier Utilisateur'),
+('ACT003', 'Supprimer Utilisateur'),
+
+('ACT004', 'Ajouter Entreprise'),
+('ACT005', 'Modifier Entreprise'),
+('ACT006', 'Supprimer Entreprise'),
+
+('ACT007', 'Ajouter Employe'),
+('ACT008', 'Modifier Employe'),
+('ACT009', 'Supprimer Employe'),
+
+('ACT010', 'Ajouter Outil'),
+('ACT011', 'Modifier Outil'),
+('ACT012', 'Supprimer Outil'),
+
+('ACT013', 'Ajouter Offre'),
+('ACT014', 'Modifier Offre'),
+('ACT015', 'Supprimer Offre'),
+
+('ACT016', 'Accepter Candidat'),
+('ACT017', 'Planifier Entretien'),
+('ACT018', 'Rejeter Candidat'),
+('ACT019', 'Appliquer à Offre'),
+
+('ACT020', 'Ajouter Evenement'),
+('ACT021', 'Modifier Evenement'),
+('ACT022', 'Supprimer Evenement'),
+('ACT023', 'Participer à evenement'),
+
+('ACT024', 'Ajouter Formation'),
+('ACT025', 'Modifier Formation'),
+('ACT026', 'Supprimer Formation'),
+('ACT027', 'Participer à formation'),
+
+('ACT028', 'Ajouter Post'),
+('ACT029', 'Modifier Post'),
+('ACT030', 'Supprimer Post'),
+
+('ACT031', 'Ajouter Commentaire'),
+('ACT032', 'Modifier Commentaire'),
+('ACT033', 'Supprimer Commentaire');
+
+DELETE FROM PROFIL;
+
+INSERT INTO PROFIL(ID_PROFIL,NOM_PROFIL) VALUES
+(1,'Candidat'),
+(2,'RH'),
+(3,'Employee');
+
+
+=============== KHALED ========================
+
+ALTER TABLE outils_de_travail ADD COLUMN Nom_Outil VARCHAR(255);
+ALTER TABLE employee ADD COLUMN SALAIRE INT DEFAULT 0;
+
+
+=============== CYRINE ========================
+
+ALTER TABLE participation_evenement
+ADD COLUMN nom_complet VARCHAR(255),
+ADD COLUMN email VARCHAR(255),
+ADD COLUMN description TEXT;
+
+ALTER TABLE evenement
+ADD COLUMN est_payant BOOLEAN DEFAULT FALSE,
+ADD COLUMN prix DOUBLE DEFAULT 0.0;
+
+ALTER TABLE participation_evenement
+ADD COLUMN mode_paiement VARCHAR(50) DEFAULT 'Gratuit';
+ALTER TABLE activite ADD COLUMN ID_Evenement INT;
+-- 1. Ajout de la capacité aux événements
+ALTER TABLE evenement ADD COLUMN nbMax INT DEFAULT 50;
+-- 2. Création de la table de liste d'attente
+CREATE TABLE IF NOT EXISTS liste_attente (
+ID_Attente INT AUTO_INCREMENT PRIMARY KEY,
+ID_Evenement INT,
+ID_Activite INT,
+nom_complet VARCHAR(255),
+email VARCHAR(255),
+date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (ID_Evenement) REFERENCES evenement(ID_Evenement) ON DELETE CASCADE
+);
+
+
+
+=============== AMINE =========================
+
+DROP TABLE IF EXISTS detail_formation;
+DROP TABLE IF EXISTS certification;
+DROP TABLE IF EXISTS formation;
+DROP TABLE IF EXISTS participation_formation;
+
+CREATE TABLE `participation_formation` (
+  `ID_Formation` int(11) NOT NULL,
+  `ID_Participant` int(11) NOT NULL,
+  `Num_Ordre_Participation` bigint(20) NOT NULL,
+  `Statut` varchar(20) DEFAULT 'inscrit',
+  `Certificat` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `formation` (
+  `ID_Formation` int(11)  PRIMARY KEY AUTOINCREMENT,
+  `Titre` varchar(255) NOT NULL,
+  `Description` text DEFAULT NULL,
+  `Num_Ordre_Creation` int(11) NOT NULL,
+  `ID_Entreprise` int(11) NOT NULL,
+  `Image` varchar(255) DEFAULT NULL,
+  `Mode` varchar(20) DEFAULT 'presentiel',
+  `NombrePlaces` int(11) DEFAULT 30,
+  `PlacesRestantes` int(11) DEFAULT 30,
+  `Date_Debut` bigint(20) DEFAULT 0,
+  `Date_Fin` bigint(20) DEFAULT 0,
+  `Niveau` varchar(20) DEFAULT 'Débutant'
+);
+
+CREATE TABLE `certification` (
+  `ID_Certif` int(11) NOT NULL,
+  `ID_Formation` int(11) NOT NULL,
+  `ID_Participant` int(11) NOT NULL,
+  `Description_Certif` varchar(255) DEFAULT NULL,
+  `Fichier_PDF` longblob DEFAULT NULL
+);
+
+

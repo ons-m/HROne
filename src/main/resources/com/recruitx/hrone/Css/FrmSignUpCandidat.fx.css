@@ -1,0 +1,78 @@
+/* Root */
+.scroll-pane {
+    -fx-background-color: #f0f4f8;
+}
+
+/* Card */
+.login-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-padding: 30;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.4, 0, 4);
+}
+
+/* Header */
+.card-logo {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #204060;
+}
+.card-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7c8e;
+}
+
+/* Form */
+.login-form {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.login-form TextField,
+.login-form PasswordField,
+.login-form ComboBox,
+.login-form DatePicker {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #cccccc;
+    -fx-padding: 8 10;
+    -fx-font-size: 14px;
+    -fx-pref-width: 300;
+}
+
+.login-form TextField:focused,
+.login-form PasswordField:focused,
+.login-form ComboBox:focused,
+.login-form DatePicker:focused {
+    -fx-border-color: #2f78b6;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #2f78b6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 10 12;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: #246095;
+}
+
+.btn-secondary {
+    -fx-background-color: #e3e8ee;
+    -fx-text-fill: #2f78b6;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 10;
+}
+.btn-secondary:hover {
+    -fx-background-color: #d6dde5;
+}
+
+/* Company details box */
+#companyDetails {
+    -fx-pref-width: 300;
+}

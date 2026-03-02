@@ -1,0 +1,7 @@
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<VBox>
+
+   <Button>Hello</Button>
+</VBox>

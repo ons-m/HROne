@@ -1,0 +1,78 @@
+.page-root {
+    -fx-padding: 30;
+    -fx-background-color: #f8fafc;
+}
+
+.topbar {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.page-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+.user-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+}
+
+.content-container {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);
+}
+
+.content-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7280;
+}
+
+.section-header {
+    -fx-alignment: center-left;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.count-badge {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #3730a3;
+    -fx-padding: 6 10 6 10;
+    -fx-background-radius: 999;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.history-table {
+    -fx-background-color: white;
+}
+
+.history-table .column-header-background {
+    -fx-background-color: #f3f4f6;
+}
+
+.history-table .column-header,
+.history-table .filler {
+    -fx-size: 40;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+}
+
+.history-table .table-row-cell {
+    -fx-cell-size: 38;
+}
+
+.history-table .table-cell {
+    -fx-text-fill: #1f2937;
+    -fx-border-color: transparent;
+}

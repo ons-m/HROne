@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:controller="com.recruitx.hrone.Controllers.FrmCandidatures"
+           xmlns="http://javafx.com/javafx/20"
+           xmlns:fx="http://javafx.com/fxml/1"
+           stylesheets="@../Css/FrmCandidatures.fx.css">
+
+    <ScrollPane fitToWidth="true"
+                pannable="true"
+                styleClass="main-scroll">
+
+        <content>
+            <VBox styleClass="main">
+
+                <!-- Topbar -->
+                <HBox styleClass="topbar">
+                    <VBox styleClass="user-info">
+                        <Label text="Agent RH" styleClass="user-name"/>
+                        <Label text="Recrutement" styleClass="user-role"/>
+                    </VBox>
+                    <Label text="AR" styleClass="avatar"/>
+                </HBox>
+
+                <!-- Page Title -->
+                <VBox styleClass="page-title">
+                    <Label text="Candidatures"
+                           styleClass="page-title-text"/>
+                    <Label text="Consultez les candidatures par offre et acceptez ou rejetez."
+                           styleClass="muted"/>
+                </VBox>
+
+                <!-- Statistics Dashboard -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <VBox>
+                            <Label text="Statistics Dashboard"
+                                   styleClass="section-title"/>
+                            <Label text="Vue rapide des indicateurs RH"
+                                   styleClass="muted"/>
+                        </VBox>
+                    </HBox>
+
+                    <GridPane styleClass="stats-grid"
+                              hgap="12"
+                              vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33.33"/>
+                            <ColumnConstraints percentWidth="33.33"/>
+                            <ColumnConstraints percentWidth="33.34"/>
+                        </columnConstraints>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="0"
+                              GridPane.rowIndex="0">
+                            <Label fx:id="statTotalOffers" text="0" styleClass="stat-value"/>
+                            <Label text="Total job offers" styleClass="stat-label"/>
+                        </VBox>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="1"
+                              GridPane.rowIndex="0">
+                            <Label fx:id="statTotalApplications" text="0" styleClass="stat-value"/>
+                            <Label text="Total applications" styleClass="stat-label"/>
+                        </VBox>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="2"
+                              GridPane.rowIndex="0">
+                            <Label fx:id="statAccepted" text="0" styleClass="stat-value"/>
+                            <Label text="Number accepted" styleClass="stat-label"/>
+                        </VBox>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="0"
+                              GridPane.rowIndex="1">
+                            <Label fx:id="statRejected" text="0" styleClass="stat-value"/>
+                            <Label text="Number rejected" styleClass="stat-label"/>
+                        </VBox>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="1"
+                              GridPane.rowIndex="1">
+                            <Label fx:id="statMostAppliedJob" text="-" styleClass="stat-value stat-value-small"/>
+                            <Label text="Most applied job" styleClass="stat-label"/>
+                        </VBox>
+
+                        <VBox styleClass="stat"
+                              GridPane.columnIndex="2"
+                              GridPane.rowIndex="1">
+                            <Label fx:id="statAvgInterviewScore" text="N/A" styleClass="stat-value"/>
+                            <Label text="Average interview score" styleClass="stat-label"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- Filters Card -->
+                <VBox styleClass="card">
+
+                    <HBox styleClass="card-header">
+                        <VBox>
+                            <Label text="Filtrer les candidatures"
+                                   styleClass="section-title"/>
+                            <Label text="Selectionnez une offre ou cherchez un candidat."
+                                   styleClass="muted"/>
+                        </VBox>
+
+                        <Label fx:id="filterSummary"
+                               text="Filtres actifs: 0"
+                               styleClass="pill"/>
+                    </HBox>
+
+                    <GridPane styleClass="filter-form"
+                              hgap="14"
+                              vgap="12">
+
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="25"/>
+                            <ColumnConstraints percentWidth="25"/>
+                            <ColumnConstraints percentWidth="25"/>
+                            <ColumnConstraints percentWidth="25"/>
+                        </columnConstraints>
+
+                        <VBox styleClass="field"
+                              GridPane.columnIndex="0"
+                              GridPane.rowIndex="0">
+                            <Label text="Offre d'emploi"/>
+                            <ComboBox fx:id="offerFilter"/>
+                        </VBox>
+
+                        <VBox styleClass="field"
+                              GridPane.columnIndex="1"
+                              GridPane.rowIndex="0">
+                            <Label text="Statut"/>
+                            <ComboBox fx:id="statusFilter"/>
+                        </VBox>
+
+                        <VBox styleClass="field"
+                              GridPane.columnIndex="2"
+                              GridPane.rowIndex="0">
+                            <Label text="Experience"/>
+                            <ComboBox fx:id="experienceFilter"/>
+                        </VBox>
+
+                        <VBox styleClass="field"
+                            GridPane.columnIndex="3"
+                            GridPane.rowIndex="0">
+                            <Label text="Skills"/>
+                            <TextField fx:id="skillsFilter"
+                                   promptText="Java, SQL, communication..."/>
+                        </VBox>
+
+                        <HBox styleClass="form-actions"
+                            GridPane.columnIndex="3"
+                              GridPane.rowIndex="1">
+                            <Button fx:id="resetFilters"
+                                    text="Reinitialiser"
+                                    styleClass="btn btn-ghost"
+                                    onAction="#onResetFilters"/>
+                        </HBox>
+
+                    </GridPane>
+                </VBox>
+
+                <!-- Candidate List Card -->
+                <VBox styleClass="card">
+
+                    <HBox styleClass="card-header">
+                        <VBox>
+                            <Label text="Liste des candidatures"
+                                   styleClass="section-title"/>
+                            <Label text="Acceptez ou rejetez une candidature."
+                                   styleClass="muted"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label fx:id="candidateCount"
+                               text="0 candidature"
+                               styleClass="pill muted-pill"/>
+                    </HBox>
+
+                    <VBox fx:id="candidateList"
+                          styleClass="resource-list"/>
+
+                    <Label fx:id="candidateEmpty"
+                           text="Aucune candidature trouvee."
+                           styleClass="muted"/>
+
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</StackPane>

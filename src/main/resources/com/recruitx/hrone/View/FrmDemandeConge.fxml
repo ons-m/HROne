@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextArea?>
+
+<VBox xmlns="http://javafx.com/javafx/20"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recruitx.hrone.Controllers.FrmDemandeConge"
+      stylesheets="@../Css/FrmDemandeConge.fx.css"
+      spacing="24"
+      styleClass="page-root">
+
+    <!-- Top Bar -->
+    <HBox styleClass="topbar">
+        <VBox>
+                     <Label text="Demande de congé"
+                   styleClass="page-title"/>
+                     <Label text="Soumettez une demande de congé avec période et durée."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="lblCurrentUser"
+               styleClass="user-label"/>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox styleClass="content-container" spacing="16">
+              <Label text="Nouvelle demande"
+                        styleClass="section-title"/>
+
+              <HBox spacing="12">
+                     <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Date début" styleClass="field-label"/>
+                            <DatePicker fx:id="dpDateDebut"/>
+                     </VBox>
+
+                     <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Date fin" styleClass="field-label"/>
+                            <DatePicker fx:id="dpDateFin"/>
+                     </VBox>
+              </HBox>
+
+              <VBox spacing="6">
+                     <Label text="Nombre de jours demandés" styleClass="field-label"/>
+                     <Label fx:id="lblNbrJours" text="0 jour" styleClass="value-badge"/>
+              </VBox>
+
+              <VBox spacing="6">
+                     <Label text="Commentaire (optionnel)" styleClass="field-label"/>
+                     <TextArea fx:id="txtCommentaire" promptText="Ex: Congé annuel, raisons personnelles..." prefRowCount="3" wrapText="true"/>
+              </VBox>
+
+              <HBox spacing="10" styleClass="actions-row">
+                     <Button text="Réinitialiser" onAction="#handleReset" styleClass="btn-ghost"/>
+                     <Button text="Soumettre la demande" onAction="#handleSubmit" styleClass="btn-primary"/>
+              </HBox>
+
+              <Label fx:id="lblStatus"
+                        text=""
+                        styleClass="content-text">
+                     <VBox.margin>
+                            <Insets top="4"/>
+                     </VBox.margin>
+              </Label>
+    </VBox>
+
+</VBox>

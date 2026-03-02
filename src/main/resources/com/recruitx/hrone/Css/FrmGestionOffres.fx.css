@@ -1,0 +1,277 @@
+.app {
+  -fx-background-color: #f5f7fb;
+}
+
+.sidebar {
+  -fx-background-color: #0f172a;
+  -fx-padding: 24 18;
+  -fx-spacing: 18;
+  -fx-min-width: 240;
+  -fx-pref-width: 240;
+}
+
+.brand {
+  -fx-spacing: 10;
+  -fx-alignment: center-left;
+}
+
+.brand-logo {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: white;
+  -fx-alignment: center;
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-background-radius: 12;
+}
+
+.brand-name {
+  -fx-text-fill: white;
+  -fx-font-weight: 700;
+  -fx-font-size: 15;
+}
+
+.brand-sub {
+  -fx-text-fill: #94a3b8;
+  -fx-font-size: 11;
+}
+
+.nav {
+  -fx-spacing: 8;
+}
+
+.nav-section {
+  -fx-text-fill: #94a3b8;
+  -fx-font-size: 11;
+  -fx-padding: 8 0 0 0;
+}
+
+.nav-link {
+  -fx-background-color: transparent;
+  -fx-text-fill: #cbd5f5;
+  -fx-padding: 8 10;
+  -fx-background-radius: 10;
+  -fx-alignment: center-left;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  -fx-background-color: rgba(255,255,255,0.08);
+  -fx-text-fill: white;
+}
+
+.main-scroll {
+  -fx-fit-to-width: true;
+  -fx-background: transparent;
+}
+
+.main {
+  -fx-padding: 24 28 40 28;
+  -fx-spacing: 20;
+}
+
+.topbar {
+  -fx-alignment: center-right;
+  -fx-spacing: 12;
+}
+
+.user-name {
+  -fx-font-weight: 700;
+}
+
+.user-role {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 11;
+}
+
+.avatar {
+  -fx-background-color: #e2e8f0;
+  -fx-text-fill: #0f172a;
+  -fx-alignment: center;
+  -fx-min-width: 36;
+  -fx-min-height: 36;
+  -fx-background-radius: 12;
+}
+
+.page-title-text {
+  -fx-font-size: 20;
+  -fx-font-weight: 700;
+}
+
+.muted {
+  -fx-text-fill: #64748b;
+}
+
+.card {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+  -fx-padding: 16 18;
+  -fx-spacing: 14;
+}
+
+.card-header {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+}
+
+.section-title {
+  -fx-font-weight: 700;
+  -fx-font-size: 15;
+}
+
+.grid {
+  -fx-spacing: 20;
+}
+
+.offer-form {
+  -fx-padding: 6 0 0 0;
+}
+
+.field {
+  -fx-spacing: 6;
+}
+
+.field.full {
+  -fx-spacing: 6;
+}
+
+.range-field {
+  -fx-spacing: 8;
+  -fx-alignment: center-left;
+}
+
+.choice-panel {
+  -fx-background-color: #f8fafc;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-padding: 10;
+  -fx-spacing: 8;
+}
+
+.choice-list {
+  -fx-border-color: #e2e8f0;
+  -fx-background-color: white;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-pref-height: 180;
+}
+
+.help {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 11;
+}
+
+.form-actions {
+  -fx-spacing: 10;
+  -fx-alignment: center-right;
+}
+
+.offer-list {
+  -fx-spacing: 10;
+}
+
+.offer-item {
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 12;
+  -fx-background-radius: 12;
+  -fx-background-color: white;
+  -fx-padding: 10 12;
+  -fx-spacing: 10;
+  -fx-alignment: center-left;
+}
+
+.offer-title {
+  -fx-font-weight: 700;
+}
+
+.offer-meta {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12;
+}
+
+.list-item-actions {
+  -fx-spacing: 8;
+  -fx-alignment: center-right;
+}
+
+.status {
+  -fx-font-size: 11;
+  -fx-padding: 4 10;
+  -fx-background-radius: 999;
+  -fx-font-weight: 700;
+}
+
+.status-live {
+  -fx-background-color: #dcfce7;
+  -fx-text-fill: #166534;
+}
+
+.status-review {
+  -fx-background-color: #fef3c7;
+  -fx-text-fill: #92400e;
+}
+
+.status-draft {
+  -fx-background-color: #e2e8f0;
+  -fx-text-fill: #475569;
+}
+
+.stats {
+  -fx-spacing: 12;
+}
+
+.stat {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+  -fx-padding: 14 16;
+  -fx-spacing: 4;
+}
+
+.stat-value {
+  -fx-font-size: 18;
+  -fx-font-weight: 700;
+}
+
+.stat-label {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12;
+}
+
+.text-field,
+.text-area,
+.combo-box-base,
+.date-picker {
+  -fx-background-color: white;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-padding: 8 10;
+}
+
+.btn {
+  -fx-background-radius: 10;
+  -fx-padding: 8 14;
+  -fx-font-weight: 600;
+}
+
+.btn-primary {
+  -fx-background-color: #3b82f6;
+  -fx-text-fill: white;
+}
+
+.btn-ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: #e2e8f0;
+  -fx-border-radius: 10;
+  -fx-text-fill: #0f172a;
+}
+
+.btn-danger {
+  -fx-background-color: #fee2e2;
+  -fx-border-color: #fecaca;
+  -fx-text-fill: #991b1b;
+}
