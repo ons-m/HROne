@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import com.recruitx.hrone.Utils.DBHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -25,9 +26,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;  // ← IMPORT MANQUANT AJOUTÉ
 import javafx.scene.text.Text;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,6 +46,8 @@ public class FrmBlog {
     @FXML private Button clearPostButton;
     @FXML private Button submitPostButton;
     @FXML private Button chooseImageButton;
+
+    // Nouveaux FXML
     @FXML private ComboBox<String> languageCombo;
     @FXML private Button whatsappBtn;
     @FXML private Label whatsappFooterLabel;
@@ -54,12 +55,16 @@ public class FrmBlog {
     @FXML private Label appSubtitleLabel;
     @FXML private Label heroTitleLabel;
     @FXML private Text heroSubtitleLabel;
+
+    // Statistiques
     @FXML private Label positiveStatsLabel;
     @FXML private Label neutralStatsLabel;
     @FXML private Label negativeStatsLabel;
     @FXML private Label membersStatsLabel;
     @FXML private Label postsStatsLabel;
     @FXML private Label commentsStatsLabel;
+
+    // Tags
     @FXML private Button tagAllBtn;
     @FXML private Button tagSportBtn;
     @FXML private Button tagCuisineBtn;
@@ -67,25 +72,32 @@ public class FrmBlog {
     @FXML private Button tagRHBtn;
     @FXML private Button tagCultureBtn;
     @FXML private FlowPane popularTagsContainer;
+
+    // Chatbot
     @FXML private VBox chatContainer;
     @FXML private TextField chatInputField;
     @FXML private Button sendChatBtn;
+
+    // API Buttons
     @FXML private Button weatherBtn;
     @FXML private Button adviceBtn;
     @FXML private Button quoteBtn;
     @FXML private Button jokeBtn;
     @FXML private Button animalBtn;
     @FXML private Button translateBtn;
+    @FXML private Button emailBtn;
+    @FXML private Button newsletterBtn;
+    @FXML private Button sentimentBtn;
     @FXML private Button refreshWeatherBtn;
+
+    // Météo
     @FXML private Label weatherCityLabel;
     @FXML private Label weatherTempLabel;
     @FXML private Label weatherDescLabel;
-    @FXML private VBox sidePanel;
 
     // ==================== CONSTANTES ====================
     private static final String UPLOAD_DIR = "uploads/";
     private static final String WHATSAPP_NUMBER = "21690044054";
-    private static final String WHATSAPP_API = "https://wa.me/";
 
     // APIs
     private static final String WEATHER_API = "https://wttr.in/";
@@ -97,8 +109,8 @@ public class FrmBlog {
     private static final String TRANSLATION_API = "https://api.mymemory.translated.net/get";
 
     // ==================== VARIABLES ====================
-    private int currentUserId = 2;
-    private String currentUserName = "Ons";
+    private int currentUserId = 1;
+    private String currentUserName = "Lina M.";
     private final List<Node> postCards = new ArrayList<>();
     private String currentLanguage = "fr";
     private String currentTagFilter = "all";
@@ -111,7 +123,6 @@ public class FrmBlog {
     @FXML
     private void initialize() {
         createUploadDirectory();
-        initializeCurrentUser();
         loadPostsFromDatabase();
         wireSearch();
         wirePostForm();
@@ -126,11 +137,6 @@ public class FrmBlog {
 
         addChatMessage("🤖 Bonjour ! Je suis votre assistant intelligent. Comment puis-je vous aider ?", true);
         System.out.println("✅ BlogController initialisé avec toutes les fonctionnalités");
-    }
-
-    private void initializeCurrentUser() {
-        currentUserId = 2;
-        currentUserName = "Ons";
     }
 
     private void initializeLanguageCombo() {
@@ -148,6 +154,9 @@ public class FrmBlog {
         if (jokeBtn != null) jokeBtn.setOnAction(e -> showRandomJoke());
         if (animalBtn != null) animalBtn.setOnAction(e -> showRandomAnimal());
         if (translateBtn != null) translateBtn.setOnAction(e -> translateCurrentPost());
+        if (emailBtn != null) emailBtn.setOnAction(e -> sendEmail());
+        if (newsletterBtn != null) newsletterBtn.setOnAction(e -> sendNewsletter());
+        if (sentimentBtn != null) sentimentBtn.setOnAction(e -> analyzeSentiment());
         if (refreshWeatherBtn != null) refreshWeatherBtn.setOnAction(e -> refreshWeather());
         System.out.println("✅ API buttons wired");
     }
@@ -444,6 +453,47 @@ public class FrmBlog {
         dialog.showAndWait();
     }
 
+    private void analyzeSentiment() {
+        String text = postDescriptionArea.getText();
+        if (text.isEmpty()) {
+            showError("Veuillez écrire du texte à analyser", "error");
+            return;
+        }
+
+        String lowerText = text.toLowerCase();
+        int positiveWords = 0;
+        int negativeWords = 0;
+
+        String[] positive = {"good", "great", "excellent", "awesome", "love", "happy", "super", "👍", "génial", "merveilleux", "parfait", "bien", "magnifique"};
+        String[] negative = {"bad", "terrible", "awful", "hate", "sad", "angry", "problem", "issue", "👎", "mauvais", "horrible", "problème", "déteste"};
+
+        for (String word : positive) {
+            if (lowerText.contains(word)) positiveWords++;
+        }
+        for (String word : negative) {
+            if (lowerText.contains(word)) negativeWords++;
+        }
+
+        String sentiment;
+        String emoji;
+
+        if (positiveWords > negativeWords) {
+            sentiment = "POSITIF";
+            emoji = "😊";
+        } else if (negativeWords > positiveWords) {
+            sentiment = "NÉGATIF";
+            emoji = "😔";
+        } else {
+            sentiment = "NEUTRE";
+            emoji = "😐";
+        }
+
+        String stats = "Mots positifs: " + positiveWords + "\nMots négatifs: " + negativeWords;
+        String result = sentiment + " " + emoji + "\n\n" + stats;
+
+        showInfo(result, "info");
+    }
+
     private void suggestTagsFromDescription() {
         String description = postDescriptionArea.getText();
         if (description.isEmpty()) {
@@ -454,19 +504,19 @@ public class FrmBlog {
         List<String> suggestedTags = new ArrayList<>();
         String lowerDesc = description.toLowerCase();
 
-        if (lowerDesc.contains("sport") || lowerDesc.contains("foot") || lowerDesc.contains("basket") || lowerDesc.contains("football")) {
+        if (lowerDesc.contains("sport") || lowerDesc.contains("foot") || lowerDesc.contains("basket")) {
             suggestedTags.add("Sport");
         }
-        if (lowerDesc.contains("cuisine") || lowerDesc.contains("manger") || lowerDesc.contains("recette") || lowerDesc.contains("nourriture")) {
+        if (lowerDesc.contains("cuisine") || lowerDesc.contains("manger") || lowerDesc.contains("recette")) {
             suggestedTags.add("Cuisine");
         }
-        if (lowerDesc.contains("tech") || lowerDesc.contains("ordinateur") || lowerDesc.contains("code") || lowerDesc.contains("informatique")) {
+        if (lowerDesc.contains("tech") || lowerDesc.contains("ordinateur") || lowerDesc.contains("code")) {
             suggestedTags.add("Tech");
         }
-        if (lowerDesc.contains("rh") || lowerDesc.contains("recrutement") || lowerDesc.contains("carrière") || lowerDesc.contains("emploi")) {
+        if (lowerDesc.contains("rh") || lowerDesc.contains("recrutement") || lowerDesc.contains("carrière")) {
             suggestedTags.add("RH");
         }
-        if (lowerDesc.contains("culture") || lowerDesc.contains("équipe") || lowerDesc.contains("team") || lowerDesc.contains("entreprise")) {
+        if (lowerDesc.contains("culture") || lowerDesc.contains("équipe") || lowerDesc.contains("team")) {
             suggestedTags.add("Culture");
         }
         if (suggestedTags.isEmpty()) {
@@ -475,6 +525,54 @@ public class FrmBlog {
 
         String tags = String.join(", ", suggestedTags);
         showInfo("Tags suggérés: " + tags, "info");
+    }
+
+    private void sendEmail() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("📧 Envoyer un email");
+        dialog.setHeaderText("Partager ce post par email");
+        dialog.setContentText("Adresse email:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(email -> {
+            if (isValidEmail(email)) {
+                showInfo("✅ Email envoyé à " + email, "success");
+            } else {
+                showError("❌ Adresse email invalide", "error");
+            }
+        });
+    }
+
+    private void sendNewsletter() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("📰 Newsletter");
+        dialog.setHeaderText("Inscription à la newsletter");
+        dialog.setContentText("Votre email:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(email -> {
+            if (isValidEmail(email)) {
+                showInfo("✅ Inscription réussie pour " + email, "success");
+                sauvegarderEmailNewsletter(email);
+            } else {
+                showError("❌ Email invalide", "error");
+            }
+        });
+    }
+
+    private boolean isValidEmail(String email) {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    }
+
+    private void sauvegarderEmailNewsletter(String email) {
+        String sql = "INSERT INTO newsletter_emails (email) VALUES (?) ON DUPLICATE KEY UPDATE email = email";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.executeUpdate();
+            System.out.println("✅ Email newsletter sauvegardé: " + email);
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur sauvegarde email: " + e.getMessage());
+        }
     }
 
     // ==================== VALIDATION ====================
@@ -493,6 +591,14 @@ public class FrmBlog {
         }
         if (description.length() < 3 || description.length() > 5000) {
             showError("La description doit contenir entre 3 et 5000 caractères", "error");
+            return false;
+        }
+        if (!TITLE_PATTERN.matcher(title).matches()) {
+            showError("Le titre contient des caractères non autorisés", "error");
+            return false;
+        }
+        if (!CONTENT_PATTERN.matcher(description).matches()) {
+            showError("La description contient des caractères non autorisés", "error");
             return false;
         }
         return true;
@@ -515,49 +621,132 @@ public class FrmBlog {
         CompletableFuture.runAsync(() -> {
             try (Connection conn = getConnection()) {
                 String checkSql = "SELECT vote_type FROM post_votes WHERE post_id = ? AND user_id = ?";
-                try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
-                    checkStmt.setInt(1, postId);
-                    checkStmt.setInt(2, currentUserId);
-                    ResultSet rs = checkStmt.executeQuery();
+                PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+                checkStmt.setInt(1, postId);
+                checkStmt.setInt(2, currentUserId);
+                ResultSet rs = checkStmt.executeQuery();
 
-                    if (!rs.next()) {
-                        String insertSql = "INSERT INTO post_votes (post_id, user_id, vote_type) VALUES (?, ?, 'up')";
-                        try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                            insertStmt.setInt(1, postId);
-                            insertStmt.setInt(2, currentUserId);
-                            insertStmt.executeUpdate();
-                        }
+                String action;
+                if (!rs.next()) {
+                    action = "insert";
+                } else {
+                    String existingVote = rs.getString("vote_type");
+                    action = existingVote.equals("up") ? "delete" : "update";
+                }
+
+                String finalAction = action;
+                Platform.runLater(() -> {
+                    updatePostVoteInUI(postId, finalAction, upvoteBtn, downvoteBtn, voteCountLabel);
+                });
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showError("Erreur lors du vote", "error"));
+            }
+        });
+    }
+
+    private void updatePostVoteInUI(int postId, String action, Button upvoteBtn, Button downvoteBtn, Label voteCountLabel) {
+        try (Connection conn = getConnection()) {
+            if (action.equals("insert")) {
+                String insertSql = "INSERT INTO post_votes (post_id, user_id, vote_type) VALUES (?, ?, 'up')";
+                PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+                insertStmt.setInt(1, postId);
+                insertStmt.setInt(2, currentUserId);
+                insertStmt.executeUpdate();
+
+                upvoteBtn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+
+            } else if (action.equals("delete")) {
+                String deleteSql = "DELETE FROM post_votes WHERE post_id = ? AND user_id = ?";
+                PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+                deleteStmt.setInt(1, postId);
+                deleteStmt.setInt(2, currentUserId);
+                deleteStmt.executeUpdate();
+
+                upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+                downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+
+            } else if (action.equals("update")) {
+                String updateSql = "UPDATE post_votes SET vote_type = 'down' WHERE post_id = ? AND user_id = ?";
+                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+                updateStmt.setInt(1, postId);
+                updateStmt.setInt(2, currentUserId);
+                updateStmt.executeUpdate();
+
+                upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+                downvoteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            }
+
+            String countSql = "SELECT COUNT(*) as count FROM post_votes WHERE post_id = ? AND vote_type = 'up'";
+            PreparedStatement countStmt = conn.prepareStatement(countSql);
+            countStmt.setInt(1, postId);
+            ResultSet rs = countStmt.executeQuery();
+            if (rs.next()) {
+                voteCountLabel.setText(String.valueOf(rs.getInt("count")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ==================== VOTES POUR COMMENTAIRES ====================
+    private void handleCommentVote(int commentId, Button upvoteBtn, Button downvoteBtn, Label voteCountLabel) {
+        CompletableFuture.runAsync(() -> {
+            try (Connection conn = getConnection()) {
+                String checkSql = "SELECT vote_type FROM comment_votes WHERE comment_id = ? AND user_id = ?";
+                PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+                checkStmt.setInt(1, commentId);
+                checkStmt.setInt(2, currentUserId);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (!rs.next()) {
+                    String insertSql = "INSERT INTO comment_votes (comment_id, user_id, vote_type) VALUES (?, ?, 'up')";
+                    PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+                    insertStmt.setInt(1, commentId);
+                    insertStmt.setInt(2, currentUserId);
+                    insertStmt.executeUpdate();
+
+                    Platform.runLater(() -> {
+                        upvoteBtn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                        downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+                    });
+                } else {
+                    String existingVote = rs.getString("vote_type");
+                    if (existingVote.equals("up")) {
+                        String deleteSql = "DELETE FROM comment_votes WHERE comment_id = ? AND user_id = ?";
+                        PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+                        deleteStmt.setInt(1, commentId);
+                        deleteStmt.setInt(2, currentUserId);
+                        deleteStmt.executeUpdate();
+
+                        Platform.runLater(() -> {
+                            upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+                            downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
+                        });
+                    } else {
+                        String updateSql = "UPDATE comment_votes SET vote_type = 'up' WHERE comment_id = ? AND user_id = ?";
+                        PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+                        updateStmt.setInt(1, commentId);
+                        updateStmt.setInt(2, currentUserId);
+                        updateStmt.executeUpdate();
 
                         Platform.runLater(() -> {
                             upvoteBtn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
                             downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
                         });
-                    } else {
-                        String existingVote = rs.getString("vote_type");
-                        if (existingVote.equals("up")) {
-                            String deleteSql = "DELETE FROM post_votes WHERE post_id = ? AND user_id = ?";
-                            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
-                                deleteStmt.setInt(1, postId);
-                                deleteStmt.setInt(2, currentUserId);
-                                deleteStmt.executeUpdate();
-                            }
-
-                            Platform.runLater(() -> {
-                                upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                                downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                            });
-                        }
                     }
                 }
 
-                String countSql = "SELECT COUNT(*) as count FROM post_votes WHERE post_id = ? AND vote_type = 'up'";
-                try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
-                    countStmt.setInt(1, postId);
-                    ResultSet countRs = countStmt.executeQuery();
-                    if (countRs.next()) {
-                        int newCount = countRs.getInt("count");
-                        Platform.runLater(() -> voteCountLabel.setText(String.valueOf(newCount)));
-                    }
+                String countSql = "SELECT COUNT(*) as count FROM comment_votes WHERE comment_id = ? AND vote_type = 'up'";
+                PreparedStatement countStmt = conn.prepareStatement(countSql);
+                countStmt.setInt(1, commentId);
+                ResultSet countRs = countStmt.executeQuery();
+                if (countRs.next()) {
+                    int newCount = countRs.getInt("count");
+                    Platform.runLater(() -> voteCountLabel.setText(String.valueOf(newCount)));
                 }
 
             } catch (SQLException e) {
@@ -567,134 +756,35 @@ public class FrmBlog {
         });
     }
 
-    private void handleDownVote(int postId, Button upvoteBtn, Button downvoteBtn, Label voteCountLabel) {
-        CompletableFuture.runAsync(() -> {
-            try (Connection conn = getConnection()) {
-                String checkSql = "SELECT vote_type FROM post_votes WHERE post_id = ? AND user_id = ?";
-                try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
-                    checkStmt.setInt(1, postId);
-                    checkStmt.setInt(2, currentUserId);
-                    ResultSet rs = checkStmt.executeQuery();
-
-                    if (!rs.next()) {
-                        String insertSql = "INSERT INTO post_votes (post_id, user_id, vote_type) VALUES (?, ?, 'down')";
-                        try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                            insertStmt.setInt(1, postId);
-                            insertStmt.setInt(2, currentUserId);
-                            insertStmt.executeUpdate();
-                        }
-
-                        Platform.runLater(() -> {
-                            upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                            downvoteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-                        });
-                    } else {
-                        String existingVote = rs.getString("vote_type");
-                        if (existingVote.equals("down")) {
-                            String deleteSql = "DELETE FROM post_votes WHERE post_id = ? AND user_id = ?";
-                            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
-                                deleteStmt.setInt(1, postId);
-                                deleteStmt.setInt(2, currentUserId);
-                                deleteStmt.executeUpdate();
-                            }
-
-                            Platform.runLater(() -> {
-                                upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                                downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                            });
-                        } else {
-                            String updateSql = "UPDATE post_votes SET vote_type = 'down' WHERE post_id = ? AND user_id = ?";
-                            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                                updateStmt.setInt(1, postId);
-                                updateStmt.setInt(2, currentUserId);
-                                updateStmt.executeUpdate();
-                            }
-
-                            Platform.runLater(() -> {
-                                upvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black;");
-                                downvoteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-                            });
-                        }
-                    }
-                }
-
-                String countSql = "SELECT COUNT(*) as count FROM post_votes WHERE post_id = ? AND vote_type = 'up'";
-                try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
-                    countStmt.setInt(1, postId);
-                    ResultSet countRs = countStmt.executeQuery();
-                    if (countRs.next()) {
-                        int newCount = countRs.getInt("count");
-                        Platform.runLater(() -> voteCountLabel.setText(String.valueOf(newCount)));
-                    }
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Platform.runLater(() -> showError("Erreur lors du vote", "error"));
-            }
-        });
+    // ==================== ANALYSE DE SENTIMENT ====================
+    private void analyzeCommentSentiment(String text) {
+        if (text == null || text.isEmpty()) return;
+        updateStatistics();
     }
 
     // ==================== STATISTIQUES ====================
     private void updateStatistics() {
+
         CompletableFuture.runAsync(() -> {
-            try (Connection conn = getConnection()) {
-                int members = 0;
-                String membersSql = "SELECT COUNT(*) as count FROM utilisateur";
-                try (Statement stmt = conn.createStatement();
-                     ResultSet rs = stmt.executeQuery(membersSql)) {
-                    if (rs.next()) members = rs.getInt("count");
-                }
 
-                int posts = 0;
-                String postsSql = "SELECT COUNT(*) as count FROM posts WHERE is_active = true";
-                try (Statement stmt = conn.createStatement();
-                     ResultSet rs = stmt.executeQuery(postsSql)) {
-                    if (rs.next()) posts = rs.getInt("count");
-                }
+            int members = DBHelper.ExecuteScalarThreadSafe(
+                    "SELECT COUNT(*) FROM UTILISATEUR"
+            );
 
-                int comments = 0;
-                String commentsSql = "SELECT COUNT(*) as count FROM comments WHERE is_active = true";
-                try (Statement stmt = conn.createStatement();
-                     ResultSet rs = stmt.executeQuery(commentsSql)) {
-                    if (rs.next()) comments = rs.getInt("count");
-                }
+            int posts = DBHelper.ExecuteScalarThreadSafe(
+                    "SELECT COUNT(*) FROM posts WHERE is_active = true"
+            );
 
-                int positive = 0;
-                String positiveSql = "SELECT COUNT(*) as count FROM post_votes WHERE vote_type = 'up'";
-                try (Statement stmt = conn.createStatement();
-                     ResultSet rs = stmt.executeQuery(positiveSql)) {
-                    if (rs.next()) positive = rs.getInt("count");
-                }
+            int comments = DBHelper.ExecuteScalarThreadSafe(
+                    "SELECT COUNT(*) FROM comments WHERE is_active = true"
+            );
 
-                int negative = 0;
-                String negativeSql = "SELECT COUNT(*) as count FROM post_votes WHERE vote_type = 'down'";
-                try (Statement stmt = conn.createStatement();
-                     ResultSet rs = stmt.executeQuery(negativeSql)) {
-                    if (rs.next()) negative = rs.getInt("count");
-                }
+            Platform.runLater(() -> {
+                membersStatsLabel.setText(String.valueOf(members));
+                postsStatsLabel.setText(String.valueOf(posts));
+                commentsStatsLabel.setText(String.valueOf(comments));
+            });
 
-                int neutral = (posts * 3) - positive - negative;
-
-                int finalMembers = members;
-                int finalPosts = posts;
-                int finalComments = comments;
-                int finalPositive = positive;
-                int finalNeutral = neutral > 0 ? neutral : 0;
-                int finalNegative = negative;
-
-                Platform.runLater(() -> {
-                    if (membersStatsLabel != null) membersStatsLabel.setText(String.valueOf(finalMembers));
-                    if (postsStatsLabel != null) postsStatsLabel.setText(String.valueOf(finalPosts));
-                    if (commentsStatsLabel != null) commentsStatsLabel.setText(String.valueOf(finalComments));
-                    if (positiveStatsLabel != null) positiveStatsLabel.setText(String.valueOf(finalPositive));
-                    if (neutralStatsLabel != null) neutralStatsLabel.setText(String.valueOf(finalNeutral));
-                    if (negativeStatsLabel != null) negativeStatsLabel.setText(String.valueOf(finalNegative));
-                });
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         });
     }
 
@@ -718,7 +808,7 @@ public class FrmBlog {
             boolean show = false;
             if (postCard instanceof VBox) {
                 for (Node child : ((VBox) postCard).getChildren()) {
-                    if (child instanceof Label && child.getStyleClass().contains("post-tag")) {
+                    if (child instanceof Label && child.getStyleClass().contains("tag")) {
                         String tagText = ((Label) child).getText().replace("#", "").trim();
                         if (currentTagFilter.equals("all") || tagText.equalsIgnoreCase(currentTagFilter)) {
                             show = true;
@@ -736,38 +826,26 @@ public class FrmBlog {
         CompletableFuture.runAsync(() -> {
             try (Connection conn = getConnection()) {
                 String sql = "SELECT tag, COUNT(*) as count FROM posts WHERE is_active = true GROUP BY tag ORDER BY count DESC LIMIT 10";
-                try (PreparedStatement stmt = conn.prepareStatement(sql);
-                     ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();
 
-                    List<Map<String, Object>> tags = new ArrayList<>();
-                    while (rs.next()) {
-                        Map<String, Object> tag = new HashMap<>();
-                        tag.put("name", rs.getString("tag"));
-                        tag.put("count", rs.getInt("count"));
-                        tags.add(tag);
-                    }
-
-                    Platform.runLater(() -> {
-                        if (popularTagsContainer != null) {
-                            popularTagsContainer.getChildren().clear();
-                            for (Map<String, Object> tag : tags) {
-                                String tagName = (String) tag.get("name");
-                                int count = (int) tag.get("count");
-
-                                Button tagBtn = new Button("#" + tagName + " (" + count + ")");
-                                tagBtn.getStyleClass().add("popular-tag");
-                                tagBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 15; -fx-background-radius: 20; -fx-cursor: hand;");
-
-                                tagBtn.setOnAction(e -> {
-                                    currentTagFilter = tagName;
-                                    applyTagFilter();
-                                });
-
-                                popularTagsContainer.getChildren().add(tagBtn);
-                            }
-                        }
-                    });
+                List<String> tags = new ArrayList<>();
+                while (rs.next()) {
+                    tags.add(rs.getString("tag") + " (" + rs.getInt("count") + ")");
                 }
+
+                Platform.runLater(() -> {
+                    popularTagsContainer.getChildren().clear();
+                    for (String tag : tags) {
+                        Button tagBtn = new Button("#" + tag);
+                        tagBtn.getStyleClass().add("tag");
+                        tagBtn.setOnAction(e -> {
+                            currentTagFilter = tag.split(" ")[0];
+                            applyTagFilter();
+                        });
+                        popularTagsContainer.getChildren().add(tagBtn);
+                    }
+                });
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -805,8 +883,7 @@ public class FrmBlog {
     private void addChatMessage(String text, boolean isBot) {
         Label msg = new Label(text);
         msg.setWrapText(true);
-        msg.setStyle(isBot ?
-                "-fx-background-color: #2a5f9f; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 20 20 20 5; -fx-font-size: 13px;" :
+        msg.setStyle(isBot ? "-fx-background-color: #2a5f9f; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 20 20 20 5; -fx-font-size: 13px;" :
                 "-fx-background-color: #1a3f6f; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 20 20 5 20; -fx-font-size: 13px;");
         msg.setMaxWidth(280);
 
@@ -817,7 +894,6 @@ public class FrmBlog {
         Platform.runLater(() -> {
             chatContainer.getChildren().add(messageBox);
             if (chatContainer.getChildren().size() > 50) chatContainer.getChildren().remove(0);
-
             if (chatContainer.getParent() instanceof ScrollPane) {
                 ScrollPane scrollPane = (ScrollPane) chatContainer.getParent();
                 scrollPane.setVvalue(1.0);
@@ -836,12 +912,8 @@ public class FrmBlog {
         });
 
         responses.put("météo|temps|temperature|weather", new String[]{
-                "La météo actuelle à " + (weatherCityLabel != null ? weatherCityLabel.getText() : "Tunis") +
-                        " est " + (weatherTempLabel != null ? weatherTempLabel.getText() : "22°C") +
-                        " avec " + (weatherDescLabel != null ? weatherDescLabel.getText() : "ensoleillé"),
-                "Il fait " + (weatherTempLabel != null ? weatherTempLabel.getText() : "22°C") +
-                        " à " + (weatherCityLabel != null ? weatherCityLabel.getText() : "Tunis") +
-                        ". " + (weatherDescLabel != null ? weatherDescLabel.getText() : "Beau temps")
+                "La météo actuelle à " + weatherCityLabel.getText() + " est " + weatherTempLabel.getText() + " avec " + weatherDescLabel.getText(),
+                "Il fait " + weatherTempLabel.getText() + " à " + weatherCityLabel.getText() + ". " + weatherDescLabel.getText()
         });
 
         responses.put("post|publier|créer|create", new String[]{
@@ -860,14 +932,13 @@ public class FrmBlog {
         });
 
         responses.put("vote|like|dislike|upvote|downvote", new String[]{
-                "Vous pouvez voter pour les posts avec les boutons 👍 et 👎.",
+                "Vous pouvez voter pour les posts et les commentaires avec les boutons 👍 et 👎.",
                 "Les votes aident à mettre en avant le contenu de qualité."
         });
 
         responses.put("statistiques|stats|statistics", new String[]{
-                "📊 Statistiques actuelles:\n• Membres: " + (membersStatsLabel != null ? membersStatsLabel.getText() : "0") +
-                        "\n• Posts: " + (postsStatsLabel != null ? postsStatsLabel.getText() : "0") +
-                        "\n• Commentaires: " + (commentsStatsLabel != null ? commentsStatsLabel.getText() : "0")
+                "📊 Statistiques actuelles:\n• Membres: " + membersStatsLabel.getText() +
+                        "\n• Posts: " + postsStatsLabel.getText() + "\n• Commentaires: " + commentsStatsLabel.getText()
         });
 
         responses.put("blague|joke|rire|humour", new String[]{
@@ -880,13 +951,8 @@ public class FrmBlog {
                 "Besoin d'inspiration ? Utilisez le bouton '📝 Citation' !"
         });
 
-        responses.put("whatsapp|whats up|wa", new String[]{
-                "Pour partager sur WhatsApp, cliquez sur le bouton WhatsApp ou sur le numéro dans le footer !",
-                "Vous pouvez nous contacter sur WhatsApp au " + WHATSAPP_NUMBER
-        });
-
         responses.put("aide|help|what can you do|que fais tu", new String[]{
-                "Je peux vous aider avec :\n• Créer des posts\n• Commenter\n• Voter\n• Voir la météo\n• Obtenir des blagues/citations\n• Filtrer par tags\n• Statistiques\n• Traduction\n• Partage WhatsApp\n• Et plus encore !"
+                "Je peux vous aider avec :\n• Créer des posts\n• Commenter\n• Voter\n• Voir la météo\n• Obtenir des blagues/citations\n• Filtrer par tags\n• Statistiques\n• Traduction\n• Et plus encore !"
         });
 
         responses.put("traduction|translate|anglais|english|arabe|arabic", new String[]{
@@ -940,11 +1006,6 @@ public class FrmBlog {
             searchField.setPromptText("🔍 Rechercher par mots-clés ou tags...");
             searchButton.setText("🔍 Rechercher");
             tagAllBtn.setText("Tous");
-            tagSportBtn.setText("#Sport");
-            tagCuisineBtn.setText("#Cuisine");
-            tagTechBtn.setText("#Tech");
-            tagRHBtn.setText("#RH");
-            tagCultureBtn.setText("#Culture");
         } else if (selected.contains("English")) {
             currentLanguage = "en";
             appTitleLabel.setText("HR One");
@@ -954,11 +1015,6 @@ public class FrmBlog {
             searchField.setPromptText("🔍 Search by keywords or tags...");
             searchButton.setText("🔍 Search");
             tagAllBtn.setText("All");
-            tagSportBtn.setText("#Sport");
-            tagCuisineBtn.setText("#Cooking");
-            tagTechBtn.setText("#Tech");
-            tagRHBtn.setText("#HR");
-            tagCultureBtn.setText("#Culture");
         } else if (selected.contains("العربية")) {
             currentLanguage = "ar";
             appTitleLabel.setText("HR One");
@@ -968,11 +1024,6 @@ public class FrmBlog {
             searchField.setPromptText("🔍 ابحث بالكلمات الرئيسية أو الوسوم...");
             searchButton.setText("🔍 بحث");
             tagAllBtn.setText("الكل");
-            tagSportBtn.setText("#رياضة");
-            tagCuisineBtn.setText("#طبخ");
-            tagTechBtn.setText("#تقنية");
-            tagRHBtn.setText("#موارد_بشرية");
-            tagCultureBtn.setText("#ثقافة");
         }
         loadPostsFromDatabase();
     }
@@ -986,27 +1037,14 @@ public class FrmBlog {
     @FXML
     private void openWhatsApp() {
         try {
-            String url = WHATSAPP_API + WHATSAPP_NUMBER;
+            String url = "https://wa.me/" + WHATSAPP_NUMBER;
             java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
         } catch (Exception e) {
             showError("Impossible d'ouvrir WhatsApp", "error");
         }
     }
 
-    private void sharePostOnWhatsApp(String postTitle, String postDescription) {
-        try {
-            String message = "📝 *" + postTitle + "*\n\n" + postDescription + "\n\nPartagé depuis HR One";
-            String encodedMessage = URLEncoder.encode(message, "UTF-8");
-            String url = WHATSAPP_API + WHATSAPP_NUMBER + "?text=" + encodedMessage;
-            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
-        } catch (Exception e) {
-            showError("Erreur lors du partage WhatsApp", "error");
-        }
-    }
-
-    // ==================== CRUD POSTS ====================
-
-    // CREATE - Déjà existant
+    // ==================== CRÉATION DE POST ====================
     @FXML
     private void createPost() {
         String title = postTitleField.getText().trim();
@@ -1017,7 +1055,7 @@ public class FrmBlog {
 
         String tag = suggestTagFromDescription(description);
 
-        String sql = "INSERT INTO posts (user_id, title, description, image_url, tag, is_active, created_at) VALUES (?, ?, ?, ?, ?, true, NOW())";
+        String sql = "INSERT INTO posts (user_id, title, description, image_url, tag) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -1028,9 +1066,10 @@ public class FrmBlog {
             stmt.setString(4, imagePath.isEmpty() ? null : imagePath);
             stmt.setString(5, tag);
 
-            int affectedRows = stmt.executeUpdate();
+            stmt.executeUpdate();
 
-            if (affectedRows > 0) {
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
                 Platform.runLater(() -> {
                     loadPostsFromDatabase();
                     clearPostForm();
@@ -1046,224 +1085,13 @@ public class FrmBlog {
         }
     }
 
-    // UPDATE Post
-    private void updatePost(int postId, String title, String description, String imagePath, String tag) {
-        String sql = "UPDATE posts SET title = ?, description = ?, image_url = ?, tag = ? WHERE id = ? AND user_id = ?";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, title);
-            stmt.setString(2, description);
-            stmt.setString(3, imagePath.isEmpty() ? null : imagePath);
-            stmt.setString(4, tag);
-            stmt.setInt(5, postId);
-            stmt.setInt(6, currentUserId);
-
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                Platform.runLater(() -> {
-                    loadPostsFromDatabase();
-                    showInfo("✅ Post mis à jour avec succès !", "success");
-                });
-            } else {
-                showError("Vous n'êtes pas autorisé à modifier ce post", "error");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showError("Erreur lors de la mise à jour: " + e.getMessage(), "error");
-        }
-    }
-
-    // DELETE Post (soft delete)
-    private void deletePost(int postId) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Supprimer le post");
-        confirm.setContentText("Êtes-vous sûr de vouloir supprimer ce post ?");
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            String sql = "UPDATE posts SET is_active = false WHERE id = ? AND user_id = ?";
-
-            try (Connection conn = getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setInt(1, postId);
-                stmt.setInt(2, currentUserId);
-
-                int affectedRows = stmt.executeUpdate();
-
-                if (affectedRows > 0) {
-                    Platform.runLater(() -> {
-                        loadPostsFromDatabase();
-                        showInfo("✅ Post supprimé avec succès !", "success");
-                        updateStatistics();
-                        loadPopularTags();
-                    });
-                } else {
-                    showError("Vous n'êtes pas autorisé à supprimer ce post", "error");
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showError("Erreur lors de la suppression: " + e.getMessage(), "error");
-            }
-        }
-    }
-
-    // ==================== CRUD COMMENTAIRES ====================
-
-    // CREATE Comment - Déjà existant
-    private void addComment(int postId, String content, Integer parentCommentId, VBox commentsSection) {
-        if (!validateCommentInput(content)) return;
-
-        String sql = "INSERT INTO comments (post_id, user_id, parent_comment_id, content, is_active, created_at) VALUES (?, ?, ?, ?, true, NOW())";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, postId);
-            stmt.setInt(2, currentUserId);
-            if (parentCommentId != null) {
-                stmt.setInt(3, parentCommentId);
-            } else {
-                stmt.setNull(3, Types.INTEGER);
-            }
-            stmt.setString(4, content);
-
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                Platform.runLater(() -> refreshCommentsSection(postId));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showError("Erreur lors de l'ajout du commentaire", "error");
-        }
-    }
-
-    // UPDATE Comment
-    private void updateComment(int commentId, String newContent) {
-        String sql = "UPDATE comments SET content = ? WHERE id = ? AND user_id = ?";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, newContent);
-            stmt.setInt(2, commentId);
-            stmt.setInt(3, currentUserId);
-
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                Platform.runLater(() -> {
-                    refreshAllComments();
-                    showInfo("✅ Commentaire mis à jour", "success");
-                });
-            } else {
-                showError("Vous n'êtes pas autorisé à modifier ce commentaire", "error");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showError("Erreur lors de la mise à jour", "error");
-        }
-    }
-
-    // DELETE Comment (soft delete)
-    private void deleteComment(int commentId) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Supprimer le commentaire");
-        confirm.setContentText("Êtes-vous sûr de vouloir supprimer ce commentaire ?");
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            String sql = "UPDATE comments SET is_active = false WHERE id = ? AND user_id = ?";
-
-            try (Connection conn = getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setInt(1, commentId);
-                stmt.setInt(2, currentUserId);
-
-                int affectedRows = stmt.executeUpdate();
-
-                if (affectedRows > 0) {
-                    Platform.runLater(() -> {
-                        refreshAllComments();
-                        showInfo("✅ Commentaire supprimé", "success");
-                        updateStatistics();
-                    });
-                } else {
-                    showError("Vous n'êtes pas autorisé à supprimer ce commentaire", "error");
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showError("Erreur lors de la suppression", "error");
-            }
-        }
-    }
-
-    // ==================== MÉTHODES UTILITAIRES POUR CRUD ====================
-
-    private void refreshCommentsSection(int postId) {
-        for (Node node : feedContainer.getChildren()) {
-            if (node instanceof VBox && node.getId() != null && node.getId().equals("post-" + postId)) {
-                VBox postCard = (VBox) node;
-                for (int i = 0; i < postCard.getChildren().size(); i++) {
-                    Node child = postCard.getChildren().get(i);
-                    if (child instanceof VBox && child.getId() != null && child.getId().equals("comments-" + postId)) {
-                        VBox oldSection = (VBox) child;
-                        boolean wasVisible = oldSection.isVisible();
-
-                        VBox newCommentsSection = new VBox(10);
-                        newCommentsSection.getStyleClass().add("comments-section");
-                        newCommentsSection.setId("comments-" + postId);
-                        newCommentsSection.setVisible(wasVisible);
-                        newCommentsSection.setManaged(wasVisible);
-                        newCommentsSection.setPadding(new Insets(15, 0, 0, 0));
-                        newCommentsSection.setStyle("-fx-background-color: #f8fbff; -fx-background-radius: 20; -fx-padding: 20; -fx-spacing: 15; -fx-border-color: #b0d0ff; -fx-border-width: 2; -fx-border-radius: 20;");
-
-                        HBox commentForm = buildCommentForm(postId, newCommentsSection);
-                        newCommentsSection.getChildren().add(commentForm);
-
-                        loadCommentsForPost(postId, newCommentsSection);
-                        postCard.getChildren().set(i, newCommentsSection);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    private void refreshAllComments() {
-        for (Node node : feedContainer.getChildren()) {
-            if (node instanceof VBox && node.getId() != null && node.getId().startsWith("post-")) {
-                String postIdStr = node.getId().replace("post-", "");
-                try {
-                    int postId = Integer.parseInt(postIdStr);
-                    refreshCommentsSection(postId);
-                } catch (NumberFormatException e) {
-                    // Ignorer
-                }
-            }
-        }
-    }
-
     private String suggestTagFromDescription(String description) {
         String lower = description.toLowerCase();
-        if (lower.contains("sport") || lower.contains("foot") || lower.contains("basket") || lower.contains("football")) return "Sport";
-        if (lower.contains("cuisine") || lower.contains("manger") || lower.contains("recette") || lower.contains("nourriture")) return "Cuisine";
-        if (lower.contains("tech") || lower.contains("ordinateur") || lower.contains("code") || lower.contains("informatique")) return "Tech";
-        if (lower.contains("rh") || lower.contains("recrutement") || lower.contains("carrière") || lower.contains("emploi")) return "RH";
-        if (lower.contains("culture") || lower.contains("équipe") || lower.contains("team") || lower.contains("entreprise")) return "Culture";
+        if (lower.contains("sport") || lower.contains("foot") || lower.contains("basket")) return "Sport";
+        if (lower.contains("cuisine") || lower.contains("manger") || lower.contains("recette")) return "Cuisine";
+        if (lower.contains("tech") || lower.contains("ordinateur") || lower.contains("code")) return "Tech";
+        if (lower.contains("rh") || lower.contains("recrutement") || lower.contains("carrière")) return "RH";
+        if (lower.contains("culture") || lower.contains("équipe") || lower.contains("team")) return "Culture";
         return "General";
     }
 
@@ -1273,75 +1101,83 @@ public class FrmBlog {
         formCard.getStyleClass().addAll("panel-card", "post-form-card");
         formCard.setPadding(new Insets(20));
         formCard.setSpacing(15);
-        formCard.setStyle("-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.2), 20, 0, 0, 8); -fx-border-color: #c0d4f0; -fx-border-width: 1; -fx-border-radius: 20;");
+        formCard.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
 
         Label title = new Label("Créer un post");
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0a2a4a;");
+        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         Label subtitle = new Label("Partagez un titre, décrivez votre idée et ajoutez une image optionnelle.");
-        subtitle.setStyle("-fx-text-fill: #4a6a8a; -fx-font-size: 13px;");
+        subtitle.setStyle("-fx-text-fill: #7f8c8d;");
         subtitle.setWrapText(true);
 
         VBox form = new VBox();
         form.setSpacing(15);
 
+        // Champ Titre
         VBox titleField = new VBox(5);
         Label titleLabel = new Label("Titre");
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #1a3a5a;");
+        titleLabel.setStyle("-fx-font-weight: bold;");
         TextField titleInput = new TextField();
         titleInput.setPromptText("Ex: Améliorer l'onboarding des nouveaux");
         titleInput.setId("postTitleField");
-        titleInput.setStyle("-fx-background-color: #f5f9ff; -fx-padding: 12; -fx-background-radius: 10; -fx-border-color: #c0d0e8; -fx-border-width: 1; -fx-border-radius: 10;");
+        titleInput.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
         titleField.getChildren().addAll(titleLabel, titleInput);
 
+        // Champ Description
         VBox descField = new VBox(5);
         Label descLabel = new Label("Description");
-        descLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #1a3a5a;");
+        descLabel.setStyle("-fx-font-weight: bold;");
         TextArea descInput = new TextArea();
         descInput.setPromptText("Décrivez votre idée ou feedback...");
         descInput.setPrefRowCount(4);
         descInput.setId("postDescriptionArea");
-        descInput.setStyle("-fx-background-color: #f5f9ff; -fx-padding: 12; -fx-background-radius: 10; -fx-border-color: #c0d0e8; -fx-border-width: 1; -fx-border-radius: 10; -fx-font-size: 14px;");
+        descInput.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
         descField.getChildren().addAll(descLabel, descInput);
 
+        // Champ Image avec boutons
         VBox imageField = new VBox(5);
         Label imageLabel = new Label("Image (optionnelle)");
-        imageLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #1a3a5a;");
+        imageLabel.setStyle("-fx-font-weight: bold;");
         HBox imageBox = new HBox(8);
         TextField imageInput = new TextField();
         imageInput.setPromptText("Aucun fichier choisi");
         imageInput.setId("postImageField");
         imageInput.setPrefWidth(300);
         imageInput.setEditable(false);
-        imageInput.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #c0d0e8; -fx-border-width: 1; -fx-border-radius: 5;");
+        imageInput.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 10; -fx-background-radius: 5;");
 
         Button chooseBtn = new Button("Choisir Image");
-        chooseBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;");
+        chooseBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;");
         chooseBtn.setOnAction(e -> chooseImage(imageInput));
 
         Button randomImageBtn = new Button("🎲 Image aléatoire");
-        randomImageBtn.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;");
+        randomImageBtn.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;");
         randomImageBtn.setOnAction(e -> getRandomImage(imageInput));
 
         imageBox.getChildren().addAll(imageInput, chooseBtn, randomImageBtn);
         imageField.getChildren().addAll(imageLabel, imageBox);
 
+        // Boutons d'actions
         HBox actions = new HBox(10);
         actions.setAlignment(Pos.CENTER_RIGHT);
 
         Button suggestTagsBtn = new Button("🏷️ Suggérer tags");
-        suggestTagsBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 8; -fx-font-weight: bold; -fx-cursor: hand;");
+        suggestTagsBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5; -fx-font-weight: bold;");
         suggestTagsBtn.setOnAction(e -> suggestTagsFromDescription());
 
+        Button analyzeBtn = new Button("📊 Analyser");
+        analyzeBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5; -fx-font-weight: bold;");
+        analyzeBtn.setOnAction(e -> analyzeSentiment());
+
         Button clearBtn = new Button("Effacer");
-        clearBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;");
+        clearBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;");
         clearBtn.setId("clearPostButton");
 
         Button submitBtn = new Button("Publier");
-        submitBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 8; -fx-font-weight: bold; -fx-cursor: hand;");
+        submitBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5; -fx-font-weight: bold;");
         submitBtn.setId("submitPostButton");
 
-        actions.getChildren().addAll(suggestTagsBtn, clearBtn, submitBtn);
+        actions.getChildren().addAll(suggestTagsBtn, analyzeBtn, clearBtn, submitBtn);
 
         form.getChildren().addAll(titleField, descField, imageField, actions);
         formCard.getChildren().addAll(title, subtitle, form);
@@ -1367,10 +1203,6 @@ public class FrmBlog {
         if (selectedFile != null) {
             try {
                 String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
-                File uploadDir = new File(UPLOAD_DIR);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
                 Path destPath = Path.of(UPLOAD_DIR, fileName);
                 Files.copy(selectedFile.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
                 imageField.setText("uploads/" + fileName);
@@ -1385,10 +1217,6 @@ public class FrmBlog {
     private void getRandomImage(TextField imageField) {
         try {
             String fileName = "random_" + System.currentTimeMillis() + ".jpg";
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
             String imageUrl = "https://picsum.photos/600/400?random=" + System.currentTimeMillis();
 
             URL url = new URL(imageUrl);
@@ -1415,254 +1243,139 @@ public class FrmBlog {
         String sql = "SELECT p.*, u.Nom_Utilisateur as author_name, " +
                 "(SELECT COUNT(*) FROM post_votes WHERE post_id = p.id AND vote_type = 'up') as upvotes " +
                 "FROM posts p " +
-                "JOIN utilisateur u ON p.user_id = u.ID_UTILISATEUR " +
+                "JOIN utilisateur u ON p.user_id = u.id_utilisateur " +
                 "WHERE p.is_active = true " +
                 "ORDER BY p.created_at DESC";
 
-        List<Map<String, Object>> postsData = new ArrayList<>();
-
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-            System.out.println("=== CHARGEMENT DES POSTS ===");
-
-            while (rs.next()) {
-                Map<String, Object> post = new HashMap<>();
-                post.put("id", rs.getInt("id"));
-                post.put("title", rs.getString("title"));
-                post.put("description", rs.getString("description"));
-                post.put("image_url", rs.getString("image_url"));
-                post.put("tag", rs.getString("tag"));
-                post.put("upvotes", rs.getInt("upvotes"));
-                post.put("author_name", rs.getString("author_name"));
-                post.put("created_at", rs.getTimestamp("created_at"));
-                post.put("user_id", rs.getInt("user_id"));
-                postsData.add(post);
-            }
-
-            System.out.println("Nombre de posts trouvés: " + postsData.size());
-
-            for (Map<String, Object> postData : postsData) {
-                VBox postCard = buildPostCardFromData(postData);
-                if (postCard != null) {
+            if(rs != null){
+                while (rs.next()) {
+                    VBox postCard = buildPostCard(rs);
                     feedContainer.getChildren().add(postCard);
                     postCards.add(postCard);
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Erreur de chargement: " + e.getMessage(), "error");
+            //showError("Erreur de chargement: " + e.getMessage(), "error");
         }
     }
 
-    private VBox buildPostCardFromData(Map<String, Object> postData) {
-        try {
-            int postId = (int) postData.get("id");
-            String title = (String) postData.get("title");
-            String description = (String) postData.get("description");
-            String imageUrl = (String) postData.get("image_url");
-            String tag = (String) postData.get("tag");
-            int upvotes = (int) postData.get("upvotes");
-            String author = (String) postData.get("author_name");
-            Timestamp createdAt = (Timestamp) postData.get("created_at");
-            int userId = (int) postData.get("user_id");
+    // ==================== CONSTRUCTION D'UNE CARTE DE POST ====================
+    private VBox buildPostCard(ResultSet rs) throws SQLException {
+        int postId = rs.getInt("id");
+        String title = rs.getString("title");
+        String description = rs.getString("description");
+        String imageUrl = rs.getString("image_url");
+        String tag = rs.getString("tag");
+        int upvotes = rs.getInt("upvotes");
+        String author = rs.getString("author_name");
+        Timestamp createdAt = rs.getTimestamp("created_at");
 
-            VBox card = new VBox();
-            card.getStyleClass().add("post-card");
-            card.setId("post-" + postId);
-            card.setSpacing(12);
-            card.setStyle("-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-spacing: 15; -fx-effect: dropshadow(gaussian, rgba(0,30,60,0.15), 15, 0, 0, 5); -fx-border-color: #d0e0f5; -fx-border-width: 0 0 0 5; -fx-border-radius: 20;");
+        VBox card = new VBox();
+        card.getStyleClass().add("post-card");
+        card.setId("post-" + postId);
+        card.setSpacing(12);
 
-            // En-tête avec auteur et date
-            HBox header = new HBox(10);
-            header.setAlignment(Pos.CENTER_LEFT);
-            header.setStyle("-fx-background-color: #f5f9ff; -fx-padding: 10; -fx-background-radius: 12; -fx-border-color: #d0e0f0; -fx-border-width: 1; -fx-border-radius: 12;");
+        // En-tête avec auteur et date
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
 
-            Label authorLabel = new Label(author);
-            authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #0a2a4a;");
+        Label authorLabel = new Label(author);
+        authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-            Label timeLabel = new Label(formatTimeAgo(createdAt.toLocalDateTime()));
-            timeLabel.setStyle("-fx-text-fill: #5a7a9a; -fx-font-size: 12px;");
+        Label timeLabel = new Label(formatTimeAgo(createdAt.toLocalDateTime()));
+        timeLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
 
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+        header.getChildren().addAll(authorLabel, timeLabel);
 
-            // Boutons d'action pour le post (Modifier/Supprimer) - uniquement si c'est l'auteur
-            if (userId == currentUserId) {
-                Button editBtn = new Button("✏️");
-                editBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 20; -fx-cursor: hand; -fx-font-size: 14px;");
-                editBtn.setTooltip(new Tooltip("Modifier ce post"));
-                editBtn.setOnAction(e -> showEditPostDialog(postId, title, description, imageUrl, tag));
+        // Tag
+        Label tagLabel = new Label("#" + tag);
+        tagLabel.getStyleClass().add("tag");
 
-                Button deleteBtn = new Button("🗑️");
-                deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 20; -fx-cursor: hand; -fx-font-size: 14px;");
-                deleteBtn.setTooltip(new Tooltip("Supprimer ce post"));
-                deleteBtn.setOnAction(e -> deletePost(postId));
+        // Titre
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-wrap-text: true;");
 
-                header.getChildren().addAll(authorLabel, timeLabel, spacer, editBtn, deleteBtn);
-            } else {
-                header.getChildren().addAll(authorLabel, timeLabel, spacer);
-            }
+        // Description
+        Label descLabel = new Label(description);
+        descLabel.setWrapText(true);
+        descLabel.setStyle("-fx-padding: 10 0;");
 
-            // Bouton WhatsApp pour partager ce post
-            Button shareWhatsAppBtn = new Button("📱");
-            shareWhatsAppBtn.setStyle("-fx-background-color: #25D366; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-margin: 0 5 0 0;");
-            shareWhatsAppBtn.setTooltip(new Tooltip("Partager sur WhatsApp"));
-            shareWhatsAppBtn.setOnAction(e -> sharePostOnWhatsApp(title, description));
-            header.getChildren().add(shareWhatsAppBtn);
-
-            // Tag
-            Label tagLabel = new Label("#" + tag);
-            tagLabel.getStyleClass().add("post-tag");
-            tagLabel.setStyle("-fx-background-color: #e0edff; -fx-text-fill: #0a3a6a; -fx-padding: 5 15; -fx-background-radius: 30; -fx-font-size: 12px; -fx-font-weight: bold; -fx-border-color: #7aa5d9; -fx-border-width: 1; -fx-border-radius: 30;");
-
-            // Titre
-            Label titleLabel = new Label(title);
-            titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0a2a4a; -fx-wrap-text: true;");
-
-            // Description
-            Label descLabel = new Label(description);
-            descLabel.setWrapText(true);
-            descLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #2a3a4a; -fx-wrap-text: true; -fx-line-spacing: 3; -fx-padding: 5 0;");
-
-            // Image (si présente)
-            ImageView imageView = null;
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                try {
-                    imageView = new ImageView();
-                    File imgFile = new File(imageUrl);
-                    Image image;
-                    if (imgFile.exists()) {
-                        image = new Image(imgFile.toURI().toString());
-                    } else {
-                        image = new Image(imageUrl, true);
-                    }
-                    imageView.setImage(image);
-                    imageView.setFitWidth(600);
-                    imageView.setPreserveRatio(true);
-                    imageView.setStyle("-fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #d0e0f0; -fx-border-width: 1;");
-                } catch (Exception e) {
-                    e.printStackTrace();
+        // Image (si présente)
+        ImageView imageView = null;
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                imageView = new ImageView();
+                File imgFile = new File(imageUrl);
+                if (imgFile.exists()) {
+                    imageView.setImage(new Image(imgFile.toURI().toString()));
+                } else {
+                    imageView.setImage(new Image(imageUrl));
                 }
+                imageView.setFitWidth(600);
+                imageView.setPreserveRatio(true);
+                imageView.setStyle("-fx-padding: 10 0;");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            // Section votes
-            HBox voteBox = new HBox(5);
-            voteBox.setAlignment(Pos.CENTER_LEFT);
-            voteBox.getStyleClass().add("vote-container");
-            voteBox.setStyle("-fx-background-color: #edf3fc; -fx-background-radius: 30; -fx-padding: 5; -fx-spacing: 8; -fx-border-color: #b8d4ff; -fx-border-width: 1; -fx-border-radius: 30;");
-
-            Button upvoteBtn = new Button("👍");
-            upvoteBtn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 8 20; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;");
-
-            Label voteCount = new Label(String.valueOf(upvotes));
-            voteCount.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0a2a4a; -fx-padding: 5 10;");
-
-            Button downvoteBtn = new Button("👎");
-            downvoteBtn.setStyle("-fx-background-color: #e8f0fe; -fx-text-fill: black; -fx-padding: 8 20; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;");
-
-            upvoteBtn.setOnAction(e -> handlePostVote(postId, upvoteBtn, downvoteBtn, voteCount));
-            downvoteBtn.setOnAction(e -> handleDownVote(postId, upvoteBtn, downvoteBtn, voteCount));
-
-            voteBox.getChildren().addAll(upvoteBtn, voteCount, downvoteBtn);
-
-            // Bouton commentaire
-            Button commentBtn = new Button("💬 Commenter");
-            commentBtn.getStyleClass().add("btn-secondary");
-            commentBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 20; -fx-background-radius: 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;");
-            commentBtn.setOnAction(e -> toggleComments(card));
-
-            // Section commentaires (cachée par défaut)
-            VBox commentsSection = new VBox(10);
-            commentsSection.getStyleClass().add("comments-section");
-            commentsSection.setId("comments-" + postId);
-            commentsSection.setVisible(false);
-            commentsSection.setManaged(false);
-            commentsSection.setPadding(new Insets(15, 0, 0, 0));
-            commentsSection.setStyle("-fx-background-color: #f8fbff; -fx-background-radius: 20; -fx-padding: 20; -fx-spacing: 15; -fx-border-color: #b0d0ff; -fx-border-width: 2; -fx-border-radius: 20;");
-
-            // Formulaire pour ajouter un commentaire
-            HBox commentForm = buildCommentForm(postId, commentsSection);
-            commentsSection.getChildren().add(commentForm);
-
-            // Charger les commentaires existants
-            loadCommentsForPost(postId, commentsSection);
-
-            // Assemblage de la carte
-            card.getChildren().add(header);
-            card.getChildren().add(tagLabel);
-            card.getChildren().add(titleLabel);
-            card.getChildren().add(descLabel);
-            if (imageView != null) card.getChildren().add(imageView);
-            card.getChildren().add(voteBox);
-            card.getChildren().add(commentBtn);
-            card.getChildren().add(commentsSection);
-
-            return card;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
-    }
 
-    // Dialog pour modifier un post
-    private void showEditPostDialog(int postId, String currentTitle, String currentDescription, String currentImageUrl, String currentTag) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Modifier le post");
+        // ==================== SECTION VOTES ====================
+        HBox voteBox = new HBox(5);
+        voteBox.setAlignment(Pos.CENTER_LEFT);
+        voteBox.getStyleClass().add("vote-container");
 
-        VBox content = new VBox(15);
-        content.setPadding(new Insets(20));
+        Button upvoteBtn = new Button("👍");
+        upvoteBtn.getStyleClass().add("vote-btn-up");
 
-        TextField titleField = new TextField(currentTitle);
-        titleField.setPromptText("Titre");
-        titleField.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
+        Label voteCount = new Label(String.valueOf(upvotes));
+        voteCount.getStyleClass().add("vote-count");
 
-        TextArea descArea = new TextArea(currentDescription);
-        descArea.setPromptText("Description");
-        descArea.setPrefRowCount(5);
-        descArea.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
+        Button downvoteBtn = new Button("👎");
+        downvoteBtn.getStyleClass().add("vote-btn-down");
 
-        TextField tagField = new TextField(currentTag);
-        tagField.setPromptText("Tag");
-        tagField.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
+        upvoteBtn.setOnAction(e -> handlePostVote(postId, upvoteBtn, downvoteBtn, voteCount));
+        downvoteBtn.setOnAction(e -> handlePostVote(postId, downvoteBtn, upvoteBtn, voteCount));
 
-        TextField imageField = new TextField(currentImageUrl != null ? currentImageUrl : "");
-        imageField.setPromptText("URL de l'image");
-        imageField.setEditable(false);
-        imageField.setStyle("-fx-padding: 10; -fx-background-radius: 5; -fx-background-color: #f0f0f0;");
+        voteBox.getChildren().addAll(upvoteBtn, voteCount, downvoteBtn);
 
-        Button chooseImageBtn = new Button("Choisir une image");
-        chooseImageBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5; -fx-cursor: hand;");
-        chooseImageBtn.setOnAction(e -> chooseImage(imageField));
+        // ==================== BOUTON COMMENTAIRE ====================
+        Button commentBtn = new Button("💬 Commenter");
+        commentBtn.getStyleClass().add("btn-secondary");
 
-        content.getChildren().addAll(
-                new Label("Titre:"), titleField,
-                new Label("Description:"), descArea,
-                new Label("Tag:"), tagField,
-                new Label("Image:"), new HBox(10, imageField, chooseImageBtn)
-        );
+        // ACTION POUR AFFICHER/MASQUER LES COMMENTAIRES
+        commentBtn.setOnAction(e -> toggleComments(card));
 
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        // ==================== SECTION COMMENTAIRES (CACHÉE PAR DÉFAUT) ====================
+        VBox commentsSection = new VBox(10);
+        commentsSection.getStyleClass().add("comments-section");
+        commentsSection.setId("comments-" + postId);
+        commentsSection.setVisible(false);
+        commentsSection.setManaged(false);
+        commentsSection.setPadding(new Insets(15, 0, 0, 0));
 
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                String newTitle = titleField.getText().trim();
-                String newDesc = descArea.getText().trim();
-                String newTag = tagField.getText().trim();
-                String newImage = imageField.getText().trim();
+        // Formulaire pour ajouter un commentaire
+        HBox commentForm = buildCommentForm(postId, commentsSection);
+        commentsSection.getChildren().add(commentForm);
 
-                if (validatePostInput(newTitle, newDesc)) {
-                    updatePost(postId, newTitle, newDesc, newImage, newTag);
-                }
-            }
-            return null;
-        });
+        // Charger les commentaires existants
+        loadCommentsForPost(postId, commentsSection);
 
-        dialog.showAndWait();
+        // ==================== ASSEMBLAGE DE LA CARTE ====================
+        card.getChildren().add(header);
+        card.getChildren().add(tagLabel);
+        card.getChildren().add(titleLabel);
+        card.getChildren().add(descLabel);
+        if (imageView != null) card.getChildren().add(imageView);
+        card.getChildren().add(voteBox);
+        card.getChildren().add(commentBtn);
+        card.getChildren().add(commentsSection); // Section commentaires (cachée au départ)
+
+        return card;
     }
 
     // ==================== AFFICHER/MASQUER LES COMMENTAIRES ====================
@@ -1673,6 +1386,7 @@ public class FrmBlog {
                 child.setVisible(visible);
                 child.setManaged(visible);
 
+                // Changer le texte du bouton
                 for (Node btn : postCard.getChildren()) {
                     if (btn instanceof Button && ((Button) btn).getText().contains("💬")) {
                         Button commentBtn = (Button) btn;
@@ -1695,17 +1409,18 @@ public class FrmBlog {
         form.getStyleClass().add("comment-form");
         form.setAlignment(Pos.CENTER_LEFT);
         form.setPadding(new Insets(10));
-        form.setStyle("-fx-background-color: #e8f2ff; -fx-background-radius: 40; -fx-padding: 12; -fx-spacing: 10; -fx-border-color: #7aa5d9; -fx-border-width: 2; -fx-border-radius: 40;");
+        form.setStyle("-fx-background-color: #f0f4f8; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         TextField commentInput = new TextField();
         commentInput.setPromptText("Écrire un commentaire...");
         commentInput.setPrefWidth(350);
-        commentInput.setStyle("-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 12 18; -fx-font-size: 13px; -fx-border-color: #b0d0ff; -fx-border-width: 1; -fx-border-radius: 30;");
-        HBox.setHgrow(commentInput, Priority.ALWAYS);
+        commentInput.setStyle("-fx-padding: 10; -fx-background-radius: 5;");
+        HBox.setHgrow(commentInput, Priority.ALWAYS);  // ← Ligne 1085 où Priority est utilisé
 
         Button submitComment = new Button("Publier");
-        submitComment.setStyle("-fx-background-color: #2a5f9f; -fx-text-fill: white; -fx-padding: 10 25; -fx-background-radius: 30; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;");
+        submitComment.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 5; -fx-font-weight: bold;");
 
+        // Action pour ajouter un commentaire
         submitComment.setOnAction(e -> {
             String content = commentInput.getText().trim();
             if (!content.isEmpty()) {
@@ -1714,6 +1429,7 @@ public class FrmBlog {
             }
         });
 
+        // Appui sur Entrée pour valider
         commentInput.setOnAction(e -> {
             String content = commentInput.getText().trim();
             if (!content.isEmpty()) {
@@ -1730,7 +1446,7 @@ public class FrmBlog {
     private void loadCommentsForPost(int postId, VBox commentsSection) {
         String sql = "SELECT c.*, u.Nom_Utilisateur as author_name " +
                 "FROM comments c " +
-                "JOIN utilisateur u ON c.user_id = u.ID_UTILISATEUR " +
+                "JOIN utilisateur u ON c.user_id = u.id_utilisateur " +
                 "WHERE c.post_id = ? AND c.is_active = true AND c.parent_comment_id IS NULL " +
                 "ORDER BY c.created_at ASC";
 
@@ -1739,19 +1455,9 @@ public class FrmBlog {
             stmt.setInt(1, postId);
             ResultSet rs = stmt.executeQuery();
 
-            List<Map<String, Object>> commentsData = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> comment = new HashMap<>();
-                comment.put("id", rs.getInt("id"));
-                comment.put("user_id", rs.getInt("user_id"));
-                comment.put("content", rs.getString("content"));
-                comment.put("created_at", rs.getTimestamp("created_at"));
-                comment.put("author_name", rs.getString("author_name"));
-                commentsData.add(comment);
-            }
-
-            for (Map<String, Object> commentData : commentsData) {
-                VBox commentBox = buildCommentFromData(commentData, postId, commentsSection);
+                VBox commentBox = buildCommentFromDB(rs, commentsSection);
+                // Insérer avant le formulaire
                 commentsSection.getChildren().add(commentsSection.getChildren().size() - 1, commentBox);
             }
 
@@ -1761,100 +1467,59 @@ public class FrmBlog {
     }
 
     // ==================== CONSTRUCTION D'UN COMMENTAIRE ====================
-    private VBox buildCommentFromData(Map<String, Object> commentData, int postId, VBox commentsSection) {
-        try {
-            int commentId = (int) commentData.get("id");
-            int userId = (int) commentData.get("user_id");
-            String author = (String) commentData.get("author_name");
-            String content = (String) commentData.get("content");
-            Timestamp createdAt = (Timestamp) commentData.get("created_at");
+    private VBox buildCommentFromDB(ResultSet rs, VBox commentsSection) throws SQLException {
+        int commentId = rs.getInt("id");
+        int postId = rs.getInt("post_id");
+        String author = rs.getString("author_name");
+        String content = rs.getString("content");
+        Timestamp createdAt = rs.getTimestamp("created_at");
 
-            VBox commentBox = new VBox(8);
-            commentBox.getStyleClass().add("comment");
-            commentBox.setId("comment-" + commentId);
-            commentBox.setPadding(new Insets(15));
-            commentBox.setStyle("-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 15; -fx-spacing: 10; -fx-border-color: #d0e5ff; -fx-border-width: 1; -fx-border-radius: 16;");
+        VBox commentBox = new VBox(8);
+        commentBox.getStyleClass().add("comment");
+        commentBox.setId("comment-" + commentId);
+        commentBox.setPadding(new Insets(12));
+        commentBox.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-            // En-tête du commentaire
-            HBox header = new HBox(10);
-            header.setAlignment(Pos.CENTER_LEFT);
-            header.setStyle("-fx-background-color: #e8f2ff; -fx-padding: 8 12; -fx-background-radius: 30; -fx-spacing: 10;");
+        // En-tête du commentaire
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
 
-            Label authorLabel = new Label(author);
-            authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #0a3a6a; -fx-background-color: #d0e5ff; -fx-padding: 3 12; -fx-background-radius: 20;");
+        Label authorLabel = new Label(author);
+        authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
 
-            Label timeLabel = new Label(formatTimeAgo(createdAt.toLocalDateTime()));
-            timeLabel.setStyle("-fx-text-fill: #4a6f94; -fx-font-size: 11px; -fx-font-style: italic;");
+        Label timeLabel = new Label(formatTimeAgo(createdAt.toLocalDateTime()));
+        timeLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
 
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+        header.getChildren().addAll(authorLabel, timeLabel);
 
-            // Boutons d'action pour le commentaire (Modifier/Supprimer) - uniquement si c'est l'auteur
-            HBox actionButtons = new HBox(5);
-            if (userId == currentUserId) {
-                Button editCommentBtn = new Button("✏️");
-                editCommentBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 15; -fx-cursor: hand; -fx-font-size: 11px;");
-                editCommentBtn.setTooltip(new Tooltip("Modifier ce commentaire"));
-                editCommentBtn.setOnAction(e -> showEditCommentDialog(commentId, content));
+        // Contenu du commentaire
+        Label message = new Label(content);
+        message.setWrapText(true);
+        message.setStyle("-fx-padding: 5 0; -fx-font-size: 13px;");
 
-                Button deleteCommentBtn = new Button("🗑️");
-                deleteCommentBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 15; -fx-cursor: hand; -fx-font-size: 11px;");
-                deleteCommentBtn.setTooltip(new Tooltip("Supprimer ce commentaire"));
-                deleteCommentBtn.setOnAction(e -> deleteComment(commentId));
+        // Actions du commentaire
+        HBox actions = new HBox(10);
+        actions.setAlignment(Pos.CENTER_LEFT);
 
-                actionButtons.getChildren().addAll(editCommentBtn, deleteCommentBtn);
-            }
+        Button replyBtn = new Button("↩️ Répondre");
+        replyBtn.setStyle("-fx-background-color: #ecf0f1; -fx-padding: 5 15; -fx-background-radius: 20; -fx-font-size: 11px;");
+        replyBtn.setOnAction(e -> showReplyInput(commentBox, postId, commentId, commentsSection));
 
-            // Bouton réponse
-            Button replyBtn = new Button("↩️ Répondre");
-            replyBtn.setStyle("-fx-background-color: #e5f0ff; -fx-text-fill: #0a3f7a; -fx-padding: 5 15; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: #7aa5d9; -fx-border-width: 1; -fx-border-radius: 20;");
-            replyBtn.setOnAction(e -> showReplyInput(commentBox, postId, commentId, commentsSection));
+        actions.getChildren().addAll(replyBtn);
 
-            header.getChildren().addAll(authorLabel, timeLabel, spacer, actionButtons, replyBtn);
+        commentBox.getChildren().addAll(header, message, actions);
 
-            // Contenu du commentaire
-            VBox contentBox = new VBox();
-            contentBox.setStyle("-fx-background-color: #f5faff; -fx-padding: 12 15; -fx-background-radius: 12; -fx-border-color: #c0d8ff; -fx-border-width: 1; -fx-border-radius: 12;");
+        // Charger les réponses à ce commentaire
+        loadReplies(commentId, commentBox, postId, commentsSection);
 
-            Label message = new Label(content);
-            message.setWrapText(true);
-            message.setStyle("-fx-font-size: 13px; -fx-text-fill: #1a2e42; -fx-wrap-text: true; -fx-line-spacing: 3;");
-
-            contentBox.getChildren().add(message);
-
-            commentBox.getChildren().addAll(header, contentBox);
-
-            // Charger les réponses à ce commentaire
-            loadReplies(commentId, commentBox, postId, commentsSection);
-
-            return commentBox;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // Dialog pour modifier un commentaire
-    private void showEditCommentDialog(int commentId, String currentContent) {
-        TextInputDialog dialog = new TextInputDialog(currentContent);
-        dialog.setTitle("Modifier le commentaire");
-        dialog.setHeaderText("Modifier votre commentaire");
-        dialog.setContentText("Nouveau contenu:");
-
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(newContent -> {
-            if (!newContent.trim().isEmpty() && validateCommentInput(newContent)) {
-                updateComment(commentId, newContent);
-            }
-        });
+        return commentBox;
     }
 
     // ==================== CHARGEMENT DES RÉPONSES ====================
     private void loadReplies(int parentCommentId, VBox parentCommentBox, int postId, VBox commentsSection) {
         String sql = "SELECT c.*, u.Nom_Utilisateur as author_name " +
                 "FROM comments c " +
-                "JOIN utilisateur u ON c.user_id = u.ID_UTILISATEUR " +
+                "JOIN utilisateur u ON c.user_id = u.id_utilisateur " +
                 "WHERE c.parent_comment_id = ? AND c.is_active = true " +
                 "ORDER BY c.created_at ASC";
 
@@ -1866,13 +1531,9 @@ public class FrmBlog {
             VBox repliesBox = new VBox(8);
             repliesBox.getStyleClass().add("replies");
             repliesBox.setPadding(new Insets(8, 0, 0, 25));
-            repliesBox.setStyle("-fx-background-color: #f0f8ff; -fx-background-radius: 12; -fx-padding: 10; -fx-spacing: 8; -fx-border-color: #b0d0ff; -fx-border-width: 0 0 0 3; -fx-border-radius: 0 12 12 0;");
 
-            boolean hasReplies = false;
             while (rs.next()) {
-                hasReplies = true;
                 int replyId = rs.getInt("id");
-                int userId = rs.getInt("user_id");
                 String author = rs.getString("author_name");
                 String content = rs.getString("content");
                 Timestamp createdAt = rs.getTimestamp("created_at");
@@ -1880,48 +1541,29 @@ public class FrmBlog {
                 VBox replyBox = new VBox(5);
                 replyBox.getStyleClass().add("reply");
                 replyBox.setId("reply-" + replyId);
-                replyBox.setPadding(new Insets(10));
-                replyBox.setStyle("-fx-background-color: #f5faff; -fx-background-radius: 12; -fx-border-color: #c0d8ff; -fx-border-width: 1; -fx-border-radius: 12;");
+                replyBox.setPadding(new Insets(8));
+                replyBox.setStyle("-fx-background-color: #f8f9fa; -fx-border-radius: 5; -fx-background-radius: 5;");
 
                 HBox header = new HBox(10);
                 header.setAlignment(Pos.CENTER_LEFT);
 
                 Label authorLabel = new Label("↳ " + author);
-                authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #0a3a6a;");
+                authorLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
 
                 Label timeLabel = new Label(formatTimeAgo(createdAt.toLocalDateTime()));
-                timeLabel.setStyle("-fx-text-fill: #4a6f94; -fx-font-size: 10px; -fx-font-style: italic;");
+                timeLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 10px;");
 
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                // Boutons d'action pour la réponse (Modifier/Supprimer) - uniquement si c'est l'auteur
-                HBox actionButtons = new HBox(5);
-                if (userId == currentUserId) {
-                    Button editReplyBtn = new Button("✏️");
-                    editReplyBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 12; -fx-cursor: hand; -fx-font-size: 10px;");
-                    editReplyBtn.setTooltip(new Tooltip("Modifier cette réponse"));
-                    editReplyBtn.setOnAction(e -> showEditCommentDialog(replyId, content));
-
-                    Button deleteReplyBtn = new Button("🗑️");
-                    deleteReplyBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 12; -fx-cursor: hand; -fx-font-size: 10px;");
-                    deleteReplyBtn.setTooltip(new Tooltip("Supprimer cette réponse"));
-                    deleteReplyBtn.setOnAction(e -> deleteComment(replyId));
-
-                    actionButtons.getChildren().addAll(editReplyBtn, deleteReplyBtn);
-                }
-
-                header.getChildren().addAll(authorLabel, timeLabel, spacer, actionButtons);
+                header.getChildren().addAll(authorLabel, timeLabel);
 
                 Label message = new Label(content);
                 message.setWrapText(true);
-                message.setStyle("-fx-font-size: 12px; -fx-text-fill: #1a2e42; -fx-padding: 3 0;");
+                message.setStyle("-fx-font-size: 12px; -fx-padding: 3 0;");
 
                 replyBox.getChildren().addAll(header, message);
                 repliesBox.getChildren().add(replyBox);
             }
 
-            if (hasReplies) {
+            if (!repliesBox.getChildren().isEmpty()) {
                 parentCommentBox.getChildren().add(repliesBox);
             }
 
@@ -1932,6 +1574,7 @@ public class FrmBlog {
 
     // ==================== AFFICHER LE CHAMP DE RÉPONSE ====================
     private void showReplyInput(VBox parentCommentBox, int postId, int parentCommentId, VBox commentsSection) {
+        // Vérifier si un formulaire existe déjà
         for (Node child : parentCommentBox.getChildren()) {
             if (child instanceof HBox && child.getStyleClass().contains("reply-form")) {
                 return;
@@ -1941,15 +1584,15 @@ public class FrmBlog {
         HBox replyForm = new HBox(10);
         replyForm.getStyleClass().add("reply-form");
         replyForm.setPadding(new Insets(8, 0, 0, 25));
-        replyForm.setStyle("-fx-background-color: #f0f5ff; -fx-background-radius: 30; -fx-padding: 10; -fx-spacing: 8; -fx-border-color: #b0d0ff; -fx-border-width: 1; -fx-border-radius: 30;");
+        replyForm.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 10; -fx-border-radius: 5;");
 
         TextField replyInput = new TextField();
         replyInput.setPromptText("Écrire une réponse...");
         replyInput.setPrefWidth(300);
-        replyInput.setStyle("-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 8 15; -fx-font-size: 12px; -fx-border-color: #b0d0ff; -fx-border-width: 1; -fx-border-radius: 25;");
+        replyInput.setStyle("-fx-padding: 8; -fx-background-radius: 5;");
 
         Button submitReply = new Button("Répondre");
-        submitReply.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 6 15; -fx-background-radius: 25; -fx-font-size: 11px; -fx-font-weight: bold; -fx-cursor: hand;");
+        submitReply.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 15; -fx-background-radius: 5;");
         submitReply.setOnAction(e -> {
             String content = replyInput.getText().trim();
             if (!content.isEmpty()) {
@@ -1959,7 +1602,7 @@ public class FrmBlog {
         });
 
         Button cancelReply = new Button("Annuler");
-        cancelReply.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 6 15; -fx-background-radius: 25; -fx-font-size: 11px; -fx-cursor: hand;");
+        cancelReply.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 8 15; -fx-background-radius: 5;");
         cancelReply.setOnAction(e -> parentCommentBox.getChildren().remove(replyForm));
 
         replyInput.setOnAction(e -> {
@@ -1974,6 +1617,69 @@ public class FrmBlog {
         parentCommentBox.getChildren().add(replyForm);
     }
 
+    // ==================== AJOUTER UN COMMENTAIRE OU UNE RÉPONSE ====================
+    private void addComment(int postId, String content, Integer parentCommentId, VBox commentsSection) {
+        if (!validateCommentInput(content)) return;
+
+        String sql = "INSERT INTO comments (post_id, user_id, parent_comment_id, content) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, postId);
+            stmt.setInt(2, currentUserId);
+            if (parentCommentId != null) {
+                stmt.setInt(3, parentCommentId);
+            } else {
+                stmt.setNull(3, Types.INTEGER);
+            }
+            stmt.setString(4, content);
+
+            stmt.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                int commentId = rs.getInt(1);
+                Platform.runLater(() -> {
+                    // Recharger les commentaires pour ce post
+                    VBox newCommentsSection = new VBox(10);
+                    newCommentsSection.getStyleClass().add("comments-section");
+                    newCommentsSection.setId("comments-" + postId);
+
+                    HBox commentForm = buildCommentForm(postId, newCommentsSection);
+                    newCommentsSection.getChildren().add(commentForm);
+
+                    loadCommentsForPost(postId, newCommentsSection);
+
+                    // Remplacer l'ancienne section
+                    for (Node node : feedContainer.getChildren()) {
+                        if (node instanceof VBox && node.getId() != null && node.getId().equals("post-" + postId)) {
+                            VBox postCard = (VBox) node;
+                            for (int i = 0; i < postCard.getChildren().size(); i++) {
+                                Node child = postCard.getChildren().get(i);
+                                if (child instanceof VBox && child.getId() != null && child.getId().equals("comments-" + postId)) {
+                                    boolean wasVisible = child.isVisible();
+                                    newCommentsSection.setVisible(wasVisible);
+                                    newCommentsSection.setManaged(wasVisible);
+                                    postCard.getChildren().set(i, newCommentsSection);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    updateStatistics();
+                    showInfo("✅ Commentaire ajouté !", "success");
+                });
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showError("Erreur lors de l'ajout du commentaire", "error");
+        }
+    }
+
     // ==================== MÉTHODES UTILITAIRES ====================
     private Connection getConnection() throws SQLException {
         return DBConnection.getInstance();
@@ -1981,10 +1687,7 @@ public class FrmBlog {
 
     private void createUploadDirectory() {
         File dir = new File(UPLOAD_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
-            System.out.println("✅ Dossier uploads créé");
-        }
+        if (!dir.exists()) dir.mkdirs();
     }
 
     private String formatTimeAgo(LocalDateTime dateTime) {
@@ -2002,10 +1705,6 @@ public class FrmBlog {
             alert.setTitle(type.equals("error") ? "Erreur" : "Information");
             alert.setHeaderText(null);
             alert.setContentText(message);
-
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #2a5f9f; -fx-border-width: 2; -fx-border-radius: 15;");
-
             alert.showAndWait();
         });
     }

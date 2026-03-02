@@ -17,29 +17,28 @@ public final class ActionLogger {
     }
 
     public static void log(String actionName, String commentaire) {
+        Utilisateur currentUser = Session.getCurrentUser();
+        if (currentUser == null || actionName == null || actionName.isBlank()) {
+            return;
+        }
 
-//        Utilisateur currentUser = Session.getCurrentUser();
-//        if (currentUser == null || actionName == null || actionName.isBlank()) {
-//            return;
-//        }
-//
-//        try {
-//            Connection connection = DBConnection.getInstance();
-//            String actionTypeCode = ensureActionType(connection, actionName.trim());
-//
-//            long baseNumOrdre = COrdre.GetNumOrdreNow();
-//            for (int i = 0; i < 5; i++) {
-//                long numOrdre = baseNumOrdre + i;
-//                ensureOrdreExists(connection, numOrdre);
-//
-//                if (insertAction(connection, currentUser.getIdUtilisateur(), actionTypeCode, numOrdre, commentaire)) {
-//                    return;
-//                }
-//            }
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+        try {
+            Connection connection = DBConnection.getInstance();
+            String actionTypeCode = ensureActionType(connection, actionName.trim());
+
+            long baseNumOrdre = COrdre.GetNumOrdreNow();
+            for (int i = 0; i < 5; i++) {
+                long numOrdre = baseNumOrdre + i;
+                ensureOrdreExists(connection, numOrdre);
+
+                if (insertAction(connection, currentUser.getIdUtilisateur(), actionTypeCode, numOrdre, commentaire)) {
+                    return;
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static String ensureActionType(Connection connection, String actionName) throws SQLException {

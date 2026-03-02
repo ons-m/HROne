@@ -269,6 +269,6 @@ public class FrmFicheEmployee {
             password.append(chars.charAt(random.nextInt(chars.length())));
         }
 
-        return "MDP";
+        return password.toString();
     }
 }

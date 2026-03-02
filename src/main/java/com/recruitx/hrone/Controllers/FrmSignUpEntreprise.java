@@ -94,42 +94,42 @@ public class FrmSignUpEntreprise implements NavigationAware{
                     "Téléphone et CIN doivent contenir exactement 8 chiffres !");
             return;
         }
-//
-//        // ===== DISIFY VALIDATION =====
-//        DisifyResult disify = DisifyService.validateEmail(email);
-//
-//        // If API failed, we allow registration (fail-open strategy)
-//        if (!disify.isApiFailed()) {
-//
-//            if (!disify.isFormatValid()) {
-//                showAlert(Alert.AlertType.ERROR, "Erreur",
-//                        "Format d'email invalide.");
-//                return;
-//            }
-//
-//            if (disify.isDisposable()) {
-//                showAlert(Alert.AlertType.ERROR, "Erreur",
-//                        "Les emails temporaires ne sont pas autorisés.");
-//                return;
-//            }
-//
-//            if (!disify.isDnsValid()) {
-//                showAlert(Alert.AlertType.ERROR, "Erreur",
-//                        "Le domaine de l'email est invalide.");
-//                return;
-//            }
-//        }
-//
-//        // ==============MailCheck Verification ===================
-//        MailCheckService mailService = new MailCheckService();
-//
-//        boolean isValid = mailService.verifyEmail(email);
-//
-//        if (!isValid) {
-//            showAlert(Alert.AlertType.ERROR, "Erreur",
-//                    "Invalid or disposable email address.");
-//            return;
-//        }
+
+        // ===== DISIFY VALIDATION =====
+        DisifyResult disify = DisifyService.validateEmail(email);
+
+        // If API failed, we allow registration (fail-open strategy)
+        if (!disify.isApiFailed()) {
+
+            if (!disify.isFormatValid()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Format d'email invalide.");
+                return;
+            }
+
+            if (disify.isDisposable()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Les emails temporaires ne sont pas autorisés.");
+                return;
+            }
+
+            if (!disify.isDnsValid()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Le domaine de l'email est invalide.");
+                return;
+            }
+        }
+
+        // ==============MailCheck Verification ===================
+        MailCheckService mailService = new MailCheckService();
+
+        boolean isValid = mailService.verifyEmail(email);
+
+        if (!isValid) {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Invalid or disposable email address.");
+            return;
+        }
 
         // ================= CHECK UNIQUENESS =================
         if (utilisateurCRUD.emailExists(email)) {

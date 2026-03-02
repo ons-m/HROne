@@ -158,7 +158,7 @@ CREATE TABLE `participation_formation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `formation` (
-  `ID_Formation` int(11)  PRIMARY KEY AUTOINCREMENT,
+  `ID_Formation` int(11) NOT NULL,
   `Titre` varchar(255) NOT NULL,
   `Description` text DEFAULT NULL,
   `Num_Ordre_Creation` int(11) NOT NULL,
